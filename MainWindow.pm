@@ -17,8 +17,8 @@ use QtCore4::slots
 
 sub NEW {
     shift->SUPER::NEW(@_);
-    my $textEdit = Qt::TextEdit();
-#	my $textEdit = new QsciScintilla;
+#    my $textEdit = Qt::TextEdit();
+	my $textEdit = new QsciScintilla;
     this->{textEdit} = $textEdit;
     this->setCentralWidget($textEdit);
 
@@ -232,7 +232,8 @@ sub genImage {
         return;
     }
 
-    print $FH this->{textEdit}->toPlainText();
+#    print $FH this->{textEdit}->toPlainText();
+	print $FH this->{textEdit}->text();
     print $FH "\n";
     close $FH;
     

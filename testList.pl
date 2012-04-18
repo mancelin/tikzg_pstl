@@ -42,10 +42,13 @@ my %aHash=(
 &print_hash(%aHash);
 
 print "------------\n";
-my %h;
-$h{"er"}="gvrf";
+tie %h, "Tie::IxHash"; 
+$h{z}="v,ri";
+$h{er}="gvrf";
 $h{vgr}="kjv";
 $h{a}="first?";
+$h{vf}="vufrh";
+$h{a}="last? nope, third !";
 &print_hash(%h);
 
 print "------------\n";
