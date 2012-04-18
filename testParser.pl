@@ -1,10 +1,10 @@
 #!/usr/bin/perl -w
 use TikzParser;
 use ListDumper;
-use Data::Dumper;
+#use Data::Dumper;
 
 my $un_code_tikz= 
-q (\node[rectangle,draw] (n1) {un n{\oe}ud};
+q (	
 \node[circle,double,draw,right of=n1] (n2) {$\frac{\sqrt{x}}{x^y}$};
 \draw[->] (n1) -- (n2);
 \node[below of=n1,node distance=30pt] (n3) {below};
@@ -25,11 +25,17 @@ my @list_instructions = &TikzParser::decoupe_lignes($un_code_tikz);
 print "="x80,"\n";
 
 my @list_instructions_of_hash = &TikzParser::hash_of_instruction(@list_instructions);
-#&listdump(@list_instructions_of_hash);
 #print Dumper(@list_instructions_of_hash);
 my $ref_un_hash=@list_instructions_of_hash[1];
 my %un_hash=%$ref_un_hash;
 &print_Hash(%un_hash);
 print "+"x80,"\n";
 &print_list_of_hashes(@list_instructions_of_hash);
+print "o"x80,"\n";
+tie %tmp_hash, "Tie::IxHash";
+%tmp_hash = {$list_instructions_of_hash[3]};
+$tmp_hash{hvurh}="gargl garhlll";
+$list_instructions_of_hash[3]=\%tmp_hash;
+&print_list_of_hashes(@list_instructions_of_hash);
+
 

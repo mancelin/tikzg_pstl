@@ -9,6 +9,9 @@
 	[ ] Barre de menu en français, lister/implémenter tout ce qu' il faut: voir MENU.txt
 	[ ] dock avec boutons/textbox pour modifier les éléments du graphe
 	[ ] rendre dock avec image non fermable
+	[ ] textbox pour erreurs de compil latex
+ [ ] Detectecter coordonnées clic dans image
+	[ ] recuperer valeur couleur pixel dans une image a des coordonées données
  [ ] Noter iddées pour le rapport -> plan, comencer a rédiger
 	
 A augmenter ...

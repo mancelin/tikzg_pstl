@@ -42,7 +42,7 @@ sub print_list_of_hashes {
 	foreach $ref_hash (@loh){
 		print "-- $i\n";
 		local %hash=%$ref_hash;
-		&print_Hash(%hash);
+		&print_IxHash(%hash);
 		$i++;
 	}
 }
