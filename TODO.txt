@@ -1,0 +1,14 @@
+ [ ] Executer action toutes les n secondes d' inaction aprés modif du doc (0.5 par exemple) 
+	[ ] detecter inaction ( il y a un truc genre "isChanged" dans Scintilla )
+ [x] Racourci pour générer image
+ [x] Générer imageCouleur
+ [ ] Structure de Donnes prog 
+	[ ] Parseur pour creer la structure
+	[ ] Fonctions pour la modifier
+ [ ] Interface graphique Tikzg
+	[ ] Barre de menu en français, lister/implémenter tout ce qu' il faut: voir MENU.txt
+	[ ] dock avec boutons/textbox pour modifier les éléments du graphe
+	[ ] rendre dock avec image non fermable
+ [ ] Noter iddées pour le rapport -> plan, comencer a rédiger
+	
+A augmenter ...

@@ -22,17 +22,5 @@ sub hash_of_instruction{
 	}
 	return @list_of_hash;
 }
-=cut	
-	print "vujfh\n";
-}
-
-
-=fre
-	my $i=1;
-	foreach(@_){
-		print $i," ",$_,"\n";
-		$i++;
-	}
-=cut
 
 1;

@@ -1,0 +1,34 @@
+Fichier : Nouveau, Ouvrir, Enregister, Enregister Sous, Export
+														fic tikz (extrait avec que du code tikz)
+														fic tex (
+		[ ] Options 
+		
+Fichier
+	Nouveau (Ctrl+N)
+	---------------
+	Ouvrir (Ctrl+O)
+	---------------
+	Enregistrer (Ctrl+S)       // Enregistrer n' enregistre que le code tikz ( de \begin{tikzpicture} a \end{tikzpicture} )
+	Enregistrer sous  		   // idem
+	---------------
+	Exporter
+		png
+	---------------
+	Imprimer
+	---------------
+	Quitter	(Alt+F4)
+Editer
+	Annuler	(Ctrl+Z)
+	Refaire (Ctrl+Y)
+	---------------
+Affichage
+	Zoom In		// ça se dit comment en français ?
+	Zoom Out
+	---------------
+	
+	---------------
+	---------------
+	---------------
+	---------------
+	
+	
