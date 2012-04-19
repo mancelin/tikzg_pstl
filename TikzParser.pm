@@ -8,12 +8,10 @@ use ListDumper;
 
 sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 	local $_ = $_[0];
-	print "+"x80;
-	print $_,"\n";
-	print "+"x80;
+#	print "+"x80;
+#	print $_,"\n";
+#	print "+"x80;
 	my @tab_lignes = split /;/, $_;
-	#&listdump(@tab_lignes)
-	#print "="x80, "\n";
 	foreach $elem (@tab_lignes){ # rajout d' un ";" a la fin de chaque instructuion
 		$elem=$elem.";";
 	}
@@ -37,28 +35,26 @@ sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 				$list_TikzObjs[$i_objTikz]->{code} = $line;
 				$i_objTikz++;
 				$i_ligne++;
-				print ">> une ligne : [$line]\n";
+#				print ">> une ligne : [$line]\n";
 			} else {
 				if ($is_instr_multiligne == 0 && $line =~ /(^\s*\\.*)/){  # debut instruction tikz multiligne
 					$is_instr_multiligne = 1;
 					$list_TikzObjs[$i_objTikz] = new TikzObjects(ligne => $i_ligne);
 					$list_TikzObjs[$i_objTikz]->{code} = $line;
 					$i_ligne++;
-					print ">> debut multiligne\n";
+#					print ">> debut multiligne\n";
 				} else { # suite instruction tikz multiligne, ligne vide ou commentaire
 					if ($is_instr_multiligne == 1) {
-						print "and the line is : $line, ($i_ligne)\n";
 						if ($line =~ /;/){ # fin instruction multiligne
-							print "matching ! $line, ($i_ligne)\n";
 							$list_TikzObjs[$i_objTikz]->{code} = "$list_TikzObjs[$i_objTikz]->{code}\n".$line."\n";
 							$i_objTikz++;
 							$i_ligne++;
 							$is_instr_multiligne = 0;
-							print ">> fin multiligne\n";
+# 							print ">> fin multiligne\n";
 						} else { # suite instruction multiligne
 							$list_TikzObjs[$i_objTikz]->{code} = "$list_TikzObjs[$i_objTikz]->{code}\n".$line;
 							$i_ligne++;
-							print ">> suite multiligne\n";
+#							print ">> suite multiligne\n";
 						}
 					} else { # ligne vide ou commentaire
 						$list_TikzObjs[$i_objTikz] = new TikzObjects(ligne => $i_ligne);
@@ -66,7 +62,7 @@ sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 						$list_TikzObjs[$i_objTikz]->{type} = "NoCode";
 						$i_objTikz++;
 						$i_ligne++;
-						print ">> ligne vide ou comment\n";
+#						print ">> ligne vide ou comment\n";
 					}
 				}
 			}
