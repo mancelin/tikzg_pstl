@@ -1,10 +1,12 @@
 package TikzParser;
 
 use Exporter;
-use Tie::IxHash;
-use TikzObjects;
+@EXPORT = qw(decoupe_lignes parse_liste_instructions listhash_of_params lists_kv_of_params);
 @ISA = ('Exporter');
-use ListDumper;
+use Tie::IxHash; #
+use TikzObjects;
+use Data::Dumper; #
+use ListDumper; #
 
 sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 	local $_ = $_[0];
@@ -72,6 +74,54 @@ sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 }
 
 
+sub parse_liste_instructions{
+	foreach $elem (@_){
+	#	print "elem : ", Dumper($elem),"\n";
+		$elem->parse_ligne_instruction();
+	}
+}
+
+sub listhash_of_params{
+	#print $_[0],"\n";
+	local @list_of_params=split /,/,$_[0];
+	local @listhash;
+	#tie %res, "Tie::IxHash"; # pour ordonner les élément du hachage selon l' ordre d' insertion
+	foreach $elem(@list_of_params){
+		local @param_value=split /=/,$elem;
+		if(scalar(@param_value)==2){
+			push @listhash,($param_value[0],$param_value[1]);
+		} else {
+			push @listhash,($param_value[0],undef);
+		}
+		#print ">>>>>",	scalar(@param_value),"\n";
+	}
+	print ">>> listhash_of_params >>\n";
+	&listdump(@listhash);
+	print ">> listhash_of_params >>>\n";
+	return @listhash;
+}
+
+sub lists_kv_of_params{ # rend couple liste clées, liste valeurs correspondant aux paramétres
+	#print $_[0],"\n";
+	local @list_of_params=split /,/,$_[0];
+	local @list_keys;
+	local @list_val;
+	#tie %res, "Tie::IxHash"; # pour ordonner les élément du hachage selon l' ordre d' insertion
+	foreach $elem(@list_of_params){
+		local @param_value=split /=/,$elem;
+		if(scalar(@param_value)==2){
+			push @list_keys ,($param_value[0]);
+			push @list_val ,($param_value[1]);
+		} else {
+			push @list_keys ,($param_value[0]);
+			push @list_val ,(undef);
+		}
+		#print ">>>>>",	scalar(@param_value),"\n";
+	}
+	return ([[@list_keys], [@list_val]]);
+}
+
+# sert surement a rien
 sub hash_of_instruction{
 	my $i=1;
 	my @list_of_hash;

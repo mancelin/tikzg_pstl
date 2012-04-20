@@ -15,7 +15,7 @@ sub print_hash{
 	}
 }
 
-=now in ListDumper.pm
+#=now in ListDumper.pm
 sub print_IxHash{
 	tie(%hash, Tie::IxHash, @_);
 	#local %hash = @_;
@@ -28,7 +28,7 @@ sub print_IxHash{
 	}
 }
 
-=cut
+#=cut
 
 
 print "------------\n";
@@ -37,6 +37,7 @@ $ham{e}="frgrt";
 $ham{er}="gvrf";
 $ham{v}="kv";
 $ham{vhfu}=undef;
+$ham{az}="def";
 $ham{e}="first ?";
 $ham{vf}="ufrh";
 $ham{der}="_bjtr_";
@@ -45,3 +46,4 @@ $ham{1}=undef;
 #print "@{[ %ham ]}\n";
 #$h{a}="last? nope, third !";
 &ListDumper::print_IxHash(%ham);
+#print_IxHash(%ham);

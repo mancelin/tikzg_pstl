@@ -27,7 +27,7 @@ q(
 				tree \\ $n$
              \end{tabular}};
 \node[above of=tree,node distance=30pt] (tree_a) {};
-\node[below of=tree,node distance=20pt] (tree_b) {};
+\nod[below of=tree,node distance=20pt] (tree_b) {};
 \node[left of=tree_b,node distance=30pt] (tree_l) {};
 \node[right of=tree_b,node distance=30pt] (tree_r) {};
 \draw (tree_a.center) -- (tree_r.center);
@@ -36,27 +36,20 @@ q(
 \draw  (tree_l.center) -- (tree_a.center););
 
 
-my @list_instructions = &TikzParser::decoupe_lignes($un_code_tikz_compli);
+my @list_instructions = &TikzParser::decoupe_lignes($un_code_tikz);
 
-=tested
-$list_instructions[2] = new TikzObjects(
-	ligne => 2,
-	type => "node",
-	params => {
-		circle => undef,
-		"rigth of" => "n1"
-	},
-	nom => "n2");
-print Dumper(@list_instructions);
-print $list_instructions[3], "\n";
-print "="x80,"\n";
-print $list_instructions[2]->{ligne}, "\n";
-$list_instructions[2]->{ligne} = 1000;
-print $list_instructions[2]->{ligne}, "\n";
-$list_instructions[2]->{fr} = "vfj";
-print $list_instructions[2]->{fr}, "\n";
-$list_instructions[2]->{fr} = "ga bu zo $list_instructions[2]->{fr}";
-print $list_instructions[2]->{fr}, "\n";
-=cut
 #&listdump(@list_instructions);
+=old
+print Dumper(@list_instructions);
+print "List length : ".scalar(@list_instructions)."\n";
+print "="x80,"\n";
+#print Dumper(@list_instructions);
+#print "List length : ".scalar(@list_instructions)."\n";
+$list_instructions[6]->printChamp("ligne");
+$list_instructions[6]->printChamp("lreg");
+$list_instructions[6]->printChamp("type");
+=cut
+parse_liste_instructions(@list_instructions);
+#print "_"x80,"\n";
+#print Dumper($list_instructions[0]);
 print Dumper(@list_instructions);

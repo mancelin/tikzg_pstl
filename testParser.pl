@@ -25,7 +25,7 @@ my @list_instructions = &TikzParser::decoupe_lignes($un_code_tikz);
 print "="x80,"\n";
 
 my @list_instructions_of_hash = &TikzParser::hash_of_instruction(@list_instructions);
-#print Dumper(@list_instructions_of_hash);
+print Dumper(@list_instructions_of_hash);
 my $ref_un_hash=@list_instructions_of_hash[1];
 my %un_hash=%$ref_un_hash;
 &print_Hash(%un_hash);
