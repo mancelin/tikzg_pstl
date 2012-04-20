@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use ColorId;
+
 my $entete_tikz= 
 q (\documentclass{article}
 \usepackage[graphics,tightpage,active]{preview}
@@ -20,6 +22,7 @@ unless (open FICTIKZ, "<tmp/$filename"){
 	die "Impossible d'ouvrir '$filename' : $!";
 }
 
+=dans ColorId.pm
 # pour generer l' image "ColorId" correspondate
 my $rv=30; # red value
 my $gv=30; # green value
@@ -45,6 +48,7 @@ sub gen_next_ColorId{
 	my $new_color="red!$rv!green!$gv!blue!$bv";
 	return "$new_color,fill=$new_color";
 }
+=cut
 
 my $tikz_code="";
 my $tikz_code_colorID="";

@@ -2,8 +2,8 @@
 	[ ] detecter inaction ( il y a un truc genre "isChanged" dans Scintilla )
  [x] Racourci pour générer image
  [x] Générer imageCouleur
- [ ] Structure de Donnes prog 
-	[ ] Parseur pour creer la structure
+ [x] Structure de Donnes prog 
+	[x] Parseur pour creer la structure
 	[ ] Fonctions pour la modifier
  [ ] Interface graphique Tikzg
 	[ ] Barre de menu en français, lister/implémenter tout ce qu' il faut: voir MENU.txt

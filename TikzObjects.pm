@@ -5,6 +5,7 @@ use Data::Dumper; #
 use TikzParser;
 use Tie::IxHash; 
 use ListDumper; #
+use ColorId;
 
 sub new{
 	my $classe= shift;
@@ -69,7 +70,20 @@ sub parse_ligne_instruction{ # une ligne commence par \ et finit par ;
 				if ( $code =~ m{\[([^\]]*)\](.*)} ){
 					
 					$self->hash_of_params($1);
+					$code=$2;
 #					print " 1 : $1 \n 2 : $2 \n";
+				}
+				if(  $code =~ m{\(([^\)]*)\)(.*)} ){
+					$self->{nom}=$1;
+					$code=$2;
+					#print " 1 : $1 \n 2 : $2 \n";
+				}
+				if( $code =~ /{(.*)};/){
+					$self->{text}=$1;
+					#print ">> 1 : $1 \n ";
+					$self->{colorId}=&gen_next_ColorId();
+				} else {
+					$self->{error}="Champ {} manquant a la fin de la ligne";
 				}
 #				print "node !\n";
 			} else {
@@ -78,8 +92,22 @@ sub parse_ligne_instruction{ # une ligne commence par \ et finit par ;
 					if ( $code =~ m{\[([^\]]*)\](.*)} ){
 						
 						$self->hash_of_params($1);
+						#$self->color
 #						print " 1 : $1 \n 2 : $2 \n";
+						$code=$2;
 					}
+					if(  $code =~ m{\(([^\)]*)\)(.*)\(([^\)]*)\)} ){
+					#	print " 1 : $1 \n 2 : $2 \n 3 : $3 \n";
+						$self->{origine}=$1;
+						$self->{code_segment}=$2;
+						$self->{but}=$3;
+						if( $self->{code_segment} =~ /--/ ){
+							$self->{colorId}=&gen_next_ColorId();
+						} else {
+							$self->{error}="Ce n'est pas un segment";
+						}
+					}
+
 #					print "draw !\n";
 				} else {
 					$self->{type}="unknown";

@@ -56,7 +56,7 @@ sub save {
     }
 
     Qt::Application::setOverrideCursor(Qt::Cursor(Qt::WaitCursor()));
-    print $FH this->{textEdit}->toPlainText();
+    print $FH this->{textEdit}->text();
     print $FH "\n";
     close $FH;
     Qt::Application::restoreOverrideCursor();
