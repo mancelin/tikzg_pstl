@@ -2,6 +2,8 @@
 
 use ColorId;
 
+my ($filename,$distance_node,$density) = @ARGV;
+
 my $entete_tikz= 
 q (\documentclass{article}
 \usepackage[graphics,tightpage,active]{preview}
@@ -10,14 +12,14 @@ q (\documentclass{article}
 \PreviewEnvironment{tikzpicture}
 \begin{document}
 \begin{tikzpicture});
-my $distance_node=50;
+#my $distance_node=50;
 my $entete =$entete_tikz."[node distance=".$distance_node."pt]\n";
 
 my $fin=
 q(\end{tikzpicture}
 \end{document}
 );
-my ($filename) = @ARGV;
+
 unless (open FICTIKZ, "<tmp/$filename"){
 	die "Impossible d'ouvrir '$filename' : $!";
 }
@@ -90,7 +92,7 @@ my $pdf_tmp=$filename."_tmp.pdf";
 
 # transformation du pdf en png
 $img=$filename.".png";
-system("convert -density 200 $pdf_tmp $img");
+system("convert -density $density $pdf_tmp $img");
 
 system("rm $pdf_tmp");
 system("rm *.log *.aux");
@@ -113,7 +115,7 @@ system("pdflatex $nom_fic_tex_IDC");
 
 my $pdf_tmp_IDC=$filename."_tmp_IDC.pdf";
 $img_IDC=$filename."_IDC.png";
-system("convert -density 200 $pdf_tmp_IDC $img_IDC");
+system("convert -density $density $pdf_tmp_IDC $img_IDC");
 
 system("rm $pdf_tmp_IDC");
 system("rm *.log *.aux");

@@ -10,7 +10,7 @@ use QtCore4::debug qw(ambiguous);
 sub main {
     my $app = Qt::Application();
     my $mainWin = MainWindow();
-    $mainWin->resize(700,400);
+    $mainWin->resize(800,400);
     $mainWin->show();
     exit $app->exec();
 }

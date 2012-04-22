@@ -238,7 +238,11 @@ sub genImage {
     close $FH;
     
     # generation d' un fichier png a partir d' un fichier tex
-    system("perl tikz2png.pl tmp_tikz");
+    
+    # tikz2png.pl file distance_node density"
+    my $distance_node=50;
+    my $density=100;
+    system("perl tikz2png.pl tmp_tikz $distance_node $density");
     
     # lier l' image générée au QLabel de droite
     if( -e "./tmp/tmp_tikz.png"){
