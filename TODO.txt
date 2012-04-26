@@ -14,8 +14,8 @@
 	[ ] recuperer valeur couleur pixel dans une image a des coordonées données
  [ ] Scintilla
 	[ ] impossible d' écrire des accents dans fenêtre Scintilla
-	[ ] Afficher numéro de ligne
-	[ ] coloration syntaxique
+	[x] Afficher numéro de ligne
+	[x] coloration syntaxique
  [x] pas d' accents sous LaTeX
  [ ] Noter iddées pour le rapport -> plan, commencer a rédiger
 	
