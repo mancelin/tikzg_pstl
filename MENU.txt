@@ -13,6 +13,7 @@ Fichier
 	---------------
 	Exporter
 		png
+		pdf
 	---------------
 	Imprimer
 	---------------
@@ -21,14 +22,24 @@ Editer
 	Annuler	(Ctrl+Z)
 	Refaire (Ctrl+Y)
 	---------------
+	Couper	(Ctrl+X)
+	Copier	(Ctrl+C)
+	Coller	(Ctrl+V)
+	---------------
+	Selectionner Tout (Ctrl+A)
+	---------------
+	Preferences Scintilla  (Ctrl+Alt+P)
 Affichage
-	Zoom In		// ça se dit comment en français ?
-	Zoom Out
+	Plein Ecran
 	---------------
-	
+	Zoom In	Text	// ça se dit comment en français ?
+	Zoom Out Text
+	Normal Size Text
 	---------------
-	---------------
-	---------------
-	---------------
-	
-	
+	Zoom In Image
+	Zoom Out Image
+	Normal Size Image
+Aide
+	Aide (F1)
+	A propos
+
