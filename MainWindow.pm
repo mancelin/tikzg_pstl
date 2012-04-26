@@ -21,10 +21,10 @@ sub NEW {
 	my $textEdit = new QsciScintilla;
     this->{textEdit} = $textEdit;
     this->setCentralWidget($textEdit);
-    #QsciLexerTeX $lexerTeX = new QsciLexerTeX;
     my $lexerTeX = new QsciLexerTeX;
     this->{textEdit}->setLexer($lexerTeX);
-    
+    this->{textEdit}->setMarginLineNumbers (1, 1);
+    this->{textEdit}->setMarginWidth(1, 30);
 
     createActions();
     createMenus();
