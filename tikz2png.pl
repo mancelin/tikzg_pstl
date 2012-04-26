@@ -7,6 +7,7 @@ my ($filename,$distance_node,$density) = @ARGV;
 my $entete_tikz= 
 q (\documentclass{article}
 \usepackage[graphics,tightpage,active]{preview}
+\usepackage[utf8]{inputenc}  
 \usepackage{xcolor}
 \usepackage{tikz}
 \PreviewEnvironment{tikzpicture}

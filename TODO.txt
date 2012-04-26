@@ -12,6 +12,11 @@
 	[ ] textbox pour erreurs de compil latex
  [ ] Detectecter coordonnées clic dans image
 	[ ] recuperer valeur couleur pixel dans une image a des coordonées données
- [ ] Noter iddées pour le rapport -> plan, comencer a rédiger
+ [ ] Scintilla
+	[ ] impossible d' écrire des accents dans fenêtre Scintilla
+	[ ] Afficher numéro de ligne
+	[ ] coloration syntaxique
+ [x] pas d' accents sous LaTeX
+ [ ] Noter iddées pour le rapport -> plan, commencer a rédiger
 	
 A augmenter ...
