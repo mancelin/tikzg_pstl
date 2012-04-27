@@ -1,7 +1,11 @@
  [ ] Executer action toutes les n secondes d' inaction aprés modif du doc (0.5 par exemple) 
 	[ ] detecter inaction ( il y a un truc genre "isChanged" dans Scintilla )
  [x] Racourci pour générer image
- [x] Générer imageCouleur
+ [x] Image
+	[x] Générer imageCouleur
+	[ ] Générer image a la taille réelle (même taille que dans pdf) -> voir options de "convert"
+	[ ] Detecter coordonnées clic dans image
+		[ ] recuperer valeur couleur pixel dans une image a des coordonées données
  [x] Structure de Donnes prog 
 	[x] Parseur pour creer la structure
 	[ ] Fonctions pour la modifier
@@ -10,13 +14,12 @@
 	[ ] dock avec boutons/textbox pour modifier les éléments du graphe
 	[ ] rendre dock avec image non fermable
 	[ ] textbox pour erreurs de compil latex
- [ ] Detectecter coordonnées clic dans image
-	[ ] recuperer valeur couleur pixel dans une image a des coordonées données
  [ ] Scintilla
 	[ ] impossible d' écrire des accents dans fenêtre Scintilla
 	[x] Afficher numéro de ligne
 	[x] coloration syntaxique
  [x] pas d' accents sous LaTeX
+ [ ] ./tikzg.pl nom_fic -> ouvre nom_fic dans tikzg 
  [ ] Noter iddées pour le rapport -> plan, commencer a rédiger
 	
 A augmenter ...
