@@ -3,7 +3,7 @@
  [x] Racourci pour générer image
  [x] Image
 	[x] Générer imageCouleur
-	[ ] Générer image a la taille réelle (même taille que dans pdf) -> voir options de "convert"
+	[x] Générer image a la taille réelle (même taille que dans pdf) -> voir options de "convert"
 	[ ] Detecter coordonnées clic dans image
 		[ ] recuperer valeur couleur pixel dans une image a des coordonées données
  [x] Structure de Donnes prog 
