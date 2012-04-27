@@ -73,50 +73,6 @@ sub undo {
     $document->undo();
 }
 
-sub insertCustomer {
-    my ( $customer ) = @_;
-    if (!$customer) {
-        return;
-    }
-    my @customerList = split /", "/, $customer;
-    my $document = CAST this->{textEdit}->document(), 'Qt::TextDocument';
-    my $cursor = $document->find('NAME');
-    if (!$cursor->isNull()) {
-        $cursor->beginEditBlock();
-        $cursor->insertText($customerList[0]);
-        my $oldcursor = $cursor;
-        $cursor = $document->find('ADDRESS');
-        if (!$cursor->isNull()) {
-            foreach my $i (1..$#customerList) {
-                $cursor->insertBlock();
-                $cursor->insertText($customerList[$i]);
-            }
-            $cursor->endEditBlock();
-        }
-        else {
-            $oldcursor->endEditBlock();
-        }
-    }
-}
-
-sub addParagraph {
-    my ( $paragraph ) = @_;
-
-    if (!$paragraph) {
-        return;
-    }
-    my $document = CAST this->{textEdit}->document(), 'Qt::TextDocument';
-    my $cursor = $document->find('Yours sincerely,');
-    if ($cursor->isNull()){
-        return;
-    }
-    $cursor->beginEditBlock();
-    $cursor->movePosition(Qt::TextCursor::PreviousBlock(), Qt::TextCursor::MoveAnchor(), 2);
-    $cursor->insertBlock();
-    $cursor->insertText($paragraph);
-    $cursor->insertBlock();
-    $cursor->endEditBlock();
-}
 
 sub about {
    Qt::MessageBox::about(this, "A propos",
@@ -170,7 +126,7 @@ sub createActions {
 }
 
 sub createMenus {
-    my $fileMenu = this->menuBar()->addMenu("&File");
+    my $fileMenu = this->menuBar()->addMenu("&Fichier");
     $fileMenu->addAction(this->{newEditorAct});
     $fileMenu->addAction(this->{saveAct});
     $fileMenu->addSeparator();
