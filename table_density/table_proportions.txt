@@ -1,0 +1,28 @@
+density	| zoom factor | taille image 
+	
+	18		25			27
+	36		50			54
+	54		75			81
+	72		100			107
+	90		125			134
+	108		150			161
+	126		175			187
+	144		200			214
+
+
+
++-25% -> density +-18
+
+
+// stats density sur tmp_tikz_tmp_d...  //
+no density : 107
+
+density		taille image en pixel(largeur=hauteur)
+25		37
+50		75
+75		112	
+100		149
+125		187
+150		224
+175		261
+		 		
