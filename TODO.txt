@@ -1,7 +1,7 @@
  [ ] Executer action toutes les n secondes d' inaction aprés modif du doc (0.5 par exemple) 
 	[ ] detecter inaction ( il y a un truc genre "isChanged" dans Scintilla )
  [x] Racourci pour générer image
- [x] Image
+ [ ] Image
 	[x] Générer imageCouleur
 	[x] Générer image a la taille réelle (même taille que dans pdf) -> voir options de "convert"
 	[ ] Detecter coordonnées clic dans image
