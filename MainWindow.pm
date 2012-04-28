@@ -14,6 +14,7 @@ use QtCore4::slots
     insertCustomer => ['QString'],
     addParagraph   => ['QString'],
     genImage       => [''];
+use LabelImage; #?
 
 sub NEW {
     shift->SUPER::NEW(@_);
@@ -164,9 +165,12 @@ sub createDockWindows {
    
     my $dock = Qt::DockWidget("Graphe", this);
     $dock->setAllowedAreas(Qt::LeftDockWidgetArea() | Qt::RightDockWidgetArea());
-    my $view = Qt::Label($dock);
+  #  my $view = Qt::Label($dock);
+    my $view = LabelImage($dock);
+    
    # $view->setPixmap(Qt::Pixmap("images/cheese.jpg"));
     this->{zoneGraphe} = $view;
+ #   this->{zoneGraphe}->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
     $dock->setWidget($view);
     this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
     this->{viewMenu}->addAction($dock->toggleViewAction());
