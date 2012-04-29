@@ -44,7 +44,9 @@ sub NEW {
     newEditor();
     
  #   print "file : $file\n";
-    loadFile($file);
+	if(defined $file){
+		loadFile($file);
+	}
 }
 
 sub newEditor {
