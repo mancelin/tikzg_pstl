@@ -82,6 +82,9 @@ unless(open FICTEXTMP, ">$nom_fic_tex"){
 print FICTEXTMP $contenu_fic_tex;
 close FICTEXTMP;
 
+### detruit anciéne fenétre eog
+system("pkill eog");
+
 # generation pdf a partir de fichier tex
 system("pdflatex $nom_fic_tex");
 
