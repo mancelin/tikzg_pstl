@@ -165,6 +165,7 @@ sub createDockWindows {
    
     my $dock = Qt::DockWidget("Graphe", this);
     $dock->setAllowedAreas(Qt::LeftDockWidgetArea() | Qt::RightDockWidgetArea());
+    $dock->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
   #  my $view = Qt::Label($dock);
     my $view = LabelImage($dock);
     

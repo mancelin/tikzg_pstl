@@ -4,7 +4,7 @@
  [ ] Image
 	[x] Générer imageCouleur
 	[x] Générer image a la taille réelle (même taille que dans pdf) -> voir options de "convert"
-	[ ] Detecter coordonnées clic dans image -> voir examples/graphicsview/dragdroprobot
+	[x] Detecter coordonnées clic dans image -> voir examples/graphicsview/dragdroprobot
 		[ ] recuperer valeur couleur pixel dans une image a des coordonées données
  [x] Structure de Donnes prog 
 	[x] Parseur pour creer la structure
@@ -12,7 +12,7 @@
  [ ] Interface graphique Tikzg
 	[ ] Barre de menu en français, lister/implémenter tout ce qu' il faut: voir MENU.txt
 	[ ] dock avec boutons/textbox pour modifier les éléments du graphe
-	[ ] rendre dock avec image non fermable
+	[x] rendre dock avec image non fermable
 	[ ] textbox pour erreurs de compil latex
  [ ] Scintilla
 	[ ] impossible d' écrire des accents dans fenêtre Scintilla
