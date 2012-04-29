@@ -9,16 +9,22 @@ use QtCore4::isa qw( Qt::MainWindow );
 use QtCore4::slots
     newEditor      => [''],
     save           => [''],
+    load           => [''],
     undo           => [''],
     about          => [''],
     insertCustomer => ['QString'],
     addParagraph   => ['QString'],
     genImage       => [''];
-use LabelImage; #?
+use LabelImage; 
 
 sub NEW {
-    shift->SUPER::NEW(@_);
-#    my $textEdit = Qt::TextEdit();
+	print "nb args : " , scalar(@_), "\n";
+	my $file;
+	if(scalar(@_) > 1){
+		$file=$_[1];
+	}
+	shift->SUPER::NEW($_[1]);
+
 	my $textEdit = new QsciScintilla;
     this->{textEdit} = $textEdit;
     this->setCentralWidget($textEdit);
@@ -36,6 +42,9 @@ sub NEW {
     this->setWindowTitle("Tikz G");
 
     newEditor();
+    
+ #   print "file : $file\n";
+    loadFile($file);
 }
 
 sub newEditor {
@@ -69,6 +78,44 @@ sub save {
     this->statusBar()->showMessage("Saved '$fileName'", 2000);
 }
 
+sub load {
+	#my $fileName = Qt::FileDialog::
+
+ #   if (maybeSave()) {
+	 # /home/randoom/2012/pstl/for_perlqt4/perlqt/qtgui/examples/mainwindows/application
+
+	my $fileName = Qt::FileDialog::getOpenFileName(this);
+	if ($fileName) {
+		loadFile($fileName);
+	}
+  #  }
+
+}
+
+sub loadFile {
+    my ( $fileName ) = @_;
+    if(!(open( FH, "< $fileName"))) {
+        Qt::MessageBox::warning(this, "Application",
+                                 sprintf("Cannot read file %s:\n%s.",
+                                 $fileName,
+                                 $!));
+        return 0;
+    }
+	my $text = "";
+	foreach( <FH> ){
+		$text .= $_;
+	}
+
+    Qt::Application::setOverrideCursor(Qt::Cursor(Qt::WaitCursor()));
+   this->{textEdit}->setText($text);
+    Qt::Application::restoreOverrideCursor();
+    close FH;
+
+   # setCurrentFile($fileName);
+    this->statusBar()->showMessage("File loaded", 2000);
+	&genImage();
+}
+
 sub undo {
     my $document = this->{textEdit}->document();
     $document->undo();
@@ -95,6 +142,12 @@ sub createActions {
     $saveAct->setShortcut(Qt::KeySequence("Ctrl+S"));
     $saveAct->setStatusTip("Save the current tikz");
     this->connect($saveAct, SIGNAL 'triggered()', this, SLOT 'save()');
+    
+    my $loadAct = Qt::Action(Qt::Icon("images/load.png"), "&Ouvrir", this);
+    this->{loadAct} = $loadAct;
+    $loadAct->setShortcut(Qt::KeySequence("Ctrl+O"));
+    $loadAct->setStatusTip("Load tikz");
+    this->connect($loadAct, SIGNAL 'triggered()', this, SLOT 'load()');
 
     my $undoAct = Qt::Action(Qt::Icon("images/undo.png"), "&Undo", this);
     this->{undoAct} = $undoAct;
@@ -130,6 +183,7 @@ sub createMenus {
     my $fileMenu = this->menuBar()->addMenu("&Fichier");
     $fileMenu->addAction(this->{newEditorAct});
     $fileMenu->addAction(this->{saveAct});
+    $fileMenu->addAction(this->{loadAct});
     $fileMenu->addSeparator();
     $fileMenu->addAction(this->{quitAct});
 
@@ -150,6 +204,7 @@ sub createToolBars {
     my $fileToolBar = this->addToolBar("File");
     $fileToolBar->addAction(this->{newEditorAct});
     $fileToolBar->addAction(this->{saveAct});
+    $fileToolBar->addAction(this->{loadAct});
 
     my $editToolBar = this->addToolBar("Edit");
     $editToolBar->addAction(this->{undoAct});

@@ -12,12 +12,13 @@ sub NEW {
     my ($class,$dock) = @_;
     $class->SUPER::NEW($dock);
     this->setMouseTracking(1);
+    this->{zoomFactor}=100;
    # this->{color} = Qt::Color( rand(RAND_MAX) % 256, rand(RAND_MAX) % 256, rand(RAND_MAX) % 256 );
     #this->setToolTip(sprintf "Qt::Color(%d, %d, %d)\n%s",
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
       #        'Click and drag this color onto the robot!');
  #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
-	this->setPixmap(Qt::Pixmap("images/test.png"));
+	#this->setPixmap(Qt::Pixmap("images/test.png"));
 }
 
 =fe

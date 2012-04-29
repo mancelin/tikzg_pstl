@@ -19,7 +19,7 @@
 	[x] Afficher numéro de ligne
 	[x] coloration syntaxique
  [x] pas d' accents sous LaTeX
- [ ] ./tikzg.pl nom_fic -> ouvre nom_fic dans tikzg 
+ [x] ./tikzg.pl nom_fic -> ouvre nom_fic dans tikzg 
  [ ] Noter iddées pour le rapport -> plan, commencer a rédiger
 	
 A augmenter ...

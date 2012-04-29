@@ -9,7 +9,7 @@ use QtCore4::debug qw(ambiguous);
 
 sub main {
     my $app = Qt::Application();
-    my $mainWin = MainWindow();
+    my $mainWin = MainWindow(@ARGV);
     $mainWin->resize(800,400);
     $mainWin->show();
     exit $app->exec();
