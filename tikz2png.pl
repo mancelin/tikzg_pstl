@@ -98,7 +98,7 @@ my $pdf_tmp=$filename."_tmp.pdf";
 $img=$filename.".png";
 system("convert -density $density $pdf_tmp $img");
 
-system("rm $pdf_tmp");
+system("mv $pdf_tmp tmp/$pdf_tmp");
 system("rm *.log *.aux");
 system("mv $img tmp");
 
@@ -115,13 +115,24 @@ print FICTEXTMP_IDC $contenu_fic_tex_IDC;
 close FICTEXTMP_IDC;
 
 # generation pdf a partir de fichier tex
-system("pdflatex $nom_fic_tex_IDC");
+
+
+#system("echo -------- $nom_fic_tex_IDC"); #
+#sleep 2;
+system("pdflatex $nom_fic_tex_IDC"); 
+=jr
+print "-"x80;
+system("ls *.pdf");
+print "-"x80;
+sleep 5;
+=cut
 
 my $pdf_tmp_IDC=$filename."_tmp_IDC.pdf";
 $img_IDC=$filename."_IDC.png";
 system("convert -density $density $pdf_tmp_IDC $img_IDC");
 
-system("rm $pdf_tmp_IDC");
+# deplacement du pdf généré dasn tmp
+system("mv $pdf_tmp_IDC tmp/$pdf_tmp_IDC");
 system("rm *.log *.aux");
 system("mv $img_IDC tmp");
 

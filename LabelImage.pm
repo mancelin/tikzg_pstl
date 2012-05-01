@@ -7,12 +7,14 @@ use QtGui4;
 #use QtCore4::isa qw( Qt::GraphicsItem );
 use QtCore4::isa qw( Qt::Label );
 use Data::Dumper; #
+use MainWindow;
 
 sub NEW {
     my ($class,$dock) = @_;
     $class->SUPER::NEW($dock);
     this->setMouseTracking(1);
-    this->{zoomFactor}=100;
+    this->{zoomFactor}=100; # ?
+    this->{density}=72; # first
    # this->{color} = Qt::Color( rand(RAND_MAX) % 256, rand(RAND_MAX) % 256, rand(RAND_MAX) % 256 );
     #this->setToolTip(sprintf "Qt::Color(%d, %d, %d)\n%s",
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
@@ -42,10 +44,10 @@ sub paint
 sub mouseMoveEvent
 {
     my ($event) = @_;
-  #  this->setCursor(Qt::Cursor(Qt::WaitCursor()));
-#	system("echo Mouse move event - `date +%H:%M:%S::%N`");
+    this->setCursor(Qt::Cursor(Qt::WaitCursor()));
+ #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
-#	print " x : ",$event->x," , y : ",$event->y,"\n";
+	print " x : ",$event->x," , y : ",$event->y,"\n";
 =mute	
 		my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
 		print "RGB : $rgb\n";
@@ -154,13 +156,29 @@ sub wheelEvent
 	print "wheelEvent, delta : $delta - ";
 	if($delta > 0){
 		print "up\n";
+		this->{density}=this->{density}+18;
+#		MainWindow::augmentDensity();
 #		if($event->keyPressed() ){ #== Qt::ControlModifier
 	#	if( Qt::Control.ModifierKeys == Keys.Ctrl ){
 	#		print "ctrl pressed\n";
 	#	}
 	} else {
 		print "down\n";
+		if( this->{density} > 18 ) {
+			this->{density}=this->{density}-18;
+		} else {
+			print ">> density too small\n";
+		}
+#		MainWindow::diminueDensity();
 	}
+	my $density= this->{density};
+	system("convert -density $density tmp/tmp_tikz_tmp.pdf tmp_tikz_tmp.png");
+	system("mv tmp_tikz_tmp.png tmp");
+	system("convert -density $density tmp/tmp_tikz_tmp_IDC.pdf tmp_tikz_tmp_IDC.png");
+	system("mv tmp_tikz_tmp_IDC.png tmp");
+	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_tmp.png"));
+	##system("pkill eog");	##
+	#system("eog tmp/tmp_tikz_tmp_IDC.png");	##
 }
 
 sub keyPressEvent

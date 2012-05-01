@@ -32,6 +32,10 @@ sub NEW {
     this->{textEdit}->setLexer($lexerTeX);
     this->{textEdit}->setMarginLineNumbers (1, 1);
     this->{textEdit}->setMarginWidth(1, 30);
+    
+    this->{nodeDistance} = 50;
+   # this->{density} = 72;
+    this->{density} = 90;
 
     createActions();
     createMenus();
@@ -238,6 +242,7 @@ sub createDockWindows {
 }
 
 sub genImage {
+	my ($distance_node, $density)=(this->{nodeDistance}, this->{density} = 72);
 
 	# suppresions de tous les tmp
 	#clean();
@@ -262,9 +267,12 @@ sub genImage {
     # generation d' un fichier png a partir d' un fichier tex
     
     # tikz2png.pl file distance_node density"
-    my $distance_node=50;
-    #my $density=100;
-    my $density=72;
+    
+    #my $distance_node=50;
+    
+    #my $density=100;	###
+    
+    #my $density=72;
     system("perl tikz2png.pl tmp_tikz $distance_node $density");
     
     # lier l' image générée au QLabel de droite
@@ -278,6 +286,18 @@ sub genImage {
 	}
 
    
+}
+
+# zoom +25 %
+sub augmentDensity {
+	this->{density} += 18;
+	&genImage();
+}
+
+# zoom -25 %
+sub diminueDensity {
+	this->{density} -= 18;
+	&genImage();
 }
 
 sub clean {
