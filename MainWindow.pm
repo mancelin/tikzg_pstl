@@ -21,6 +21,7 @@ use TikzObjects;
 use Data::Dumper; 
 
 my @liste_instructions;
+my @listenoeuds;
 
 
 sub NEW {
@@ -44,6 +45,7 @@ sub NEW {
     this->{density} = 90;
     
     this->{listeInstructions} = \@liste_instructions; # reference sur liste
+    this->{listeNoeuds} = \@listenoeuds;
 
     createActions();
     createMenus();
@@ -295,6 +297,7 @@ sub genImage {
 	}
 
    parse();
+   list_of_nodes();
 }
 
 # zoom +25 %	##?
@@ -321,18 +324,16 @@ sub parse {
 	print Dumper(this->{listeInstructions}); #dbg
 }
 
-=later
+
 sub list_of_nodes{
-	my @liste_obj_tikz = @_;
-	my @listenoeuds;
-	foreach $elem (@liste_obj_tikz){
+	foreach my $elem (@liste_instructions){
 		if($elem->{type} eq "node") {
-			print $elem->{type}, "\n";
 			push (@listenoeuds, $elem->{nom});
 		}
 	}
-	return @listenoeuds;
+	print "-"x80; #dbg
+	print Dumper(this->{listeNoeuds}); #dbg
 }
-=cut
+
 
 1;
