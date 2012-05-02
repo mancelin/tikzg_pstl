@@ -44,10 +44,10 @@ sub paint
 sub mouseMoveEvent
 {
     my ($event) = @_;
-    this->setCursor(Qt::Cursor(Qt::WaitCursor()));
+   # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
-	print " x : ",$event->x," , y : ",$event->y,"\n";
+#	print " x : ",$event->x," , y : ",$event->y,"\n";
 =mute	
 		my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
 		print "RGB : $rgb\n";

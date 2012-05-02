@@ -139,7 +139,8 @@ system("mv $img_IDC tmp");
 # nettoyage
 #system("rm *tmp*");
 
-system("eog tmp/$img_IDC &");
+#affichage IDC
+#system("eog tmp/$img_IDC &");
 
 
 =afficher_vars

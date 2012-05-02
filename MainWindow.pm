@@ -15,10 +15,16 @@ use QtCore4::slots
     insertCustomer => ['QString'],
     addParagraph   => ['QString'],
     genImage       => [''];
-use LabelImage; 
+use LabelImage;
+use TikzParser;
+use TikzObjects;
+use Data::Dumper; 
+
+my @liste_instructions;
+
 
 sub NEW {
-	print "nb args : " , scalar(@_), "\n";
+	#print "nb args : " , scalar(@_), "\n";
 	my $file;
 	if(scalar(@_) > 1){
 		$file=$_[1];
@@ -36,6 +42,8 @@ sub NEW {
     this->{nodeDistance} = 50;
    # this->{density} = 72;
     this->{density} = 90;
+    
+    this->{listeInstructions} = \@liste_instructions; # reference sur liste
 
     createActions();
     createMenus();
@@ -50,6 +58,7 @@ sub NEW {
  #   print "file : $file\n";
 	if(defined $file){
 		loadFile($file);
+		#parse();
 	}
 }
 
@@ -285,16 +294,16 @@ sub genImage {
 		
 	}
 
-   
+   parse();
 }
 
-# zoom +25 %
+# zoom +25 %	##?
 sub augmentDensity {
 	this->{density} += 18;
 	&genImage();
 }
 
-# zoom -25 %
+# zoom -25 %	##?
 sub diminueDensity {
 	this->{density} -= 18;
 	&genImage();
@@ -303,5 +312,27 @@ sub diminueDensity {
 sub clean {
 	system("rm tmp/*tmp*");
 }
+
+
+sub parse {
+	@liste_instructions = &TikzParser::decoupe_lignes(this->{textEdit}->text());
+	&TikzParser::parse_liste_instructions(@liste_instructions);
+	print "_"x80; #dbg
+	print Dumper(this->{listeInstructions}); #dbg
+}
+
+=later
+sub list_of_nodes{
+	my @liste_obj_tikz = @_;
+	my @listenoeuds;
+	foreach $elem (@liste_obj_tikz){
+		if($elem->{type} eq "node") {
+			print $elem->{type}, "\n";
+			push (@listenoeuds, $elem->{nom});
+		}
+	}
+	return @listenoeuds;
+}
+=cut
 
 1;
