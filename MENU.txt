@@ -1,45 +1,84 @@
-Fichier : Nouveau, Ouvrir, Enregister, Enregister Sous, Export
-														fic tikz (extrait avec que du code tikz)
-														fic tex (
-		[ ] Options 
+[ ----------------------  Barre Menu ---------------------------------- ]
 		
-Fichier
-	Nouveau (Ctrl+N)
+_Fichier
+	_Nouveau (Ctrl+N)
 	---------------
-	Ouvrir (Ctrl+O)
+	_Ouvrir (Ctrl+O)
 	---------------
-	Enregistrer (Ctrl+S)       // Enregistrer n' enregistre que le code tikz ( de \begin{tikzpicture} a \end{tikzpicture} )
-	Enregistrer sous  		   // idem
+	_Enregistrer (Ctrl+S)       // Enregistrer n' enregistre que le code tikz ( que le contenu de la fenétre scintilla )
+	Enregistrer _sous  (Shift+Ctrl+S)		   // idem
 	---------------
-	Exporter
+	E_xporter
 		png
 		pdf
+    Copier source figure tikz (inclut préambule + fin tikz)
 	---------------
-	Imprimer
+	_Imprimer (Ctrl+P)   
 	---------------
-	Quitter	(Alt+F4)
-Editer
-	Annuler	(Ctrl+Z)
-	Refaire (Ctrl+Y)
+	_Quitter	(Alt+F4)
+_Editer
+	_Défaire	(Ctrl+Z)
+	_Refaire (Ctrl+Y)
 	---------------
-	Couper	(Ctrl+X)
-	Copier	(Ctrl+C)
-	Coller	(Ctrl+V)
+	Co_uper	(Ctrl+X)
+	_Copier	(Ctrl+C)
+	C_oller	(Ctrl+V)
+    _Supprimer
 	---------------
-	Selectionner Tout (Ctrl+A)
+	_Tout sélectionner (Ctrl+A)
 	---------------
-	Preferences Scintilla  (Ctrl+Alt+P)
-Affichage
-	Plein Ecran
+	_Preferences Scintilla  (Ctrl+Alt+P) ##  idem Affichage/Editeur/
+_Affichage
+	Plein é_cran    (F11)
+    ---------------
+    _Editeur
+        Afficher les numéros de _ligne
+        Activer coloration Syntaxique
 	---------------
-	Zoom In	Text	// ça se dit comment en français ?
-	Zoom Out Text
-	Normal Size Text
-	---------------
-	Zoom In Image
-	Zoom Out Image
-	Normal Size Image
-Aide
-	Aide (F1)
-	A propos
+    Zoom _texte
+        Zoom a_vant (Ctrl++)
+        Zoom a_rrière (Ctrl+-)
+        Taille _normale (Ctrl+0)
+    Zoom _image
+        Zoom a_vant (Ctrl++)
+        Zoom a_rrière (Ctrl+-)
+        Taille _normale (Ctrl+0)
+A_ide
+	Ai_de (F1)
+	À _propos
+
+
+
+[ ----------------------  Clic droit  ---------------------------------- ]
+_Défaire	(Ctrl+Z)
+_Refaire (Ctrl+Y)
+---------------
+Co_uper	(Ctrl+X)
+_Copier	(Ctrl+C)
+C_oller	(Ctrl+V)
+_Supprimer
+---------------
+_Tout sélectionner (Ctrl+A)
+----------------
+_Zoom texte
+        Zoom a_vant (Ctrl++)
+        Zoom a_rrière (Ctrl+-)
+        Taille _normale (Ctrl+0)
+
+[ ----------------------  Barre Outils  ---------------------------------- ]
+    [ ----------------------  Barre Outil Texte  -------------------------- ]
+        Nouveau (Ctrl+N)
+        Ouvrir (Ctrl+O)
+        Enregistrer (Ctrl+S)
+        ---------------- 
+        Copier source figure tikz => Copier tikz
+        Générer figure ##
+        -----------------
+        "textbox avec node distance" ##
+        
+
+    [ ----------------------  Barre Outil Image  -------------------------- ]
+        "liste déroulante avec le zoom actuel"
+        
+        
 

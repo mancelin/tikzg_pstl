@@ -44,8 +44,8 @@ sub NEW {
    # this->{density} = 72;
     this->{density} = 90;
     
-    this->{listeInstructions} = \@liste_instructions; # reference sur liste
-    this->{listeNoeuds} = \@listenoeuds;
+    this->{listeInstructions} = \@liste_instructions; # reference sur liste  ##
+    this->{listeNoeuds} = \@listenoeuds;	##
 
     createActions();
     createMenus();
