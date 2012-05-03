@@ -253,6 +253,10 @@ sub createDockWindows {
 }
 
 sub genImage {
+	# reinisialisation de liste d' objets tikz et de liste d'instructions
+	@liste_instructions = ();
+	@listenoeuds = ();
+	
 	my ($distance_node, $density)=(this->{nodeDistance}, this->{density} = 72);
 
 	# suppresions de tous les tmp

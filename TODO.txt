@@ -9,6 +9,8 @@
  [x] Structure de Donnes prog 
 	[x] Parseur pour creer la structure
 		[x] l' intégrer a MainWindow
+	[ ] Parser Node Distance
+	[ ] Index of ColorID -> permet de retrouver lignes, propriétés a partir de colorID
 	[ ] Fonctions pour la modifier
 	[x] acceseurs sur la structure
 		[x] liste noeuds
