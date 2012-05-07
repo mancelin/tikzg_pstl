@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage[graphics,tightpage,active]{preview}
+\usepackage[utf8]{inputenc}  
+\usepackage{xcolor}
+\usepackage{tikz}
+\PreviewEnvironment{tikzpicture}
+\begin{document}
+\begin{tikzpicture}[node distance=1pt]
+\node[rectangle,draw,red!30!green!30!,fill=red!30!green!30] (n1) {u};
+\node[rectangle,draw,red!30!green!31,fill=red!30!green!31,right of=n1] (n2) {u};
+\node[rectangle,draw,red!30!green!32,fill=red!30!green!32,right of=n2] (n3) {u};
+\node[rectangle,draw,red!30!green!30!,fill=red!30!green!30,below of=n1] (n4) {u};
+\node[rectangle,draw,red!30!green!41,fill=red!30!green!41,right of=n4] (n5) {u};
+\node[rectangle,draw,red!30!green!52,fill=red!30!green!52,right of=n5] (n6) {u};
+\end{tikzpicture}
+\end{document}
