@@ -24,7 +24,7 @@ q(\end{tikzpicture}
 my $tikz_code_colorID="";
 
 my $below_node="";
-for(my $y=30;$y<100;$y++){
+for(my $y=30;$y<=100;$y++){
 	my $x=30;
 	$tikz_code_colorID.="\\node[rectangle,draw,".&gen_next_ColorId().$below_node."]"."(n".$x."_".$y.") {u};\n";
 	for($x=31;$x<=100;$x++){
@@ -47,3 +47,4 @@ close FICTEXTMP;
 system("pdflatex generated_grid.tex");
 
 system("convert generated_grid.pdf generated_grid.png");
+system("convert generated_grid.png -crop 71x71+0+0 +repage generated_grid.png");
