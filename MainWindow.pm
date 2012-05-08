@@ -22,6 +22,7 @@ use Data::Dumper;
 
 my @liste_instructions;
 my @listenoeuds;
+my $density;
 
 
 sub NEW {
@@ -39,10 +40,12 @@ sub NEW {
     this->{textEdit}->setLexer($lexerTeX);
     this->{textEdit}->setMarginLineNumbers (1, 1);
     this->{textEdit}->setMarginWidth(1, 30);
+    this->{textEdit}->setUtf8(1);
     
     this->{nodeDistance} = 50;
    # this->{density} = 72;
-    this->{density} = 90;
+    $density = 90;
+    this->{density} = \$density;
     
     this->{listeInstructions} = \@liste_instructions; # reference sur liste  ##
     this->{listeNoeuds} = \@listenoeuds;	##
@@ -239,7 +242,7 @@ sub createDockWindows {
     $dock->setAllowedAreas(Qt::LeftDockWidgetArea() | Qt::RightDockWidgetArea());
     $dock->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
   #  my $view = Qt::Label($dock);
-    my $view = LabelImage($dock);
+    my $view = LabelImage($dock,\$density);
     
    # $view->setPixmap(Qt::Pixmap("images/cheese.jpg"));
     this->{zoneGraphe} = $view;
@@ -257,7 +260,10 @@ sub genImage {
 	@liste_instructions = ();
 	@listenoeuds = ();
 	
-	my ($distance_node, $density)=(this->{nodeDistance}, this->{density} = 72);
+	# recupération de val density du LabelImage
+	this->{density}=this->{zoneGraphe}->{density} ;
+	
+	my ($distance_node, $density)=(this->{nodeDistance}, this->{density});
 
 	# suppresions de tous les tmp
 	#clean();
@@ -304,17 +310,29 @@ sub genImage {
    list_of_nodes();
 }
 
+=waste
 # zoom +25 %	##?
 sub augmentDensity {
 	this->{density} += 18;
-	&genImage();
+	#&genImage();
 }
 
 # zoom -25 %	##?
 sub diminueDensity {
 	this->{density} -= 18;
-	&genImage();
+	#&genImage();
 }
+
+sub density {
+	return this->{density};
+}
+
+sub set_density {
+	my ( $density ) = @_;
+	print "set_density $density\n";
+	this->{density} = $density;
+}
+=cut
 
 sub clean {
 	system("rm tmp/*tmp*");

@@ -10,17 +10,18 @@ use Data::Dumper; #
 use MainWindow;
 
 sub NEW {
-    my ($class,$dock) = @_;
+    my ($class,$dock,$ref_density) = @_;
     $class->SUPER::NEW($dock);
     this->setMouseTracking(1);
-    this->{zoomFactor}=100; # ?
-    this->{density}=72; # first
+    this->{zoomFactorImg}=(${$ref_density} / 18) *25; # ?  
+    this->{density}= ${$ref_density};
+    #this->{density}=90; # first
    # this->{color} = Qt::Color( rand(RAND_MAX) % 256, rand(RAND_MAX) % 256, rand(RAND_MAX) % 256 );
     #this->setToolTip(sprintf "Qt::Color(%d, %d, %d)\n%s",
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
       #        'Click and drag this color onto the robot!');
  #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
-	#this->setPixmap(Qt::Pixmap("images/test.png"));
+	this->setPixmap(Qt::Pixmap("matrice_color/color_RGB255.bmp"));
 }
 
 =fe
@@ -47,10 +48,12 @@ sub mouseMoveEvent
    # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
-#	print " x : ",$event->x," , y : ",$event->y,"\n";
-=mute	
+	print " x : ",$event->x," , y : ",$event->y,"\n";
+	print "density : ", this->{density}, "\n";
+	print "zoom factor => ", this->{zoomFactorImg}, "\n";
+=mu
 		my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
-		print "RGB : $rgb\n";
+#		print "RGB : $rgb\n";
 		my $r = $rgb->red();
 		my $g = $rgb->green();
 		my $b = $rgb->blue();
@@ -78,7 +81,7 @@ sub mousePressEvent
         $event->ignore();
         return;
     }
-
+	print "density : ", MainWindow->density(), "\n";
     this->setCursor(Qt::Cursor(Qt::ClosedHandCursor()));
 	print "mousePressEvent\n";
 	#print "hasPixmap ? ", this->pixmap(), "\n";
@@ -156,6 +159,7 @@ sub wheelEvent
 	print "wheelEvent, delta : $delta - ";
 	if($delta > 0){
 		print "up\n";
+		#MainWindow->augmentDensity();
 		this->{density}=this->{density}+18;
 #		MainWindow::augmentDensity();
 #		if($event->keyPressed() ){ #== Qt::ControlModifier
@@ -166,16 +170,20 @@ sub wheelEvent
 		print "down\n";
 		if( this->{density} > 18 ) {
 			this->{density}=this->{density}-18;
+
 		} else {
 			print ">> density too small\n";
 		}
 #		MainWindow::diminueDensity();
 	}
 	my $density= this->{density};
+#	my $density= MainWindow->density;
 	system("convert -density $density tmp/tmp_tikz_tmp.pdf tmp_tikz_tmp.png");
 	system("mv tmp_tikz_tmp.png tmp");
 	system("convert -density $density tmp/tmp_tikz_tmp_IDC.pdf tmp_tikz_tmp_IDC.png");
 	system("mv tmp_tikz_tmp_IDC.png tmp");
+	#MainWindow->refresh_density();
+	this->{zoomFactorImg}=(this->{density} / 18) *25; # ?  
 	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_tmp.png"));
 	##system("pkill eog");	##
 	#system("eog tmp/tmp_tikz_tmp_IDC.png");	##

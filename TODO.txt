@@ -14,7 +14,7 @@
 	[ ] Fonctions pour la modifier
 	[x] acceseurs sur la structure
 		[x] liste noeuds
- [ ] lier valeur zoom image a MainWindow
+ [x] lier valeur zoom image a MainWindow
  [ ] Interface graphique Tikzg
 	[ ] Barre de menu en français, lister/implémenter tout ce qu' il faut: voir MENU.txt
 	[ ] dock avec boutons/textbox pour modifier les éléments du graphe
