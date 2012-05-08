@@ -15,8 +15,6 @@ sub NEW {
     this->setMouseTracking(1);
     this->{zoomFactorImg}=(${$ref_density} / 18) *25; # ?  
     this->{density}= ${$ref_density};
-    #this->{density}=90; # first
-   # this->{color} = Qt::Color( rand(RAND_MAX) % 256, rand(RAND_MAX) % 256, rand(RAND_MAX) % 256 );
     #this->setToolTip(sprintf "Qt::Color(%d, %d, %d)\n%s",
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
       #        'Click and drag this color onto the robot!');
@@ -48,9 +46,11 @@ sub mouseMoveEvent
    # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
+=dbg
 	print " x : ",$event->x," , y : ",$event->y,"\n";
-	print "density : ", this->{density}, "\n";
+	print "density : ", this->{density}, "\n";	
 	print "zoom factor => ", this->{zoomFactorImg}, "\n";
+=cut
 =mu
 		my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
 #		print "RGB : $rgb\n";
@@ -60,7 +60,7 @@ sub mouseMoveEvent
 		print "color (R,G,B)  : ($r,$g,$b)\n";
 =cut
 
-=later  ->  meme couleur toujours détexctée
+=later  ->  meme couleur toujours détectée
 	my $rgb = Qt::Image::pixel( $event->x, $event->y );
 	my $r = ($rgb >> 16) & 0xFF;
 	my $g = ($rgb >> 8) & 0xFF;
@@ -86,15 +86,7 @@ sub mousePressEvent
 	print "mousePressEvent\n";
 	#print "hasPixmap ? ", this->pixmap(), "\n";
 	#print "is Valid ? : " , $rgb->Qt::Color->isValid();
-=j	
-	my $r = Qt::Color->red($rgb);
-	##my $r = $rgb->qRed();
-	#my $r = Qt::Color->red($rgb);
-	my $g = Qt::Color->green();
-	my $b = Qt::Color->blue();
-#	print "color (R,G,B)  : ($r,$g,$b)\n";
-	print "RGB : $rgb\n";
-=cut
+
 }
 
 

@@ -154,7 +154,7 @@ sub createActions {
                                this);
     this->{newEditorAct} = $newEditorAct;
     $newEditorAct->setShortcut(Qt::KeySequence("Ctrl+N"));
-    $newEditorAct->setStatusTip("Create a new tikz");
+    $newEditorAct->setStatusTip("Créer un nouveau fichier tikz");
     this->connect($newEditorAct, SIGNAL 'triggered()', this, SLOT 'newEditor()');
 
     my $saveAct = Qt::Action(Qt::Icon("images/save.png"), "&Save...", this);

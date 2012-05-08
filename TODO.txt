@@ -21,7 +21,8 @@
 	[x] rendre dock avec image non fermable
 	[ ] textbox pour erreurs de compil latex
  [ ] Scintilla
-	[ ] impossible d' écrire des accents dans fenêtre Scintilla
+	[x] impossible d' écrire des accents dans fenêtre Scintilla
+		[ ] accents provoquent erreurs de compilation
 	[x] Afficher numéro de ligne
 	[x] coloration syntaxique
  [x] pas d' accents sous LaTeX
