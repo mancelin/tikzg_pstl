@@ -1,3 +1,4 @@
+[node distance=50pt]
 \node[rectangle,draw] (n1) {un n{\oe}ud};
 \node[circle,double,draw,right of=n1] (n2) {$\frac{\sqrt{x}}{x^y}$};
 \draw[->] (n1) -- (n2);

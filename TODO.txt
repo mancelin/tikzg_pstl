@@ -9,7 +9,7 @@
  [x] Structure de Donnes prog 
 	[x] Parseur pour creer la structure
 		[x] l' intégrer a MainWindow
-	[ ] Parser Node Distance
+	[x] Parser Node Distance -> si présent, premiére ligne de fic tikz
 	[ ] Index of ColorID -> permet de retrouver lignes, propriétés a partir de colorID
 	[ ] Fonctions pour la modifier
 	[x] acceseurs sur la structure

@@ -19,7 +19,7 @@ sub NEW {
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
       #        'Click and drag this color onto the robot!');
  #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
-	this->setPixmap(Qt::Pixmap("matrice_color/color_RGB255.bmp"));
+	#this->setPixmap(Qt::Pixmap("matrice_color/color_RGB255.bmp"));
 }
 
 =fe
@@ -46,11 +46,11 @@ sub mouseMoveEvent
    # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
-=dbg
+
 	print " x : ",$event->x," , y : ",$event->y,"\n";
 	print "density : ", this->{density}, "\n";	
 	print "zoom factor => ", this->{zoomFactorImg}, "\n";
-=cut
+
 =mu
 		my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
 #		print "RGB : $rgb\n";
@@ -81,12 +81,23 @@ sub mousePressEvent
         $event->ignore();
         return;
     }
-	print "density : ", MainWindow->density(), "\n";
-    this->setCursor(Qt::Cursor(Qt::ClosedHandCursor()));
+    
+    this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_IDC.png"));
+    my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
+#		print "RGB : $rgb\n";
+	my $r = $rgb->red();
+	my $g = $rgb->green();
+	my $b = $rgb->blue();
+	#this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.bmp"));
+	print "color (R,G,B)  : ($r,$g,$b)\n";
+	
+	#this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
+
+  #  this->setCursor(Qt::Cursor(Qt::ClosedHandCursor()));
 	print "mousePressEvent\n";
 	#print "hasPixmap ? ", this->pixmap(), "\n";
 	#print "is Valid ? : " , $rgb->Qt::Color->isValid();
-
+	
 }
 
 
@@ -139,7 +150,10 @@ sub mouseMoveEvent
 
 sub mouseReleaseEvent
 {
-    this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
+ #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
+	
+	
+	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
     print "mouseReleaseEvent\n";
 }
 
@@ -170,13 +184,13 @@ sub wheelEvent
 	}
 	my $density= this->{density};
 #	my $density= MainWindow->density;
-	system("convert -density $density tmp/tmp_tikz_tmp.pdf tmp_tikz_tmp.png");
-	system("mv tmp_tikz_tmp.png tmp");
-	system("convert -density $density tmp/tmp_tikz_tmp_IDC.pdf tmp_tikz_tmp_IDC.png");
-	system("mv tmp_tikz_tmp_IDC.png tmp");
+	system("convert -density $density tmp/tmp_tikz.pdf tmp_tikz.png");
+	system("mv tmp_tikz.png tmp");
+	system("convert -density $density tmp/tmp_tikz_IDC.pdf tmp_tikz_IDC.png");
+	system("mv tmp_tikz_IDC.png tmp");
 	#MainWindow->refresh_density();
 	this->{zoomFactorImg}=(this->{density} / 18) *25; # ?  
-	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_tmp.png"));
+	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 	##system("pkill eog");	##
 	#system("eog tmp/tmp_tikz_tmp_IDC.png");	##
 }

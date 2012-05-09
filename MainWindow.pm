@@ -42,7 +42,7 @@ sub NEW {
     this->{textEdit}->setMarginWidth(1, 30);
     this->{textEdit}->setUtf8(1);
     
-    this->{nodeDistance} = 50;
+   # this->{nodeDistance} = 50;
    # this->{density} = 72;
     $density = 90;
     this->{density} = \$density;
@@ -154,19 +154,19 @@ sub createActions {
                                this);
     this->{newEditorAct} = $newEditorAct;
     $newEditorAct->setShortcut(Qt::KeySequence("Ctrl+N"));
-    $newEditorAct->setStatusTip("CrÃ©er un nouveau fichier tikz");
+    $newEditorAct->setStatusTip("Créer un nouveau fichier tikz");
     this->connect($newEditorAct, SIGNAL 'triggered()', this, SLOT 'newEditor()');
 
     my $saveAct = Qt::Action(Qt::Icon("images/save.png"), "&Save...", this);
     this->{saveAct} = $saveAct;
     $saveAct->setShortcut(Qt::KeySequence("Ctrl+S"));
-    $saveAct->setStatusTip("Save the current tikz");
+    $saveAct->setStatusTip("Enregistrer le fichier courant");
     this->connect($saveAct, SIGNAL 'triggered()', this, SLOT 'save()');
     
     my $loadAct = Qt::Action(Qt::Icon("images/load.png"), "&Ouvrir", this);
     this->{loadAct} = $loadAct;
     $loadAct->setShortcut(Qt::KeySequence("Ctrl+O"));
-    $loadAct->setStatusTip("Load tikz");
+    $loadAct->setStatusTip("Ouvrir un code tikz");
     this->connect($loadAct, SIGNAL 'triggered()', this, SLOT 'load()');
 
     my $undoAct = Qt::Action(Qt::Icon("images/undo.png"), "&Undo", this);
@@ -260,10 +260,11 @@ sub genImage {
 	@liste_instructions = ();
 	@listenoeuds = ();
 	
-	# recupÃ©ration de val density du LabelImage
+	# recupération de val density du LabelImage
 	this->{density}=this->{zoneGraphe}->{density} ;
 	
-	my ($distance_node, $density)=(this->{nodeDistance}, this->{density});
+	#my ($distance_node, $density)=(this->{nodeDistance}, this->{density});
+	my ($density)=(this->{density});
 
 	# suppresions de tous les tmp
 	#clean();
@@ -294,9 +295,10 @@ sub genImage {
     #my $density=100;	###
     
     #my $density=72;
-    system("perl tikz2png.pl tmp_tikz $distance_node $density");
+  #  system("perl tikz2png.pl tmp_tikz $distance_node $density");
+    system("perl tikz2png.pl tmp_tikz $density");
     
-    # lier l' image gÃ©nÃ©rÃ©e au QLabel de droite
+    # lier l' image générée au QLabel de droite
     if( -e "./tmp/tmp_tikz.png"){
 		this->{zoneGraphe}-> setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 	} else {

@@ -2,7 +2,7 @@
 
 use ColorId;
 
-my ($filename,$distance_node,$density) = @ARGV;
+my ($filename,$density) = @ARGV;
 
 my $entete_tikz= 
 q (\documentclass{article}
@@ -14,7 +14,7 @@ q (\documentclass{article}
 \begin{document}
 \begin{tikzpicture});
 #my $distance_node=50;
-my $entete =$entete_tikz."[node distance=".$distance_node."pt]\n";
+#my $entete =$entete_tikz."[node distance=".$distance_node."pt]\n";
 
 my $fin=
 q(\end{tikzpicture}
@@ -59,22 +59,27 @@ my $tikz_code_colorID="";
 while (my $ligne_colorID=<FICTIKZ>) {
 	
 	# recuperation du code tikz
-	$tikz_code.=$ligne_colorID;  
+	$tikz_code.=$ligne_colorID; 
 	
-	# creation d' un code tikz pour allour une couleur differente a chaque objet
+	# creation d' un code tikz pour allouer une couleur differente a chaque objet
 	$ligne_colorID=~ m{\A
 						((\\)(node|draw|\S+))
 						\[([^\]]*)\]
 						(.*;\n)
 					}x;
 	my ($obj_tikz, $prop, $reste_ligne) = ($1,$4,$5);
-	$tikz_code_colorID.=$obj_tikz."[".$prop.",".&gen_next_ColorId()."]".$reste_ligne;
+	if( $obj_tikz eq ""){
+		$tikz_code_colorID.=$ligne_colorID;
+		#printf "1 : %s, 4 : %s, 5 : %s\n", $1, $4, $5;
+	} else {
+		$tikz_code_colorID.=$obj_tikz."[".$prop.",".&gen_next_ColorId()."]".$reste_ligne;
+	}
 }
 close FICTIKZ;
 
-my $contenu_fic_tex = $entete.$tikz_code.$fin;
+my $contenu_fic_tex = $entete_tikz.$tikz_code.$fin;
 
-my $nom_fic_tex = "tmp/".$filename."_tmp.tex";
+my $nom_fic_tex = "tmp/".$filename.".tex";
 unless(open FICTEXTMP, ">$nom_fic_tex"){
 	die "Impossible d'ecrire sur  '$nom_fic_tex' : $!";
 }
@@ -88,7 +93,7 @@ system("pkill eog");
 # generation pdf a partir de fichier tex
 system("pdflatex $nom_fic_tex");
 
-my $pdf_tmp=$filename."_tmp.pdf";
+my $pdf_tmp=$filename.".pdf";
 
 # pdfcrop sur pdf obtenu ( pour redimensionner pdf en fonction image)
 #system("pdfcrop --hires  $pdf_tmp $pdf_tmp");
@@ -105,8 +110,8 @@ system("mv $img tmp");
 
 
 # generation tex,pdf, png pour l' image avec les colors ID
-my $contenu_fic_tex_IDC = $entete.$tikz_code_colorID.$fin;
-my $nom_fic_tex_IDC = "tmp/".$filename."_tmp_IDC.tex";
+my $contenu_fic_tex_IDC = $entete_tikz.$tikz_code_colorID.$fin;
+my $nom_fic_tex_IDC = "tmp/".$filename."_IDC.tex";
 unless(open FICTEXTMP_IDC, ">$nom_fic_tex_IDC"){
 	die "Impossible d'ecrire sur  '$nom_fic_tex_IDC' : $!";
 }
@@ -127,11 +132,11 @@ print "-"x80;
 sleep 5;
 =cut
 
-my $pdf_tmp_IDC=$filename."_tmp_IDC.pdf";
+my $pdf_tmp_IDC=$filename."_IDC.pdf";
 $img_IDC=$filename."_IDC.png";
 system("convert -density $density $pdf_tmp_IDC $img_IDC");
 
-# deplacement du pdf généré dasn tmp
+# deplacement du pdf généré dans tmp
 system("mv $pdf_tmp_IDC tmp/$pdf_tmp_IDC");
 system("rm *.log *.aux");
 system("mv $img_IDC tmp");

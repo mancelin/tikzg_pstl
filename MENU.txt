@@ -40,9 +40,9 @@ _Affichage
         Zoom a_rrière (Ctrl+-)
         Taille _normale (Ctrl+0)
     Zoom _image
-        Zoom a_vant (Ctrl++)
-        Zoom a_rrière (Ctrl+-)
-        Taille _normale (Ctrl+0)
+        Zoom a_vant 
+        Zoom a_rrière 
+        Taille _normale
 A_ide
 	Ai_de (F1)
 	À _propos
