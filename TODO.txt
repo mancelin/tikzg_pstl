@@ -8,18 +8,27 @@
 		[ ] recuperer valeur couleur pixel dans une image a des coordonées données
  [x] Structure de Donnes prog 
 	[x] Parseur pour creer la structure
+		[x] l' intégrer a MainWindow
+	[x] Parser Node Distance -> si présent, premiére ligne de fic tikz
+	[ ] Index of ColorID -> permet de retrouver lignes, propriétés a partir de colorID
 	[ ] Fonctions pour la modifier
+	[x] acceseurs sur la structure
+		[x] liste noeuds
+ [x] lier valeur zoom image a MainWindow
  [ ] Interface graphique Tikzg
 	[ ] Barre de menu en français, lister/implémenter tout ce qu' il faut: voir MENU.txt
 	[ ] dock avec boutons/textbox pour modifier les éléments du graphe
 	[x] rendre dock avec image non fermable
 	[ ] textbox pour erreurs de compil latex
  [ ] Scintilla
-	[ ] impossible d' écrire des accents dans fenêtre Scintilla
+	[x] impossible d' écrire des accents dans fenêtre Scintilla
+		[ ] accents provoquent erreurs de compilation
 	[x] Afficher numéro de ligne
 	[x] coloration syntaxique
  [x] pas d' accents sous LaTeX
  [x] ./tikzg.pl nom_fic -> ouvre nom_fic dans tikzg 
  [ ] Noter iddées pour le rapport -> plan, commencer a rédiger
-	
+ [ ] logo pour appli
+ [ ] icones pour toolbar 
+ 	
 A augmenter ...

@@ -15,10 +15,18 @@ use QtCore4::slots
     insertCustomer => ['QString'],
     addParagraph   => ['QString'],
     genImage       => [''];
-use LabelImage; 
+use LabelImage;
+use TikzParser;
+use TikzObjects;
+use Data::Dumper; 
+
+my @liste_instructions;
+my @listenoeuds;
+my $density;
+
 
 sub NEW {
-	print "nb args : " , scalar(@_), "\n";
+	#print "nb args : " , scalar(@_), "\n";
 	my $file;
 	if(scalar(@_) > 1){
 		$file=$_[1];
@@ -32,10 +40,15 @@ sub NEW {
     this->{textEdit}->setLexer($lexerTeX);
     this->{textEdit}->setMarginLineNumbers (1, 1);
     this->{textEdit}->setMarginWidth(1, 30);
+    this->{textEdit}->setUtf8(1);
     
-    this->{nodeDistance} = 50;
+   # this->{nodeDistance} = 50;
    # this->{density} = 72;
-    this->{density} = 90;
+    $density = 90;
+    this->{density} = \$density;
+    
+    this->{listeInstructions} = \@liste_instructions; # reference sur liste  ##
+    this->{listeNoeuds} = \@listenoeuds;	##
 
     createActions();
     createMenus();
@@ -50,6 +63,7 @@ sub NEW {
  #   print "file : $file\n";
 	if(defined $file){
 		loadFile($file);
+		#parse();
 	}
 }
 
@@ -140,19 +154,19 @@ sub createActions {
                                this);
     this->{newEditorAct} = $newEditorAct;
     $newEditorAct->setShortcut(Qt::KeySequence("Ctrl+N"));
-    $newEditorAct->setStatusTip("Create a new tikz");
+    $newEditorAct->setStatusTip("Créer un nouveau fichier tikz");
     this->connect($newEditorAct, SIGNAL 'triggered()', this, SLOT 'newEditor()');
 
     my $saveAct = Qt::Action(Qt::Icon("images/save.png"), "&Save...", this);
     this->{saveAct} = $saveAct;
     $saveAct->setShortcut(Qt::KeySequence("Ctrl+S"));
-    $saveAct->setStatusTip("Save the current tikz");
+    $saveAct->setStatusTip("Enregistrer le fichier courant");
     this->connect($saveAct, SIGNAL 'triggered()', this, SLOT 'save()');
     
     my $loadAct = Qt::Action(Qt::Icon("images/load.png"), "&Ouvrir", this);
     this->{loadAct} = $loadAct;
     $loadAct->setShortcut(Qt::KeySequence("Ctrl+O"));
-    $loadAct->setStatusTip("Load tikz");
+    $loadAct->setStatusTip("Ouvrir un code tikz");
     this->connect($loadAct, SIGNAL 'triggered()', this, SLOT 'load()');
 
     my $undoAct = Qt::Action(Qt::Icon("images/undo.png"), "&Undo", this);
@@ -228,7 +242,7 @@ sub createDockWindows {
     $dock->setAllowedAreas(Qt::LeftDockWidgetArea() | Qt::RightDockWidgetArea());
     $dock->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
   #  my $view = Qt::Label($dock);
-    my $view = LabelImage($dock);
+    my $view = LabelImage($dock,\$density);
     
    # $view->setPixmap(Qt::Pixmap("images/cheese.jpg"));
     this->{zoneGraphe} = $view;
@@ -242,7 +256,15 @@ sub createDockWindows {
 }
 
 sub genImage {
-	my ($distance_node, $density)=(this->{nodeDistance}, this->{density} = 72);
+	# reinisialisation de liste d' objets tikz et de liste d'instructions
+	@liste_instructions = ();
+	@listenoeuds = ();
+	
+	# recupération de val density du LabelImage
+	this->{density}=this->{zoneGraphe}->{density} ;
+	
+	#my ($distance_node, $density)=(this->{nodeDistance}, this->{density});
+	my ($density)=(this->{density});
 
 	# suppresions de tous les tmp
 	#clean();
@@ -273,9 +295,10 @@ sub genImage {
     #my $density=100;	###
     
     #my $density=72;
-    system("perl tikz2png.pl tmp_tikz $distance_node $density");
+  #  system("perl tikz2png.pl tmp_tikz $distance_node $density");
+    system("perl tikz2png.pl tmp_tikz $density");
     
-    # lier l' image gÃ©nÃ©rÃ©e au QLabel de droite
+    # lier l' image générée au QLabel de droite
     if( -e "./tmp/tmp_tikz.png"){
 		this->{zoneGraphe}-> setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 	} else {
@@ -285,23 +308,56 @@ sub genImage {
 		
 	}
 
-   
+   parse();
+   list_of_nodes();
 }
 
-# zoom +25 %
+=waste
+# zoom +25 %	##?
 sub augmentDensity {
 	this->{density} += 18;
-	&genImage();
+	#&genImage();
 }
 
-# zoom -25 %
+# zoom -25 %	##?
 sub diminueDensity {
 	this->{density} -= 18;
-	&genImage();
+	#&genImage();
 }
+
+sub density {
+	return this->{density};
+}
+
+sub set_density {
+	my ( $density ) = @_;
+	print "set_density $density\n";
+	this->{density} = $density;
+}
+=cut
 
 sub clean {
 	system("rm tmp/*tmp*");
 }
+
+
+sub parse {
+	@liste_instructions = &TikzParser::decoupe_lignes(this->{textEdit}->text());
+	&TikzParser::parse_liste_instructions(@liste_instructions);
+	print "_"x80; #dbg
+	print Dumper(this->{listeInstructions}); #dbg
+}
+
+
+sub list_of_nodes{
+	foreach my $elem (@liste_instructions){
+		if($elem->{type} eq "node") {
+			push (@listenoeuds, $elem->{nom});
+		}
+	}
+	print "-"x80; #dbg
+	print Dumper(this->{listeNoeuds}); #dbg
+}
+
 
 1;

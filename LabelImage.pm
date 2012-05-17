@@ -10,17 +10,16 @@ use Data::Dumper; #
 use MainWindow;
 
 sub NEW {
-    my ($class,$dock) = @_;
+    my ($class,$dock,$ref_density) = @_;
     $class->SUPER::NEW($dock);
     this->setMouseTracking(1);
-    this->{zoomFactor}=100; # ?
-    this->{density}=72; # first
-   # this->{color} = Qt::Color( rand(RAND_MAX) % 256, rand(RAND_MAX) % 256, rand(RAND_MAX) % 256 );
+    this->{zoomFactorImg}=(${$ref_density} / 18) *25; # ?  
+    this->{density}= ${$ref_density};
     #this->setToolTip(sprintf "Qt::Color(%d, %d, %d)\n%s",
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
       #        'Click and drag this color onto the robot!');
  #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
-	#this->setPixmap(Qt::Pixmap("images/test.png"));
+	#this->setPixmap(Qt::Pixmap("matrice_color/color_RGB255.bmp"));
 }
 
 =fe
@@ -44,20 +43,24 @@ sub paint
 sub mouseMoveEvent
 {
     my ($event) = @_;
-    this->setCursor(Qt::Cursor(Qt::WaitCursor()));
+   # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
+
 	print " x : ",$event->x," , y : ",$event->y,"\n";
-=mute	
+	print "density : ", this->{density}, "\n";	
+	print "zoom factor => ", this->{zoomFactorImg}, "\n";
+
+=mu
 		my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
-		print "RGB : $rgb\n";
+#		print "RGB : $rgb\n";
 		my $r = $rgb->red();
 		my $g = $rgb->green();
 		my $b = $rgb->blue();
 		print "color (R,G,B)  : ($r,$g,$b)\n";
 =cut
 
-=later  ->  meme couleur toujours détexctée
+=later  ->  meme couleur toujours détectée
 	my $rgb = Qt::Image::pixel( $event->x, $event->y );
 	my $r = ($rgb >> 16) & 0xFF;
 	my $g = ($rgb >> 8) & 0xFF;
@@ -78,20 +81,23 @@ sub mousePressEvent
         $event->ignore();
         return;
     }
+    
+    this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_IDC.png"));
+    my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
+#		print "RGB : $rgb\n";
+	my $r = $rgb->red();
+	my $g = $rgb->green();
+	my $b = $rgb->blue();
+	#this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.bmp"));
+	print "color (R,G,B)  : ($r,$g,$b)\n";
+	
+	#this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 
-    this->setCursor(Qt::Cursor(Qt::ClosedHandCursor()));
+  #  this->setCursor(Qt::Cursor(Qt::ClosedHandCursor()));
 	print "mousePressEvent\n";
 	#print "hasPixmap ? ", this->pixmap(), "\n";
 	#print "is Valid ? : " , $rgb->Qt::Color->isValid();
-=j	
-	my $r = Qt::Color->red($rgb);
-	##my $r = $rgb->qRed();
-	#my $r = Qt::Color->red($rgb);
-	my $g = Qt::Color->green();
-	my $b = Qt::Color->blue();
-#	print "color (R,G,B)  : ($r,$g,$b)\n";
-	print "RGB : $rgb\n";
-=cut
+	
 }
 
 
@@ -144,7 +150,10 @@ sub mouseMoveEvent
 
 sub mouseReleaseEvent
 {
-    this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
+ #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
+	
+	
+	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
     print "mouseReleaseEvent\n";
 }
 
@@ -156,6 +165,7 @@ sub wheelEvent
 	print "wheelEvent, delta : $delta - ";
 	if($delta > 0){
 		print "up\n";
+		#MainWindow->augmentDensity();
 		this->{density}=this->{density}+18;
 #		MainWindow::augmentDensity();
 #		if($event->keyPressed() ){ #== Qt::ControlModifier
@@ -166,17 +176,21 @@ sub wheelEvent
 		print "down\n";
 		if( this->{density} > 18 ) {
 			this->{density}=this->{density}-18;
+
 		} else {
 			print ">> density too small\n";
 		}
 #		MainWindow::diminueDensity();
 	}
 	my $density= this->{density};
-	system("convert -density $density tmp/tmp_tikz_tmp.pdf tmp_tikz_tmp.png");
-	system("mv tmp_tikz_tmp.png tmp");
-	system("convert -density $density tmp/tmp_tikz_tmp_IDC.pdf tmp_tikz_tmp_IDC.png");
-	system("mv tmp_tikz_tmp_IDC.png tmp");
-	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_tmp.png"));
+#	my $density= MainWindow->density;
+	system("convert -density $density tmp/tmp_tikz.pdf tmp_tikz.png");
+	system("mv tmp_tikz.png tmp");
+	system("convert -density $density tmp/tmp_tikz_IDC.pdf tmp_tikz_IDC.png");
+	system("mv tmp_tikz_IDC.png tmp");
+	#MainWindow->refresh_density();
+	this->{zoomFactorImg}=(this->{density} / 18) *25; # ?  
+	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 	##system("pkill eog");	##
 	#system("eog tmp/tmp_tikz_tmp_IDC.png");	##
 }

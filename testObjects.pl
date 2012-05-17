@@ -49,7 +49,38 @@ $list_instructions[6]->printChamp("ligne");
 $list_instructions[6]->printChamp("lreg");
 $list_instructions[6]->printChamp("type");
 =cut
+
+sub list_of_nodes{
+	my @liste_obj_tikz = @_;
+	my @listenoeuds;
+	foreach $elem (@liste_obj_tikz){
+		if($elem->{type} eq "node") {
+			print $elem->{type}, "\n";
+			push (@listenoeuds, $elem->{nom});
+		}
+	}
+	return @listenoeuds;
+}
+
+=gtlrik
+sub list_of_draw{
+	my @liste_obj_tikz = @_;
+	my @listearretes;
+	foreach $elem (@liste_obj_tikz){
+		if($elem->{type} eq "draw") {
+			print $elem->{type}, "\n";
+			push (@listenoeuds, $elem->{nom});
+		}
+	}
+	return @listenoeuds;
+}
+=cut
+
 parse_liste_instructions(@list_instructions);
 #print "_"x80,"\n";
 #print Dumper($list_instructions[0]);
 print Dumper(@list_instructions);
+
+print "_"x80;
+my @listnodes = &list_of_nodes(@list_instructions);
+print Dumper(@listnodes);
