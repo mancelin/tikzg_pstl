@@ -255,6 +255,70 @@ sub createDockWindows {
    #            this, SLOT 'genImage()');
 }
 
+
+#propriétés du noeud sélectionné
+sub proprieteNode{
+    my $dock = Qt::DockWidget("Proprietes", this);
+    my $top=Qt::Widget();
+    my $layout = Qt::VBoxLayout();
+    my $visible = Qt::CheckBox(this->tr('Visible'));
+    $visible->setChecked(1);
+    $layout->addWidget($visible);               #cacher le noeud
+    $layout->addWidget(this->Qt::LineEdit());   #le nom du noeud
+    my $forme=this->Qt::ComboBox();
+    $forme->addItem(this->tr('Cercle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $forme->addItem(this->tr('Rectangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $forme->addItem(this->tr('Triangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $layout->addWidget($forme);                 #la forme du noeud
+    $layout->addWidget(Qt::LineEdit());         #dimension du noeud
+    my $trait=this->Qt::ComboBox();
+    $trait->addItem(this->tr('Plein'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $trait->addItem(this->tr('Pointille'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $trait->addItem(this->tr('Double'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $layout->addWidget($trait);                 #le type de trait
+    $layout->addWidget(this->Qt::LineEdit());   #le texte inscrit dans le noeud
+    $layout->addWidget(this->Qt::ComboBox());   #right of (à compléter après identification du noeud)
+    $layout->addWidget(this->Qt::ComboBox());   #left of  (idem)
+    $layout->addWidget(this->Qt::ComboBox());   #up of    (idem)
+    $layout->addWidget(this->Qt::ComboBox());   #down of  (idem)
+    $top->setLayout($layout);
+    $dock->setWidget($top);
+    this->addDockWidget(Qt::LeftDockWidgetArea(), $dock);
+    this->{viewMenu}->addAction($dock->toggleViewAction());
+}
+
+
+#proprietes de l'arete selectionné
+sub proprieteDraw{
+    my $dock = Qt::DockWidget("Proprietes", this);
+    my $top=Qt::Widget();
+    my $layout = Qt::VBoxLayout();
+    $layout->addWidget(this->Qt::LineEdit());   #le nom
+    $layout->addWidget(this->Qt::ComboBox());   #origine (à compléter après identification de l'arete)
+    my $sens=this->Qt::ComboBox();
+    $sens->addItem(this->tr('<->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $sens->addItem(this->tr('->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $sens->addItem(this->tr('<-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $sens->addItem(this->tr('-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $layout->addWidget($sens);                 #le sens de l'arete
+    my $trait=this->Qt::ComboBox();
+    $trait->addItem(this->tr('Plein'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $trait->addItem(this->tr('Pointille'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $trait->addItem(this->tr('Double'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $layout->addWidget($trait);                 #le type de trait
+    $layout->addWidget(this->Qt::ComboBox());   #destination (à compléter après identification du noeud)
+
+
+    $top->setLayout($layout);
+    $dock->setWidget($top);
+    this->addDockWidget(Qt::LeftDockWidgetArea(), $dock);
+    this->{viewMenu}->addAction($dock->toggleViewAction());
+}
+
+
+
+
+
 sub genImage {
 	# reinisialisation de liste d' objets tikz et de liste d'instructions
 	@liste_instructions = ();
