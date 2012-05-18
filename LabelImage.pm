@@ -19,7 +19,7 @@ sub NEW {
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
       #        'Click and drag this color onto the robot!');
  #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
-	#this->setPixmap(Qt::Pixmap("matrice_color/color_RGB255.bmp"));
+	this->setPixmap(Qt::Pixmap("images/black.png"));
 }
 
 =fe
@@ -43,8 +43,13 @@ sub paint
 sub mouseMoveEvent
 {
     my ($event) = @_;
+    this->setPixmap(Qt::Pixmap("images/black.png"));
     printf "heiht : %d, width : %d\n", this->size()->height(), this->size()->width();
-    print " x : ",$event->x," , y : ",$event->y,"\n\n";
+    print " x : ",$event->x," , y : ",$event->y,"\n";
+    my $hauteur_label = this->size()->height();
+    my $hauteur_image = this->pixmap()->height();
+    print " hauteur image : ",$hauteur_image,"\n";
+    print "{Image} => x : ",$event->x," , y : ",$event->y - ($hauteur_label/2 - $hauteur_image/2),"\n\n";
    # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
