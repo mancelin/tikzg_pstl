@@ -43,11 +43,13 @@ sub paint
 sub mouseMoveEvent
 {
     my ($event) = @_;
+    printf "heiht : %d, width : %d\n", this->size()->height(), this->size()->width();
+    print " x : ",$event->x," , y : ",$event->y,"\n\n";
    # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
 
-#	print " x : ",$event->x," , y : ",$event->y,"\n";
+	
 #	print "density : ", this->{density}, "\n";	
 #	print "zoom factor => ", this->{zoomFactorImg}, "\n";
 
