@@ -26,6 +26,7 @@
 	[x] Afficher numéro de ligne
 	[x] coloration syntaxique
  [x] pas d' accents sous LaTeX
+	[ ] régler problémes d' encodage (utf8 ?) a l' ouverture, sauvegarde, compil latex
  [x] ./tikzg.pl nom_fic -> ouvre nom_fic dans tikzg 
  [ ] Noter iddées pour le rapport -> plan, commencer a rédiger
  [ ] logo pour appli

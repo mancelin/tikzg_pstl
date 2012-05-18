@@ -47,9 +47,9 @@ sub mouseMoveEvent
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
 
-	print " x : ",$event->x," , y : ",$event->y,"\n";
-	print "density : ", this->{density}, "\n";	
-	print "zoom factor => ", this->{zoomFactorImg}, "\n";
+#	print " x : ",$event->x," , y : ",$event->y,"\n";
+#	print "density : ", this->{density}, "\n";	
+#	print "zoom factor => ", this->{zoomFactorImg}, "\n";
 
 =mu
 		my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
@@ -83,14 +83,14 @@ sub mousePressEvent
     }
     
     this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_IDC.png"));
-    my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
+    my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->y) );
 #		print "RGB : $rgb\n";
 	my $r = $rgb->red();
 	my $g = $rgb->green();
 	my $b = $rgb->blue();
 	#this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.bmp"));
 	print "color (R,G,B)  : ($r,$g,$b)\n";
-	
+		print " x : ",$event->x," , y : ",$event->y,"\n";
 	#this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 
   #  this->setCursor(Qt::Cursor(Qt::ClosedHandCursor()));
