@@ -5,12 +5,12 @@
 	[x] Générer imageCouleur
 	[x] Générer image a la taille réelle (même taille que dans pdf) -> voir options de "convert"
 	[x] Detecter coordonnées clic dans image -> voir examples/graphicsview/dragdroprobot
-		[ ] recuperer valeur couleur pixel dans une image a des coordonées données
+		[x] recuperer valeur couleur pixel dans une image a des coordonées données
  [x] Structure de Donnes prog 
 	[x] Parseur pour creer la structure
 		[x] l' intégrer a MainWindow
 	[x] Parser Node Distance -> si présent, premiére ligne de fic tikz
-	[ ] Index of ColorID -> permet de retrouver lignes, propriétés a partir de colorID
+	[x] Index of ColorID -> permet de retrouver lignes, propriétés a partir de colorID
 	[ ] Fonctions pour la modifier
 	[x] acceseurs sur la structure
 		[x] liste noeuds
