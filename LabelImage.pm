@@ -110,12 +110,16 @@ sub mouseMoveEvent
 sub mousePressEvent
 {
     my ($event) = @_;
-    if ($event->button() != Qt::LeftButton()) {
-        $event->ignore();
-        return;
+    if ($event->button() == Qt::LeftButton()) {
+		print "mousePressEvent : leftButton\n";
+    }
+    if ($event->button() == Qt::RightButton()) {
+		print "mousePressEvent : RightButton\n";
     }
     
-    this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_IDC.png"));
+    
+=old   
+   # this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_IDC.png"));
     my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->y) );
 #		print "RGB : $rgb\n";
 	my $r = $rgb->red();
@@ -130,6 +134,8 @@ sub mousePressEvent
 	print "mousePressEvent\n";
 	#print "hasPixmap ? ", this->pixmap(), "\n";
 	#print "is Valid ? : " , $rgb->Qt::Color->isValid();
+
+=cut
 	
 }
 
@@ -186,7 +192,7 @@ sub mouseReleaseEvent
  #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
 	
 	
-	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
+#	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
     print "mouseReleaseEvent\n";
 }
 
