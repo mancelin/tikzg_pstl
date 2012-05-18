@@ -10,7 +10,7 @@ use Data::Dumper; #
 use MainWindow;
 use Image::Magick;
 
-my $fic="tmp/tmp_tikz_IDC.png";
+#my $fic="tmp/tmp_tikz_IDC.png";
 
 sub NEW {
     my ($class,$dock,$ref_density) = @_;
@@ -43,25 +43,22 @@ sub paint
 =cut
 
 sub getPixelColorAt {
-	#my ($x, $y) = @_;
-	
+	my ($x, $y) = @_;
+
+=over	
 	# tmp, to test
 	my ($x, $y,$file) = @_;
-=vf
+
 	print $_[1];
 	my $x = $_[0];
 	my $y = $_[1];
 	printf "  x : %d, y : %d\n", $x, $y;
 =cut
 	my $im = Image::Magick->new();
-	#my $rc = $im->Read("./tmp/tmp_tikz_IDC.png");
-	my $rc = $im->Read($file); # tmp test
+	my $rc = $im->Read("./tmp/tmp_tikz_IDC.png");
+	#my $rc = $im->Read($file); # tmp test
 	
 	die $rc if $rc;
-=vf	
-	my ($w, $h) = $im->Get('width', 'height');
-	printf "width : %d, height : %d\n", $w, $h;
-=cut
 	my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
 	print " [$x,$y] => r : $r, g : $g, b : $b\n";
 }
@@ -80,8 +77,9 @@ sub mouseMoveEvent
 	my $y = int($event->y - ($hauteur_label/2 - $hauteur_image/2));
 	if(($x <= $largeur_image) && ($y >= 0) && ($y < $hauteur_image)) {
 		print "\n{Image} => x : ",$x," , y : ",$y,"\n";
-        # getPixelColorAt($x,$y);
-         getPixelColorAt($x,$y,$fic);# tmp test
+		print "nb_IDC : ", MainWindow::nb_IDC();
+         getPixelColorAt($x,$y);
+        # getPixelColorAt($x,$y,$fic);# tmp test
     }
     
    # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
@@ -120,14 +118,14 @@ sub mousePressEvent
     my ($event) = @_;
     if ($event->button() == Qt::LeftButton()) {
 		print "mousePressEvent : leftButton\n";
-		$fic= "tmp/tmp_tikz_IDC.png";
-		this->setPixmap(Qt::Pixmap("tmp/tmp_tikz"));
+	#	$fic= "tmp/tmp_tikz_IDC.png";
+	#	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz"));
 		
     }
     if ($event->button() == Qt::RightButton()) {
 		print "mousePressEvent : RightButton\n";
-		$fic = "tmp/IDC1.png";
-		this->setPixmap(Qt::Pixmap("tmp/IDC1.png"));
+	#	$fic = "tmp/IDC1.png";
+	#	this->setPixmap(Qt::Pixmap("gen_list_IDC/IDC55.png"));
     }
     
     
@@ -153,52 +151,6 @@ sub mousePressEvent
 }
 
 
-=vj
-sub mouseMoveEvent
-{
-    my ($event) = @_;
-    if (Qt::LineF(Qt::PointF($event->screenPos()), Qt::PointF($event->buttonDownScreenPos(Qt::LeftButton())))
-        ->length() < Qt::Application::startDragDistance()) {
-        return;
-    }
-
-    my $drag = Qt::Drag($event->widget());
-    my $mime = Qt::MimeData();
-    $drag->setMimeData($mime);
-
-    my $n = 0;
-    if ($n++ > 2 && (rand(RAND_MAX) % 3) == 0) {
-        my $image = Qt::Image('images/head.png');
-        $mime->setImageData($image);
-
-        $drag->setPixmap(Qt::Pixmap::fromImage($image)->scaled(30, 40));
-        $drag->setHotSpot(Qt::Point(15, 30));
-    } else {
-        $mime->setColorData(Qt::qVariantFromValue(this->{color}));
-        $mime->setText(sprintf '#%02x%02x%02x',
-                      this->{color}->red(),
-                      this->{color}->green(),
-                      this->{color}->blue());
-
-        my $pixmap = Qt::Pixmap(34, 34);
-        $pixmap->fill(Qt::Color(Qt::white()));
-
-        my $painter = Qt::Painter($pixmap);
-        $painter->translate(15, 15);
-        $painter->setRenderHint(Qt::Painter::Antialiasing());
-        this->paint($painter, 0, 0);
-        $painter->end();
-
-        $pixmap->setMask($pixmap->createHeuristicMask());
-
-        $drag->setPixmap($pixmap);
-        $drag->setHotSpot(Qt::Point(15, 20));
-    }
-
-    $drag->exec();
-    this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
-}
-=cut
 
 sub mouseReleaseEvent
 {

@@ -423,5 +423,17 @@ sub list_of_nodes{
 	print Dumper(this->{listeNoeuds}); #dbg
 }
 
+sub nb_IDC{
+	my $nb_IDC = 0;
+	foreach my $elem (@liste_instructions){
+		if(defined($elem->{colorId})) {
+			$nb_IDC++;
+		}
+	}
+	print "-"x80; #dbg
+	print $nb_IDC."\n"; #dbg
+	return $nb_IDC;
+}
+
 
 1;
