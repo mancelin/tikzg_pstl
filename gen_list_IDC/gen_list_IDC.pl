@@ -58,7 +58,7 @@ for(my $y=30;$y<=100;$y++){
 	#	system("rm tmp_node.*");
 	
 	#	print LIST_IDC "red!$y,green!$x => $r $g $b $rgba\n";
-		print LIST_IDC "red!$y,green!$x => $r $g $b\n";
+		print LIST_IDC "red!$y!green!$x => $r $g $b\n";
 	}
 } 
 close LIST_IDC;
