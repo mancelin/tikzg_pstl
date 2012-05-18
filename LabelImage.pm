@@ -8,6 +8,7 @@ use QtGui4;
 use QtCore4::isa qw( Qt::Label );
 use Data::Dumper; #
 use MainWindow;
+use Image::Magick;
 
 sub NEW {
     my ($class,$dock,$ref_density) = @_;
@@ -19,7 +20,6 @@ sub NEW {
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
       #        'Click and drag this color onto the robot!');
  #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
-	this->setPixmap(Qt::Pixmap("images/black.png"));
 }
 
 =fe
@@ -40,16 +40,42 @@ sub paint
 }
 =cut
 
+sub getPixelColorAt {
+	my ($x, $y) = @_;
+=vf
+	print $_[1];
+	my $x = $_[0];
+	my $y = $_[1];
+	printf "  x : %d, y : %d\n", $x, $y;
+=cut
+	my $im = Image::Magick->new();
+	my $rc = $im->Read("./tmp/tmp_tikz_IDC.png");
+	die $rc if $rc;
+=vf	
+	my ($w, $h) = $im->Get('width', 'height');
+	printf "width : %d, height : %d\n", $w, $h;
+=cut
+	my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
+	print " [$x,$y] => r : $r, g : $g, b : $b\n";
+}
+	
+
 sub mouseMoveEvent
 {
     my ($event) = @_;
-    this->setPixmap(Qt::Pixmap("images/black.png"));
-    printf "heiht : %d, width : %d\n", this->size()->height(), this->size()->width();
-    print " x : ",$event->x," , y : ",$event->y,"\n";
+   # printf "heiht : %d, width : %d\n", this->size()->height(), this->size()->width();
+   # print " x : ",$event->x," , y : ",$event->y,"\n";
     my $hauteur_label = this->size()->height();
     my $hauteur_image = this->pixmap()->height();
-    print " hauteur image : ",$hauteur_image,"\n";
-    print "{Image} => x : ",$event->x," , y : ",$event->y - ($hauteur_label/2 - $hauteur_image/2),"\n\n";
+    my $largeur_image = this->pixmap()->width();
+   # print " hauteur image : ",$hauteur_image," largeur image : ",$largeur_image,"\n";
+    my $x = $event->x;
+	my $y = int($event->y - ($hauteur_label/2 - $hauteur_image/2));
+	if(($x <= $largeur_image) && ($y >= 0) && ($y < $hauteur_image)) {
+		print "\n{Image} => x : ",$x," , y : ",$y,"\n";
+        getPixelColorAt($x,$y);
+    }
+    
    # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
