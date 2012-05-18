@@ -62,6 +62,7 @@ sub getPixelColorAt {
 	my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
 	print " [$x,$y] => r : $r, g : $g, b : $b\n";
 	printf "IDC : %s\n", &IDC_of_RGB($r,$g,$b);
+	return &IDC_of_RGB($r,$g,$b);
 }
 	
 sub IDC_of_RGB {
@@ -95,6 +96,7 @@ sub mouseMoveEvent {
     my ($event) = @_;
    # printf "heiht : %d, width : %d\n", this->size()->height(), this->size()->width();
    # print " x : ",$event->x," , y : ",$event->y,"\n";
+=depla
     my $hauteur_label = this->size()->height();
     my $hauteur_image = this->pixmap()->height();
     my $largeur_image = this->pixmap()->width();
@@ -107,7 +109,7 @@ sub mouseMoveEvent {
          getPixelColorAt($x,$y);
         # getPixelColorAt($x,$y,$fic);# tmp test
     }
-    
+=cut    
    # this->setCursor(Qt::Cursor(Qt::WaitCursor()));
  #	system("echo Mouse move event - `date +%H:%M:%S::%N`");
 
@@ -116,27 +118,6 @@ sub mouseMoveEvent {
 #	print "density : ", this->{density}, "\n";	
 #	print "zoom factor => ", this->{zoomFactorImg}, "\n";
 
-=mu
-		my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->x ) );
-#		print "RGB : $rgb\n";
-		my $r = $rgb->red();
-		my $g = $rgb->green();
-		my $b = $rgb->blue();
-		print "color (R,G,B)  : ($r,$g,$b)\n";
-=cut
-
-=later  ->  meme couleur toujours détectée
-	my $rgb = Qt::Image::pixel( $event->x, $event->y );
-	my $r = ($rgb >> 16) & 0xFF;
-	my $g = ($rgb >> 8) & 0xFF;
-	my $b = ($rgb) & 0xFF;
-	print "color (R,G,B)  : ($r,$g,$b)\n";
-=cut 
-
-	#print Dumper(Qt::Image::pixel( $event->x, $event->y ));
-	#print "pos : ", $event->pos(),"\n";
-#	Qt::Image::setPixel($event->x, $event->y , 0x00FF00);
-	#print "RGB : $rgb\n";
 }
 
 sub mousePressEvent
@@ -144,10 +125,24 @@ sub mousePressEvent
     my ($event) = @_;
     if ($event->button() == Qt::LeftButton()) {
 		print "mousePressEvent : leftButton\n";
-	#	$fic= "tmp/tmp_tikz_IDC.png";
-	#	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz"));
 		
+		my $hauteur_label = this->size()->height();
+		my $hauteur_image = this->pixmap()->height();
+		my $largeur_image = this->pixmap()->width();
+	   # print " hauteur image : ",$hauteur_image," largeur image : ",$largeur_image,"\n";
+		my $x = $event->x;
+		my $y = int($event->y - ($hauteur_label/2 - $hauteur_image/2));
+			if(($x <= $largeur_image) && ($y >= 0) && ($y < $hauteur_image)) {
+	#		print "\n{Image} => x : ",$x," , y : ",$y,"\n";
+	#		print "nb_IDC : ", MainWindow::nb_IDC();
+			my $idcClicked = getPixelColorAt($x,$y);
+			my $objTikz = MainWindow::object_ofIDC($idcClicked);
+			print Dumper($objTikz);
+		}	
+	#	$fic= "tmp/tmp_tikz_IDC.png";
+	#	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz"));	
     }
+    
     if ($event->button() == Qt::RightButton()) {
 		print "mousePressEvent : RightButton\n";
 	#	$fic = "tmp/IDC1.png";

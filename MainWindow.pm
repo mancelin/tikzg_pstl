@@ -434,12 +434,19 @@ sub nb_IDC{
 	return $nb_IDC;
 }
 
-=fr
-sub index_ofIDC{
+
+sub object_ofIDC{
+	my ($idc) = @_;
+	$idc="$idc,fill=$idc";
+	print " >>> idc : $idc\n";
 	my $nb_IDC = nb_IDC();
-	
+	foreach my $elem (@liste_instructions){
+		if(defined($elem->{colorId}) && ($elem->{colorId} eq $idc) ) {
+			return $elem;
+		}
+	}	
 }
-=cut
+
 
 
 1;
