@@ -431,9 +431,15 @@ sub nb_IDC{
 		}
 	}
 	print "-"x80; #dbg
-	print $nb_IDC."\n"; #dbg
 	return $nb_IDC;
 }
+
+=fr
+sub index_ofIDC{
+	my $nb_IDC = nb_IDC();
+	
+}
+=cut
 
 
 1;

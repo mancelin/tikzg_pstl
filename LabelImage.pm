@@ -61,11 +61,37 @@ sub getPixelColorAt {
 	die $rc if $rc;
 	my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
 	print " [$x,$y] => r : $r, g : $g, b : $b\n";
+	printf "IDC : %s\n", &IDC_of_RGB($r,$g,$b);
 }
 	
+sub IDC_of_RGB {
+	my ($red, $green, $blue) = @_;
+	print "RGB : $red $green $blue\n";
+	my $nb_IDC = MainWindow::nb_IDC();
+	print "   nb_IDC : $nb_IDC\n";
+	
+	unless(open LIST_IDC, "list_IDC"){
+		die "Impossible d'ouvrir 'list_IDC' : $!";
+	}
+	
+	LECT_FIC:
+	while(<LIST_IDC>){ # && ($nb_IDC > 0)){
+		my $line = $_;
+		chomp $line;
+		#print $line; #dbg
+		$nb_IDC--;
+		last LECT_FIC if ($nb_IDC == 0);
+		my ($idc, $sep, $r, $g, $b) = split / /,$line;
+		if (($r == $red) && ($g == $green) && ($b == $blue)){
+			close LIST_IDC;
+			return $idc;
+		}
+	}
+	close LIST_IDC;
+	return "none";
+}
 
-sub mouseMoveEvent
-{
+sub mouseMoveEvent {
     my ($event) = @_;
    # printf "heiht : %d, width : %d\n", this->size()->height(), this->size()->width();
    # print " x : ",$event->x," , y : ",$event->y,"\n";
@@ -76,8 +102,8 @@ sub mouseMoveEvent
     my $x = $event->x;
 	my $y = int($event->y - ($hauteur_label/2 - $hauteur_image/2));
 	if(($x <= $largeur_image) && ($y >= 0) && ($y < $hauteur_image)) {
-		print "\n{Image} => x : ",$x," , y : ",$y,"\n";
-		print "nb_IDC : ", MainWindow::nb_IDC();
+#		print "\n{Image} => x : ",$x," , y : ",$y,"\n";
+#		print "nb_IDC : ", MainWindow::nb_IDC();
          getPixelColorAt($x,$y);
         # getPixelColorAt($x,$y,$fic);# tmp test
     }
