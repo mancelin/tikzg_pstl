@@ -68,11 +68,16 @@ while (my $ligne_colorID=<FICTIKZ>) {
 						(.*;\n)
 					}x;
 	my ($obj_tikz, $prop, $reste_ligne) = ($1,$4,$5);
+	printf "1 : %s, 4 : %s, 5 : %s\n", $1, $4, $5;
 	if( $obj_tikz eq ""){
 		$tikz_code_colorID.=$ligne_colorID;
-		#printf "1 : %s, 4 : %s, 5 : %s\n", $1, $4, $5;
+		
 	} else {
-		$tikz_code_colorID.=$obj_tikz."[".$prop.",".&gen_next_ColorId()."]".$reste_ligne;
+		if( $obj_tikz eq '\draw'){
+			$tikz_code_colorID.=$obj_tikz."[line width=5pt,".&gen_next_ColorId()."]".$reste_ligne;
+		} else {
+			$tikz_code_colorID.=$obj_tikz."[".$prop.",".&gen_next_ColorId()."]".$reste_ligne;
+		}
 	}
 }
 close FICTIKZ;
@@ -91,7 +96,8 @@ close FICTEXTMP;
 system("pkill eog");
 
 # generation pdf a partir de fichier tex
-system("pdflatex $nom_fic_tex");
+## system("pdflatex $nom_fic_tex");
+system("pdflatex $nom_fic_tex > /dev/null");
 
 my $pdf_tmp=$filename.".pdf";
 
@@ -124,13 +130,9 @@ close FICTEXTMP_IDC;
 
 #system("echo -------- $nom_fic_tex_IDC"); #
 #sleep 2;
-system("pdflatex $nom_fic_tex_IDC"); 
-=jr
-print "-"x80;
-system("ls *.pdf");
-print "-"x80;
-sleep 5;
-=cut
+##system("pdflatex $nom_fic_tex_IDC"); 
+system("pdflatex $nom_fic_tex_IDC > /dev/null"); 
+
 
 my $pdf_tmp_IDC=$filename."_IDC.pdf";
 $img_IDC=$filename."_IDC.png";

@@ -409,18 +409,27 @@ sub parse {
 	@liste_instructions = &TikzParser::decoupe_lignes(this->{textEdit}->text());
 	&TikzParser::parse_liste_instructions(@liste_instructions);
 	print "_"x80; #dbg
+	print "parsing\n";
+	print "~"x80; #dbg
 	print Dumper(this->{listeInstructions}); #dbg
+	#@liste_instructions = @{this->{listeInstructions}};
 }
 
 
 sub list_of_nodes{
+	print "list nodes \n";
+	print "-"x80;
+	print Dumper(@liste_instructions);
 	foreach my $elem (@liste_instructions){
 		if($elem->{type} eq "node") {
 			push (@listenoeuds, $elem->{nom});
 		}
 	}
-	print "-"x80; #dbg
+	print "-x"x80; #dbg
 	print Dumper(this->{listeNoeuds}); #dbg
+	print "-x"x80; #dbg
+	#@listenoeuds = \@{listenoeuds};
+	print Dumper(\@{listenoeuds}); #dbg
 }
 
 sub nb_IDC{
@@ -441,6 +450,7 @@ sub object_ofIDC{
 	print " >>> idc : $idc\n";
 	my $nb_IDC = nb_IDC();
 	foreach my $elem (@liste_instructions){
+		print $elem->{colorId},"\n";
 		if(defined($elem->{colorId}) && ($elem->{colorId} eq $idc) ) {
 			return $elem;
 		}

@@ -3,6 +3,7 @@
  [x] Racourci pour générer image
  [ ] Image
 	[x] Générer imageCouleur
+		[x] Modifier draw pour que la taille des arretes soit plus grande ( et donc clickable) dans l' image IDC
 	[x] Générer image a la taille réelle (même taille que dans pdf) -> voir options de "convert"
 	[x] Detecter coordonnées clic dans image -> voir examples/graphicsview/dragdroprobot
 		[x] recuperer valeur couleur pixel dans une image a des coordonées données
@@ -28,6 +29,7 @@
  [x] pas d' accents sous LaTeX
 	[ ] régler problémes d' encodage (utf8 ?) a l' ouverture, sauvegarde, compil latex
  [x] ./tikzg.pl nom_fic -> ouvre nom_fic dans tikzg 
+ [ ] regler souci dans parseur a la regeneration
  [ ] Noter iddées pour le rapport -> plan, commencer a rédiger
  [ ] logo pour appli
  [ ] icones pour toolbar 
