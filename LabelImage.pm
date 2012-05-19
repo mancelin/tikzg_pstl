@@ -81,7 +81,7 @@ sub IDC_of_RGB {
 		chomp $line;
 		#print $line; #dbg
 		$nb_IDC--;
-		last LECT_FIC if ($nb_IDC == 0);
+		last LECT_FIC if ($nb_IDC < 0);
 		my ($idc, $sep, $r, $g, $b) = split / /,$line;
 		if (($r == $red) && ($g == $green) && ($b == $blue)){
 			close LIST_IDC;

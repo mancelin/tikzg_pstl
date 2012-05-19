@@ -23,4 +23,9 @@ sub gen_next_ColorId{	# color id désormais codé sur 2 couleurs : red , green
 	return "$new_color,fill=$new_color";
 }
 
+sub reset_ColorId{
+	$rv=30; # red value
+	$gv=29; # green value
+}
+
 1;

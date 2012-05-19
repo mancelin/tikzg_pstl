@@ -406,12 +406,14 @@ sub clean {
 
 
 sub parse {
+	&ColorId::reset_ColorId();
 	@liste_instructions = &TikzParser::decoupe_lignes(this->{textEdit}->text());
 	&TikzParser::parse_liste_instructions(@liste_instructions);
-	print "_"x80; #dbg
-	print "parsing\n";
-	print "~"x80; #dbg
-	print Dumper(this->{listeInstructions}); #dbg
+	#this->{listeInstructions} = \@liste_instructions;
+#	print "_"x80; #dbg
+#	print "parsing\n";
+#	print "~"x80; #dbg
+	#print Dumper(this->{listeInstructions}); #dbg
 	#@liste_instructions = @{this->{listeInstructions}};
 }
 
@@ -419,27 +421,30 @@ sub parse {
 sub list_of_nodes{
 	print "list nodes \n";
 	print "-"x80;
-	print Dumper(@liste_instructions);
+	printf "length liste_instructions : %d\n", scalar(@liste_instructions);
+#	print Dumper(@liste_instructions);
 	foreach my $elem (@liste_instructions){
 		if($elem->{type} eq "node") {
 			push (@listenoeuds, $elem->{nom});
 		}
 	}
-	print "-x"x80; #dbg
-	print Dumper(this->{listeNoeuds}); #dbg
-	print "-x"x80; #dbg
+#	print "-"x80; #dbg
+	#print Dumper(this->{listeNoeuds}); #dbg
+	#print "-x"x80; #dbg
 	#@listenoeuds = \@{listenoeuds};
-	print Dumper(\@{listenoeuds}); #dbg
+	#print Dumper(\@{listenoeuds}); #dbg
 }
 
 sub nb_IDC{
 	my $nb_IDC = 0;
+#	printf "nb_IDC => length liste_instructions : %d\n", scalar(@liste_instructions);
 	foreach my $elem (@liste_instructions){
 		if(defined($elem->{colorId})) {
 			$nb_IDC++;
 		}
 	}
-	print "-"x80; #dbg
+#	print "nb IDC : $nb_IDC\n";
+#	print "-"x80; #dbg
 	return $nb_IDC;
 }
 
@@ -447,11 +452,12 @@ sub nb_IDC{
 sub object_ofIDC{
 	my ($idc) = @_;
 	$idc="$idc,fill=$idc";
-	print " >>> idc : $idc\n";
+#	print " >>> idc : $idc\n";
 	my $nb_IDC = nb_IDC();
+	print "="x80;
 	foreach my $elem (@liste_instructions){
-		print $elem->{colorId},"\n";
 		if(defined($elem->{colorId}) && ($elem->{colorId} eq $idc) ) {
+	#		print $elem->{colorId},"  ", $elem->{ligne},"\n";
 			return $elem;
 		}
 	}	

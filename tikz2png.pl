@@ -68,7 +68,7 @@ while (my $ligne_colorID=<FICTIKZ>) {
 						(.*;\n)
 					}x;
 	my ($obj_tikz, $prop, $reste_ligne) = ($1,$4,$5);
-	printf "1 : %s, 4 : %s, 5 : %s\n", $1, $4, $5;
+	#printf "1 : %s, 4 : %s, 5 : %s\n", $1, $4, $5;
 	if( $obj_tikz eq ""){
 		$tikz_code_colorID.=$ligne_colorID;
 		
