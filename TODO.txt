@@ -18,6 +18,7 @@
  [x] lier valeur zoom image a MainWindow
  [ ] Interface graphique Tikzg
 	[ ] Barre de menu en français, lister/implémenter tout ce qu' il faut: voir MENU.txt
+	[ ] afficher titre fichier ouvert dans la barre de titre
 	[ ] dock avec boutons/textbox pour modifier les éléments du graphe
 	[x] rendre dock avec image non fermable
 	[ ] textbox pour erreurs de compil latex
@@ -29,7 +30,8 @@
  [x] pas d' accents sous LaTeX
 	[ ] régler problémes d' encodage (utf8 ?) a l' ouverture, sauvegarde, compil latex
  [x] ./tikzg.pl nom_fic -> ouvre nom_fic dans tikzg 
- [ ] regler souci dans parseur a la regeneration
+ [x] regler souci dans parseur a la regeneration
+	[ ] reconfigurer le parseur pour qu' il gére "node distance"
  [ ] Noter iddées pour le rapport -> plan, commencer a rédiger
  [ ] logo pour appli
  [ ] icones pour toolbar 

@@ -150,18 +150,12 @@ sub about {
 }
 
 sub createActions {
-    my $newEditorAct = Qt::Action(Qt::Icon("images/new.png"), "&New",
+    my $newEditorAct = Qt::Action(Qt::Icon("images/new.png"), "&Nouveau",
                                this);
     this->{newEditorAct} = $newEditorAct;
     $newEditorAct->setShortcut(Qt::KeySequence("Ctrl+N"));
     $newEditorAct->setStatusTip("Créer un nouveau fichier tikz");
     this->connect($newEditorAct, SIGNAL 'triggered()', this, SLOT 'newEditor()');
-
-    my $saveAct = Qt::Action(Qt::Icon("images/save.png"), "&Save...", this);
-    this->{saveAct} = $saveAct;
-    $saveAct->setShortcut(Qt::KeySequence("Ctrl+S"));
-    $saveAct->setStatusTip("Enregistrer le fichier courant");
-    this->connect($saveAct, SIGNAL 'triggered()', this, SLOT 'save()');
     
     my $loadAct = Qt::Action(Qt::Icon("images/load.png"), "&Ouvrir", this);
     this->{loadAct} = $loadAct;
@@ -169,6 +163,12 @@ sub createActions {
     $loadAct->setStatusTip("Ouvrir un code tikz");
     this->connect($loadAct, SIGNAL 'triggered()', this, SLOT 'load()');
 
+	my $saveAct = Qt::Action(Qt::Icon("images/save.png"), "&Save...", this);
+    this->{saveAct} = $saveAct;
+    $saveAct->setShortcut(Qt::KeySequence("Ctrl+S"));
+    $saveAct->setStatusTip("Enregistrer le fichier courant");
+    this->connect($saveAct, SIGNAL 'triggered()', this, SLOT 'save()');
+    
     my $undoAct = Qt::Action(Qt::Icon("images/undo.png"), "&Undo", this);
     this->{undoAct} = $undoAct;
     $undoAct->setShortcut(Qt::KeySequence("Ctrl+Z"));
@@ -202,8 +202,10 @@ sub createActions {
 sub createMenus {
     my $fileMenu = this->menuBar()->addMenu("&Fichier");
     $fileMenu->addAction(this->{newEditorAct});
-    $fileMenu->addAction(this->{saveAct});
+    $fileMenu->addSeparator();
     $fileMenu->addAction(this->{loadAct});
+    $fileMenu->addSeparator();
+    $fileMenu->addAction(this->{saveAct});
     $fileMenu->addSeparator();
     $fileMenu->addAction(this->{quitAct});
 
@@ -437,7 +439,7 @@ sub list_of_nodes{
 
 sub nb_IDC{
 	my $nb_IDC = 0;
-#	printf "nb_IDC => length liste_instructions : %d\n", scalar(@liste_instructions);
+	printf "nb_IDC => length liste_instructions : %d\n", scalar(@liste_instructions);
 	foreach my $elem (@liste_instructions){
 		if(defined($elem->{colorId})) {
 			$nb_IDC++;
