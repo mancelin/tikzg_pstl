@@ -175,10 +175,10 @@ sub createActions {
     $undoAct->setStatusTip("Undo the last editing action");
     this->connect($undoAct, SIGNAL 'triggered()', this, SLOT 'undo()');
 
-    my $quitAct = Qt::Action("&Quit", this);
+    my $quitAct = Qt::Action("&Quitter", this);
     this->{quitAct} = $quitAct;
     $quitAct->setShortcut(Qt::KeySequence("Ctrl+Q"));
-    $quitAct->setStatusTip("Quit the application");
+    $quitAct->setStatusTip("Quitter l' application");
     this->connect($quitAct, SIGNAL 'triggered()', this, SLOT 'close()');
 
     my $aboutAct = Qt::Action("&About", this);
@@ -411,6 +411,11 @@ sub parse {
 	&ColorId::reset_ColorId();
 	@liste_instructions = &TikzParser::decoupe_lignes(this->{textEdit}->text());
 	&TikzParser::parse_liste_instructions(@liste_instructions);
+	print "-"x80;
+	foreach(@liste_instructions){
+		print $_->{code}, "\n";
+	}
+	print "-"x80;	
 	#this->{listeInstructions} = \@liste_instructions;
 #	print "_"x80; #dbg
 #	print "parsing\n";
@@ -440,6 +445,7 @@ sub list_of_nodes{
 sub nb_IDC{
 	my $nb_IDC = 0;
 	printf "nb_IDC => length liste_instructions : %d\n", scalar(@liste_instructions);
+	print Dumper(@liste_instructions);
 	foreach my $elem (@liste_instructions){
 		if(defined($elem->{colorId})) {
 			$nb_IDC++;

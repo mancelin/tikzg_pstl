@@ -31,7 +31,7 @@
 	[ ] régler problémes d' encodage (utf8 ?) a l' ouverture, sauvegarde, compil latex
  [x] ./tikzg.pl nom_fic -> ouvre nom_fic dans tikzg 
  [x] regler souci dans parseur a la regeneration
-	[ ] reconfigurer le parseur pour qu' il gére "node distance"
+	[x] reconfigurer le parseur pour qu' il gére "node distance"
  [ ] Noter iddées pour le rapport -> plan, commencer a rédiger
  [ ] logo pour appli
  [ ] icones pour toolbar 

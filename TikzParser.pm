@@ -9,22 +9,41 @@ use Data::Dumper; #
 use ListDumper; #
 
 sub decoupe_lignes {	# une ligne commence par \ et finit par ;
-	local $_ = $_[0];
-#	print "+"x80;
-#	print $_,"\n";
-#	print "+"x80;
-	my @tab_lignes = split /;/, $_;
-	foreach $elem (@tab_lignes){ # rajout d' un ";" a la fin de chaque instructuion
-		$elem=$elem.";";
-	}
-	#&listdump(@tab_lignes);
-	#print "-"x80, "\n";	
+	local $code = $_[0];
+	print "+"x80;
+	print $code,"\n";
+	print "+"x80;
 	
-	# ok jusqu ici
 	my @list_TikzObjs;
 	my $is_instr_multiligne = 0;	
 	my $i_objTikz=0;
 	my $i_ligne=1;
+	
+	if ($code =~ /(.*[^n]*)\n/){
+		my $premiere_ligne = $1;
+		#printf "premiere_ligne : %s\n", $premiere_ligne;
+		if ($premiere_ligne =~ /(\s*\[)(\s*node\s*distance\s*=\s*)([^s]*)(\s*\])/){	
+			#printf "1 : %s, 2 : %s,3 : %s,4 : %s\n", $1, $2, $3, $4;
+			$list_TikzObjs[$i_objTikz] = new TikzObjects(ligne => $i_ligne);
+			$list_TikzObjs[$i_objTikz]->{type} = "NodeDistance";
+			$list_TikzObjs[$i_objTikz]->{nodeDistance} = $3;
+			$list_TikzObjs[$i_objTikz]->{code} = $premiere_ligne;
+			$i_objTikz++;
+			$i_ligne++;
+		}
+	}
+	my @tab_lignes = split /;/, $code;
+
+	print "tab lignes :\n";
+	foreach $elem (@tab_lignes){ # rajout d' un ";" a la fin de chaque instructuion
+		$elem=$elem.";";
+	}
+
+	#&listdump(@tab_lignes);
+	#print "-"x80, "\n";	
+	
+	# ok jusqu ici
+	
 	foreach $instruction (@tab_lignes){
 		my @lignes = split /\n/, $instruction;
 		shift @lignes;

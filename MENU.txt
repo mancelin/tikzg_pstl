@@ -1,84 +1,84 @@
-[ ----------------------  Barre Menu ---------------------------------- ]
-		
-_Fichier
-	_Nouveau (Ctrl+N)
-	---------------
-	_Ouvrir (Ctrl+O)
-	---------------
-	_Enregistrer (Ctrl+S)       // Enregistrer n' enregistre que le code tikz ( que le contenu de la fenétre scintilla )
-	Enregistrer _sous  (Shift+Ctrl+S)		   // idem
-	---------------
-	E_xporter
-		png
-		pdf
-    Copier source figure tikz (inclut préambule + fin tikz)
-	---------------
-	_Imprimer (Ctrl+P)   
-	---------------
-	_Quitter	(Alt+F4)
-_Editer
+	[ ----------------------  Barre Menu ---------------------------------- ]
+			
+	_Fichier
+x		_Nouveau (Ctrl+N)
+		---------------
+x		_Ouvrir (Ctrl+O)
+		---------------
+		_Enregistrer (Ctrl+S)       // Enregistrer n' enregistre que le code tikz ( que le contenu de la fenétre scintilla )
+		Enregistrer _sous  (Shift+Ctrl+S)		   // idem
+		---------------
+		E_xporter
+			png
+			pdf
+		Copier source figure tikz (inclut préambule + fin tikz)
+		---------------
+		_Imprimer (Ctrl+P)   
+		---------------
+		_Quitter	(Alt+F4)  -> demmander si sauvergarder avant quitter si fic non sauvegardé
+	_Editer
+		_Défaire	(Ctrl+Z)
+		_Refaire (Ctrl+Y)
+		---------------
+		Co_uper	(Ctrl+X)
+		_Copier	(Ctrl+C)
+		C_oller	(Ctrl+V)
+		_Supprimer
+		---------------
+		_Tout sélectionner (Ctrl+A)
+		---------------
+		_Preferences Scintilla  (Ctrl+Alt+P) ##  idem Affichage/Editeur/
+	_Affichage
+		Plein é_cran    (F11)
+		---------------
+		_Editeur
+			Afficher les numéros de _ligne
+			Activer coloration Syntaxique
+		---------------
+		Zoom _texte
+			Zoom a_vant (Ctrl++)
+			Zoom a_rrière (Ctrl+-)
+			Taille _normale (Ctrl+0)
+		Zoom _image
+			Zoom a_vant 
+			Zoom a_rrière 
+			Taille _normale
+	A_ide
+		Ai_de (F1)
+		À _propos
+
+
+
+	[ ----------------------  Clic droit  ---------------------------------- ]
 	_Défaire	(Ctrl+Z)
 	_Refaire (Ctrl+Y)
 	---------------
 	Co_uper	(Ctrl+X)
 	_Copier	(Ctrl+C)
 	C_oller	(Ctrl+V)
-    _Supprimer
+	_Supprimer
 	---------------
 	_Tout sélectionner (Ctrl+A)
-	---------------
-	_Preferences Scintilla  (Ctrl+Alt+P) ##  idem Affichage/Editeur/
-_Affichage
-	Plein é_cran    (F11)
-    ---------------
-    _Editeur
-        Afficher les numéros de _ligne
-        Activer coloration Syntaxique
-	---------------
-    Zoom _texte
-        Zoom a_vant (Ctrl++)
-        Zoom a_rrière (Ctrl+-)
-        Taille _normale (Ctrl+0)
-    Zoom _image
-        Zoom a_vant 
-        Zoom a_rrière 
-        Taille _normale
-A_ide
-	Ai_de (F1)
-	À _propos
+	----------------
+	_Zoom texte
+			Zoom a_vant (Ctrl++)
+			Zoom a_rrière (Ctrl+-)
+			Taille _normale (Ctrl+0)
 
+	[ ----------------------  Barre Outils  ---------------------------------- ]
+		[ ----------------------  Barre Outil Texte  -------------------------- ]
+			Nouveau (Ctrl+N)
+			Ouvrir (Ctrl+O)
+			Enregistrer (Ctrl+S)
+			---------------- 
+			Copier source figure tikz => Copier tikz
+			Générer figure ##
+			-----------------
+			"textbox avec node distance" ##
+			
 
-
-[ ----------------------  Clic droit  ---------------------------------- ]
-_Défaire	(Ctrl+Z)
-_Refaire (Ctrl+Y)
----------------
-Co_uper	(Ctrl+X)
-_Copier	(Ctrl+C)
-C_oller	(Ctrl+V)
-_Supprimer
----------------
-_Tout sélectionner (Ctrl+A)
-----------------
-_Zoom texte
-        Zoom a_vant (Ctrl++)
-        Zoom a_rrière (Ctrl+-)
-        Taille _normale (Ctrl+0)
-
-[ ----------------------  Barre Outils  ---------------------------------- ]
-    [ ----------------------  Barre Outil Texte  -------------------------- ]
-        Nouveau (Ctrl+N)
-        Ouvrir (Ctrl+O)
-        Enregistrer (Ctrl+S)
-        ---------------- 
-        Copier source figure tikz => Copier tikz
-        Générer figure ##
-        -----------------
-        "textbox avec node distance" ##
-        
-
-    [ ----------------------  Barre Outil Image  -------------------------- ]
-        "liste déroulante avec le zoom actuel"
-        
-        
+		[ ----------------------  Barre Outil Image  -------------------------- ]
+			"liste déroulante avec le zoom actuel"
+			
+			
 
