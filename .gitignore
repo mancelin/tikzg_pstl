@@ -1,0 +1,11 @@
+tmp/
+rapport/*.aux
+rapport/*.idx
+rapport/*.log
+matrice_color/
+EXPERIENCES.txt
+gen_list_IDC/tmp_node*
+gen_list_IDC/IDC55.png
+gen_list_IDC/png_of_list_IDC.pl
+
+
