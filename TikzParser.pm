@@ -30,6 +30,16 @@ sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 			$list_TikzObjs[$i_objTikz]->{code} = $premiere_ligne;
 			$i_objTikz++;
 			$i_ligne++;
+		} else {
+			if ($premiere_ligne =~ /(^\s*\\.*)/) { # si c' est une instruction tikz, on ne fait rien (traité par la suite)
+			
+			} else { # ligne vide ou commentaire
+				$list_TikzObjs[$i_objTikz] = new TikzObjects(ligne => $i_ligne);
+				$list_TikzObjs[$i_objTikz]->{code} = $line;
+				$list_TikzObjs[$i_objTikz]->{type} = "NoCode";
+				$i_objTikz++;
+				$i_ligne++
+			}
 		}
 	}
 	my @tab_lignes = split /;/, $code;
