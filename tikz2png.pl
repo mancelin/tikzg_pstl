@@ -96,8 +96,8 @@ close FICTEXTMP;
 system("pkill eog");
 
 # generation pdf a partir de fichier tex
-## system("pdflatex $nom_fic_tex");
-system("pdflatex $nom_fic_tex > /dev/null");
+#system("pdflatex $nom_fic_tex");
+system("pdflatex -halt-on-error $nom_fic_tex > /dev/null");
 
 my $pdf_tmp=$filename.".pdf";
 
@@ -130,8 +130,8 @@ close FICTEXTMP_IDC;
 
 #system("echo -------- $nom_fic_tex_IDC"); #
 #sleep 2;
-##system("pdflatex $nom_fic_tex_IDC"); 
-system("pdflatex $nom_fic_tex_IDC > /dev/null"); 
+#system("pdflatex $nom_fic_tex_IDC"); 
+system("pdflatex -halt-on-error $nom_fic_tex_IDC > /dev/null"); 
 
 
 my $pdf_tmp_IDC=$filename."_IDC.pdf";

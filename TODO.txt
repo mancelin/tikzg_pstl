@@ -1,7 +1,7 @@
- [ ] Executer action toutes les n secondes d' inaction aprés modif du doc (0.5 par exemple) 
-	[ ] detecter inaction ( il y a un truc genre "isChanged" dans Scintilla )
+ [x] Executer action toutes les n secondes d' inaction aprés modif du doc (0.5 par exemple) 
+	[x] detecter inaction ( il y a un truc genre "isChanged" dans Scintilla )
  [x] Racourci pour générer image
- [ ] Image
+ [x] Image
 	[x] Générer imageCouleur
 		[x] Modifier draw pour que la taille des arretes soit plus grande ( et donc clickable) dans l' image IDC
 	[x] Générer image a la taille réelle (même taille que dans pdf) -> voir options de "convert"
@@ -18,7 +18,7 @@
  [x] lier valeur zoom image a MainWindow
  [ ] Interface graphique Tikzg
 	[ ] Barre de menu en français, lister/implémenter tout ce qu' il faut: voir MENU.txt
-	[ ] afficher titre fichier ouvert dans la barre de titre
+	[x] afficher titre fichier ouvert dans la barre de titre
 	[ ] dock avec boutons/textbox pour modifier les éléments du graphe
 	[x] rendre dock avec image non fermable
 	[ ] textbox pour erreurs de compil latex

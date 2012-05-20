@@ -20,6 +20,7 @@ use QtCore4::slots
     insertCustomer => ['QString'],
     addParagraph   => ['QString'],
     genImage       => [''],
+ #   myEvent        => [''],	# dbg
     documentWasModified => [];
 use LabelImage;
 use TikzParser;
@@ -31,7 +32,8 @@ use File::Spec;
 my @liste_instructions;
 my @listenoeuds;
 my $density;
-
+my $timer = Qt::Timer();
+my $generation_img_en_cours = 0;
 
 sub NEW {
 	#print "nb args : " , scalar(@_), "\n";
@@ -71,6 +73,9 @@ sub NEW {
     #this->connect($textEdit, SIGNAL 'isModified()',
     this->connect(this->{textEdit}, SIGNAL 'textChanged()',
                   this, SLOT 'documentWasModified()');
+	this->connect( $timer, SIGNAL 'timeout()', this, SLOT 'genImage()' );
+#	Qt::Object::connect( $timer, SIGNAL 'timeout()', this, SLOT 'myEvent()' );
+    $timer->start(1000);
 
     
  #   print "file : $file\n";
@@ -81,6 +86,35 @@ sub NEW {
 		this->setCurrentFile("");
 	}
 }
+
+
+sub closeEvent {
+    my ($event) = @_;
+    if (maybeSave()) {
+        $event->accept();
+    } else {
+        $event->ignore();
+    }
+}
+
+sub documentWasModified {
+    this->setWindowModified(this->{textEdit}->isModified());
+    
+    if (!$generation_img_en_cours){
+	#	printf "Timer interval : %d\n      timerId : %d\n", $timer->interval(), $timer->timerId();
+		$timer->start();
+	}
+}
+
+=dbg
+# pour test
+sub myEvent {
+	#my ($event) = @_;
+	print "Event !!\n";
+}
+=cut
+
+
 
 sub newEditor {
     this->{textEdit}->clear(); 
@@ -267,15 +301,6 @@ sub printSlot {
     this->statusBar()->showMessage("Impression en cours", 2000);
 }
 
-sub closeEvent {
-    my ($event) = @_;
-    if (maybeSave()) {
-        $event->accept();
-    } else {
-        $event->ignore();
-    }
-}
-
 sub undo {
     my $document = this->{textEdit}->document();
     $document->undo();
@@ -287,10 +312,6 @@ sub about {
             "<b>TikzG</b> permet de ..." .
             "........".
             "................." );
-}
-
-sub documentWasModified {
-    this->setWindowModified(this->{textEdit}->isModified());
 }
 
 sub createActions {
@@ -505,7 +526,10 @@ sub proprieteDraw{
 
 
 sub genImage {
-	# reinisialisation de liste d' objets tikz et de liste d'instructions
+	print "gen Image\n";
+	$generation_img_en_cours = 1;
+	$timer->stop();
+	# reinitialisation de liste d' objets tikz et de liste d'instructions
 	@liste_instructions = ();
 	@listenoeuds = ();
 	
@@ -559,6 +583,7 @@ sub genImage {
 
    parse();
    list_of_nodes();
+   $generation_img_en_cours = 0;
 }
 
 =waste

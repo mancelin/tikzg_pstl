@@ -44,7 +44,7 @@ sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 	}
 	my @tab_lignes = split /;/, $code;
 
-	print "tab lignes :\n";
+#	print "tab lignes :\n";
 	foreach $elem (@tab_lignes){ # rajout d' un ";" a la fin de chaque instructuion
 		$elem=$elem.";";
 	}
