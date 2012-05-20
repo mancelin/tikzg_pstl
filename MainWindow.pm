@@ -444,8 +444,8 @@ sub createStatusBar {
 }
 
 sub createDockWindows {
-   
     my $dock = Qt::DockWidget("Graphe", this);
+    this->{dock} = $dock;
     $dock->setAllowedAreas(Qt::LeftDockWidgetArea() | Qt::RightDockWidgetArea());
     $dock->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
   #  my $view = Qt::Label($dock);
@@ -521,12 +521,27 @@ sub proprieteDraw{
     this->{viewMenu}->addAction($dock->toggleViewAction());
 }
 
+sub triggerWaitCursor {
+	this->setCursor(Qt::Cursor(Qt::WaitCursor()));
+	this->{dock}->setCursor(Qt::Cursor(Qt::WaitCursor()));
+#	this->setStatusTip("Generation de la figure Tikz en cours ...");
+	this->statusBar()->showMessage("Generation de la figure Tikz en cours ...",0);
+#	this->{textEdit}->setCursor(Qt::Cursor(Qt::WaitCursor()));	# inutile
+}
+
+sub triggerArrowCursor {
+	this->setCursor(Qt::Cursor(Qt::ArrowCursor()));
+	this->{dock}->setCursor(Qt::Cursor(Qt::ArrowCursor()));
+	this->statusBar()->clearMessage();
+#	this->setStatusTip("");
+}
 
 
 
 
 sub genImage {
 	print "gen Image\n";
+	triggerWaitCursor();
 	$generation_img_en_cours = 1;
 	$timer->stop();
 	# reinitialisation de liste d' objets tikz et de liste d'instructions
@@ -584,6 +599,7 @@ sub genImage {
    parse();
    list_of_nodes();
    $generation_img_en_cours = 0;
+   triggerArrowCursor();
 }
 
 =waste
