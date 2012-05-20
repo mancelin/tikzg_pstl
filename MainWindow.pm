@@ -14,11 +14,13 @@ use QtCore4::slots
     about          => [''],
     insertCustomer => ['QString'],
     addParagraph   => ['QString'],
-    genImage       => [''];
+    genImage       => [''],
+    documentWasModified => [];
 use LabelImage;
 use TikzParser;
 use TikzObjects;
 use Data::Dumper; 
+use File::Basename;
 
 my @liste_instructions;
 my @listenoeuds;
@@ -47,8 +49,8 @@ sub NEW {
     $density = 90;
     this->{density} = \$density;
     
-    this->{listeInstructions} = \@liste_instructions; # reference sur liste  ##
-    this->{listeNoeuds} = \@listenoeuds;	##
+    this->{listeInstructions} = \@liste_instructions; # reference sur liste
+    this->{listeNoeuds} = \@listenoeuds;
 
     createActions();
     createMenus();
@@ -71,6 +73,39 @@ sub newEditor {
     this->{textEdit}->clear(); 
 }
 
+sub setCurrentFile {
+    my ( $fileName ) = @_;
+    this->{curFile} = $fileName;
+    this->{textEdit}->setModified(0);
+    this->setWindowModified(0);
+
+    my $shownName;
+    if (!defined this->{curFile} || !(this->{curFile})) {
+        $shownName = "Sans Titre";
+    }
+    else {
+		my $curFile = this->{curFile};
+        $shownName = &basename($curFile);
+    }
+
+    this->setWindowTitle(sprintf("%s\[*] - %s", $shownName, "TikzG"));
+}
+
+sub maybeSave {
+    if (this->{textEdit}->document()->isModified()) {
+        my $ret = Qt::MessageBox::warning(this, "Application",
+                        "The document has been modified.\n" .
+                        "Do you want to save your changes?",
+                        CAST Qt::MessageBox::Save() | Qt::MessageBox::Discard() | Qt::MessageBox::Cancel(), 'QMessageBox::StandardButtons'); 
+        if ($ret == Qt::MessageBox::Save()) {
+            return save();
+        }
+        elsif ($ret == Qt::MessageBox::Cancel()) {
+            return 0;
+        }
+    }
+    return 1;
+}
 
 sub save {
     my $fileName = Qt::FileDialog::getSaveFileName(this,
@@ -127,11 +162,11 @@ sub loadFile {
 	}
 
     Qt::Application::setOverrideCursor(Qt::Cursor(Qt::WaitCursor()));
-   this->{textEdit}->setText($text);
+    this->{textEdit}->setText($text);
     Qt::Application::restoreOverrideCursor();
     close FH;
 
-   # setCurrentFile($fileName);
+    setCurrentFile($fileName);
     this->statusBar()->showMessage("File loaded", 2000);
 	&genImage();
 }
@@ -147,6 +182,10 @@ sub about {
             "<b>TikzG</b> permet de ..." .
             "........".
             "................." );
+}
+
+sub documentWasModified {
+    this->setWindowModified(this->{textEdit}->document()->isModified());
 }
 
 sub createActions {
@@ -411,11 +450,13 @@ sub parse {
 	&ColorId::reset_ColorId();
 	@liste_instructions = &TikzParser::decoupe_lignes(this->{textEdit}->text());
 	&TikzParser::parse_liste_instructions(@liste_instructions);
+=dbg
 	print "-"x80;
 	foreach(@liste_instructions){
 		print $_->{code}, "\n";
 	}
 	print "-"x80;	
+=cut
 	#this->{listeInstructions} = \@liste_instructions;
 #	print "_"x80; #dbg
 #	print "parsing\n";
@@ -426,9 +467,11 @@ sub parse {
 
 
 sub list_of_nodes{
+=dbg
 	print "list nodes \n";
 	print "-"x80;
 	printf "length liste_instructions : %d\n", scalar(@liste_instructions);
+=cut
 #	print Dumper(@liste_instructions);
 	foreach my $elem (@liste_instructions){
 		if($elem->{type} eq "node") {
@@ -444,8 +487,8 @@ sub list_of_nodes{
 
 sub nb_IDC{
 	my $nb_IDC = 0;
-	printf "nb_IDC => length liste_instructions : %d\n", scalar(@liste_instructions);
-	print Dumper(@liste_instructions);
+#	printf "nb_IDC => length liste_instructions : %d\n", scalar(@liste_instructions);
+#	print Dumper(@liste_instructions);
 	foreach my $elem (@liste_instructions){
 		if(defined($elem->{colorId})) {
 			$nb_IDC++;
@@ -462,7 +505,7 @@ sub object_ofIDC{
 	$idc="$idc,fill=$idc";
 #	print " >>> idc : $idc\n";
 	my $nb_IDC = nb_IDC();
-	print "="x80;
+#	print "="x80;
 	foreach my $elem (@liste_instructions){
 		if(defined($elem->{colorId}) && ($elem->{colorId} eq $idc) ) {
 	#		print $elem->{colorId},"  ", $elem->{ligne},"\n";

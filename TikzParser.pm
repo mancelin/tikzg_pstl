@@ -10,9 +10,9 @@ use ListDumper; #
 
 sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 	local $code = $_[0];
-	print "+"x80;
-	print $code,"\n";
-	print "+"x80;
+#	print "+"x80;
+#	print $code,"\n";
+#	print "+"x80;
 	
 	my @list_TikzObjs;
 	my $is_instr_multiligne = 0;	
