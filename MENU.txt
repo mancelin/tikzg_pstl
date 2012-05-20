@@ -11,7 +11,7 @@ x		Enregistrer _sous  (Ctrl+Shift+S)		   // idem
 x		E_xporter
 x			png
 x			pdf
-		Copier source figure tikz (inclut préambule + fin tikz)  
+x		_Copier source figure tikz (inclut préambule + fin tikz)  (Ctrl+Shift+C)
 		---------------
 		_Imprimer (Ctrl+P)   
 		---------------

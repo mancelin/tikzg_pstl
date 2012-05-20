@@ -13,6 +13,7 @@ use QtCore4::slots
     saveAs         => [''],
     exportAsPng    => [''],
     exportAsPdf    => [''],
+    copyTikzpicture=> [''],
     printSlot      => [''],
     undo           => [''],
     about          => [''],
@@ -241,10 +242,19 @@ sub exportAsPdf{
 	system("cp tmp/tmp_tikz.pdf $pdfFile");
 }
 
+sub copyTikzpicture{
+	my $code_tikzpicture= sprintf "\\begin{tikzpicture}%s\n\\end{tikzpicture}\n", this->{textEdit}->text();
+	
+	my $pressePapier = Qt::Application::clipboard();
+	#Pour mettre du texte dans le presse papier
+	$pressePapier->setText($code_tikzpicture);
+	print $code_tikzpicture;
+}
+
+
 sub printSlot {
     my $document = this->{textEdit}->text();
     my $printer = Qt::Printer();
-
     my $dialog = Qt::PrintDialog($printer, this);
     if ($dialog->exec() != ${Qt::Dialog::Accepted()}){
         return;
@@ -309,7 +319,11 @@ sub createActions {
     $exportAsPdfAct->setStatusTip("Exporter en tant que pdf");
     this->connect($exportAsPdfAct, SIGNAL 'triggered()', this, SLOT 'exportAsPdf()');
     
-    # exportTikz
+    my $copyTikzpictureAct = Qt::Action(Qt::Icon("images/copyTikz.png"), "&Copier source figure tikz", this);
+    this->{copyTikzpictureAct} = $copyTikzpictureAct;
+    $copyTikzpictureAct->setShortcut(Qt::KeySequence("Ctrl+Shift+C"));
+    $copyTikzpictureAct->setStatusTip("Copier code source figure tikz");
+    this->connect($copyTikzpictureAct, SIGNAL 'triggered()', this, SLOT 'copyTikzpicture()');
     
     my $printAct = Qt::Action(Qt::Icon("images/print.png"), "Imprimer code Tikz", this);
     this->{printAct} = $printAct;
@@ -362,7 +376,7 @@ sub createMenus {
     my $fileExportMenu = $fileMenu->addMenu("E&xporter");
 		$fileExportMenu->addAction(this->{exportAsPngAct});
 		$fileExportMenu->addAction(this->{exportAsPdfAct});
-	# copier code tikz
+	$fileMenu->addAction(this->{copyTikzpictureAct});
     $fileMenu->addSeparator();
     $fileMenu->addAction(this->{printAct});
 	$fileMenu->addSeparator();
@@ -386,7 +400,8 @@ sub createToolBars {
     $fileToolBar->addAction(this->{newEditorAct});
     $fileToolBar->addAction(this->{saveAct});
     $fileToolBar->addAction(this->{loadAct});
-
+	$fileToolBar->addAction(this->{copyTikzpictureAct});
+	
     my $editToolBar = this->addToolBar("Edit");
     $editToolBar->addAction(this->{undoAct});
     $editToolBar->addAction(this->{genAct});
