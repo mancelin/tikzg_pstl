@@ -21,6 +21,7 @@ use TikzParser;
 use TikzObjects;
 use Data::Dumper; 
 use File::Basename;
+use File::Spec;
 
 my @liste_instructions;
 my @listenoeuds;
@@ -58,14 +59,21 @@ sub NEW {
     createDockWindows();
 	createStatusBar();
 	
-    this->setWindowTitle("Tikz G");
+    #this->setWindowTitle("Tikz G");
 
     newEditor();
+    
+    #this->connect($textEdit, SIGNAL 'isModified()',
+    this->connect(this->{textEdit}, SIGNAL 'textChanged()',
+                  this, SLOT 'documentWasModified()');
+
     
  #   print "file : $file\n";
 	if(defined $file){
 		loadFile($file);
 		#parse();
+	} else {
+		this->setCurrentFile("");
 	}
 }
 
@@ -80,15 +88,21 @@ sub setCurrentFile {
     this->setWindowModified(0);
 
     my $shownName;
+    my $path;
     if (!defined this->{curFile} || !(this->{curFile})) {
         $shownName = "Sans Titre";
     }
     else {
 		my $curFile = this->{curFile};
         $shownName = &basename($curFile);
+        $path = &dirname($curFile);
+        $path = File::Spec->rel2abs($path);
     }
-
-    this->setWindowTitle(sprintf("%s\[*] - %s", $shownName, "TikzG"));
+	if (defined $path){
+		this->setWindowTitle(sprintf("\[*]%s - %s - %s", $shownName,$path, "TikzG"));
+	} else {
+		this->setWindowTitle(sprintf("\[*]%s - %s", $shownName, "TikzG"));
+	}
 }
 
 sub maybeSave {
@@ -185,7 +199,7 @@ sub about {
 }
 
 sub documentWasModified {
-    this->setWindowModified(this->{textEdit}->document()->isModified());
+    this->setWindowModified(this->{textEdit}->isModified());
 }
 
 sub createActions {
