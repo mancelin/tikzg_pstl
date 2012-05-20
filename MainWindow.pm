@@ -13,6 +13,7 @@ use QtCore4::slots
     saveAs         => [''],
     exportAsPng    => [''],
     exportAsPdf    => [''],
+    printSlot      => [''],
     undo           => [''],
     about          => [''],
     insertCustomer => ['QString'],
@@ -240,6 +241,21 @@ sub exportAsPdf{
 	system("cp tmp/tmp_tikz.pdf $pdfFile");
 }
 
+sub printSlot {
+    my $document = this->{textEdit}->text();
+    my $printer = Qt::Printer();
+
+    my $dialog = Qt::PrintDialog($printer, this);
+    if ($dialog->exec() != ${Qt::Dialog::Accepted()}){
+        return;
+    }
+
+    $document->print($printer);
+
+    this->statusBar()->showMessage("Impression en cours", 2000);
+}
+
+
 sub undo {
     my $document = this->{textEdit}->document();
     $document->undo();
@@ -293,6 +309,14 @@ sub createActions {
     $exportAsPdfAct->setStatusTip("Exporter en tant que pdf");
     this->connect($exportAsPdfAct, SIGNAL 'triggered()', this, SLOT 'exportAsPdf()');
     
+    # exportTikz
+    
+    my $printAct = Qt::Action(Qt::Icon("images/print.png"), "Imprimer code Tikz", this);
+    this->{printAct} = $printAct;
+    $printAct->setShortcut(Qt::KeySequence("Ctrl+P"));
+    $printAct->setStatusTip("Imprimer le code Tikz");
+    this->connect($printAct, SIGNAL 'triggered()', this, SLOT 'printSlot()');
+    
     my $quitAct = Qt::Action("&Quitter", this);
     this->{quitAct} = $quitAct;
     $quitAct->setShortcut(Qt::KeySequence("Ctrl+Q"));
@@ -336,13 +360,14 @@ sub createMenus {
     $fileMenu->addAction(this->{saveAsAct});
     $fileMenu->addSeparator();
     my $fileExportMenu = $fileMenu->addMenu("E&xporter");
-
-    $fileExportMenu->addAction(this->{exportAsPngAct});
-    $fileExportMenu->addAction(this->{exportAsPdfAct});
-#=cut
+		$fileExportMenu->addAction(this->{exportAsPngAct});
+		$fileExportMenu->addAction(this->{exportAsPdfAct});
+	# copier code tikz
     $fileMenu->addSeparator();
+    $fileMenu->addAction(this->{printAct});
+	$fileMenu->addSeparator();
     $fileMenu->addAction(this->{quitAct});
-
+    
     my $editMenu = this->menuBar()->addMenu("&Edit");
     $editMenu->addAction(this->{undoAct});
 
