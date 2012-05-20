@@ -8,8 +8,9 @@ use Qsci;
 use QtCore4::isa qw( Qt::MainWindow );
 use QtCore4::slots
     newEditor      => [''],
-    save           => [''],
     load           => [''],
+    save           => [''],
+    saveAs         => [''],
     undo           => [''],
     about          => [''],
     insertCustomer => ['QString'],
@@ -123,17 +124,33 @@ sub maybeSave {
 }
 
 sub save {
-    my $fileName = Qt::FileDialog::getSaveFileName(this,
-                        "Choose a file name", ".",
-                        "tikz (*.tikz)");
-    if (!$fileName) {
-        return;
+#	printf "save, curFile : %s\n", this->{curFile};
+    if (!defined this->{curFile} || !this->{curFile}) {
+        return saveAs();
+    } else {
+        return saveFile(this->{curFile});
+    }
+}
+
+sub saveAs {
+	#printf "saveAs, curFile : %s\n", this->{curFile};
+    my $fileName = Qt::FileDialog::getSaveFileName(this);
+    #printf "getSaveFileName, fileName : %s\n", $fileName;
+    if (!defined $fileName){
+        return 0;
     }
 
+    return saveFile($fileName);
+}
+
+sub saveFile {
+	my ($fileName) = @_;
+    #printf "saveFile, fileName : %s\n", $fileName;
+    
     my $FH;
     if(!(open $FH, '>', $fileName)) {
         Qt::MessageBox::warning(this, "Dock Widgets",
-                                 sprintf("Cannot write file %s:\n%s.",
+                                 sprintf("Impossible d\' écrire le fichier %s:\n%s.",
                                  $fileName,
                                  $!));
         return;
@@ -145,8 +162,10 @@ sub save {
     close $FH;
     Qt::Application::restoreOverrideCursor();
 
-    this->statusBar()->showMessage("Saved '$fileName'", 2000);
+	setCurrentFile($fileName);
+    this->statusBar()->showMessage("Fichier '$fileName' sauvegardé", 2000);
 }
+
 
 sub load {
 	#my $fileName = Qt::FileDialog::
@@ -217,11 +236,24 @@ sub createActions {
     $loadAct->setStatusTip("Ouvrir un code tikz");
     this->connect($loadAct, SIGNAL 'triggered()', this, SLOT 'load()');
 
-	my $saveAct = Qt::Action(Qt::Icon("images/save.png"), "&Save...", this);
+	my $saveAct = Qt::Action(Qt::Icon("images/save.png"), "&Enregistrer", this);
     this->{saveAct} = $saveAct;
     $saveAct->setShortcut(Qt::KeySequence("Ctrl+S"));
     $saveAct->setStatusTip("Enregistrer le fichier courant");
     this->connect($saveAct, SIGNAL 'triggered()', this, SLOT 'save()');
+    
+    my $saveAsAct = Qt::Action(Qt::Icon("images/saveAs.png"), "Enregistrer &sous", this);
+    this->{saveAsAct} = $saveAsAct;
+    $saveAsAct->setShortcut(Qt::KeySequence("Ctrl+Shift+S"));
+    $saveAsAct->setStatusTip("Enregistrer sous");
+    this->connect($saveAsAct, SIGNAL 'triggered()', this, SLOT 'saveAs()');
+    
+    my $quitAct = Qt::Action("&Quitter", this);
+    this->{quitAct} = $quitAct;
+    $quitAct->setShortcut(Qt::KeySequence("Ctrl+Q"));
+    $quitAct->setStatusTip("Quitter l' application");
+    this->connect($quitAct, SIGNAL 'triggered()', this, SLOT 'close()');
+    
     
     my $undoAct = Qt::Action(Qt::Icon("images/undo.png"), "&Undo", this);
     this->{undoAct} = $undoAct;
@@ -229,11 +261,7 @@ sub createActions {
     $undoAct->setStatusTip("Undo the last editing action");
     this->connect($undoAct, SIGNAL 'triggered()', this, SLOT 'undo()');
 
-    my $quitAct = Qt::Action("&Quitter", this);
-    this->{quitAct} = $quitAct;
-    $quitAct->setShortcut(Qt::KeySequence("Ctrl+Q"));
-    $quitAct->setStatusTip("Quitter l' application");
-    this->connect($quitAct, SIGNAL 'triggered()', this, SLOT 'close()');
+    
 
     my $aboutAct = Qt::Action("&About", this);
     this->{aboutAct} = $aboutAct;
@@ -260,6 +288,7 @@ sub createMenus {
     $fileMenu->addAction(this->{loadAct});
     $fileMenu->addSeparator();
     $fileMenu->addAction(this->{saveAct});
+    $fileMenu->addAction(this->{saveAsAct});
     $fileMenu->addSeparator();
     $fileMenu->addAction(this->{quitAct});
 
@@ -299,8 +328,7 @@ sub createDockWindows {
     $dock->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
   #  my $view = Qt::Label($dock);
     my $view = LabelImage($dock,\$density);
-    
-   # $view->setPixmap(Qt::Pixmap("images/cheese.jpg"));
+
     this->{zoneGraphe} = $view;
  #   this->{zoneGraphe}->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
     $dock->setWidget($view);
