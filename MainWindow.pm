@@ -79,6 +79,7 @@ sub NEW {
 
 sub newEditor {
     this->{textEdit}->clear(); 
+    setCurrentFile("");
 }
 
 sub setCurrentFile {
