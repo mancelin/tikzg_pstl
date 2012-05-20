@@ -5,13 +5,13 @@ x		_Nouveau (Ctrl+N)
 		---------------
 x		_Ouvrir (Ctrl+O)
 		---------------
-		_Enregistrer (Ctrl+S)       // Enregistrer n' enregistre que le code tikz ( que le contenu de la fenétre scintilla )
-		Enregistrer _sous  (Shift+Ctrl+S)		   // idem
+x		_Enregistrer (Ctrl+S)       // Enregistrer n' enregistre que le code tikz ( que le contenu de la fenétre scintilla )
+x		Enregistrer _sous  (Ctrl+Shift+S)		   // idem
 		---------------
-		E_xporter
-			png
-			pdf
-		Copier source figure tikz (inclut préambule + fin tikz)
+x		E_xporter
+x			png
+x			pdf
+		Copier source figure tikz (inclut préambule + fin tikz)  
 		---------------
 		_Imprimer (Ctrl+P)   
 		---------------

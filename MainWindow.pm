@@ -11,6 +11,8 @@ use QtCore4::slots
     load           => [''],
     save           => [''],
     saveAs         => [''],
+    exportAsPng    => [''],
+    exportAsPdf    => [''],
     undo           => [''],
     about          => [''],
     insertCustomer => ['QString'],
@@ -205,6 +207,39 @@ sub loadFile {
 	&genImage();
 }
 
+sub forceExtension{
+	my ($fileName,$extension) = @_;
+	my ($file,$suffix) = split /[.]/,$fileName;
+	printf "file : %s,  suffix : %s\n", $file, $suffix;
+	if($suffix ne $extension){
+		print "export as $extension $fileName\n";
+		return "$file.$extension";
+	} else  {
+		print "export as $extension $fileName\n";
+		return $fileName;
+	}
+}
+
+sub exportAsPng{
+	my $fileName = Qt::FileDialog::getSaveFileName(this,
+					" Exporter en tant que", ".",
+					"png (*.png)");
+	print "filename : $fileName\n";
+	my $pngFile = forceExtension($fileName, "png");
+	print "pngfile  : $pngFile\n";
+	system("cp tmp/tmp_tikz.png $pngFile");
+}
+
+sub exportAsPdf{
+	my $fileName = Qt::FileDialog::getSaveFileName(this,
+					" Exporter en tant que", ".",
+					"pdf (*.pdf)");
+	print "filename : $fileName\n";
+	my $pdfFile = forceExtension($fileName, "pdf");
+	print "pdfFile  : $pdfFile\n";
+	system("cp tmp/tmp_tikz.pdf $pdfFile");
+}
+
 sub undo {
     my $document = this->{textEdit}->document();
     $document->undo();
@@ -248,6 +283,16 @@ sub createActions {
     $saveAsAct->setStatusTip("Enregistrer sous");
     this->connect($saveAsAct, SIGNAL 'triggered()', this, SLOT 'saveAs()');
     
+    my $exportAsPngAct = Qt::Action("png", this);
+    this->{exportAsPngAct} = $exportAsPngAct;
+    $exportAsPngAct->setStatusTip("Exporter en tant que png");
+    this->connect($exportAsPngAct, SIGNAL 'triggered()', this, SLOT 'exportAsPng()');
+    
+    my $exportAsPdfAct = Qt::Action("pdf", this);
+    this->{exportAsPdfAct} = $exportAsPdfAct;
+    $exportAsPdfAct->setStatusTip("Exporter en tant que pdf");
+    this->connect($exportAsPdfAct, SIGNAL 'triggered()', this, SLOT 'exportAsPdf()');
+    
     my $quitAct = Qt::Action("&Quitter", this);
     this->{quitAct} = $quitAct;
     $quitAct->setShortcut(Qt::KeySequence("Ctrl+Q"));
@@ -289,6 +334,12 @@ sub createMenus {
     $fileMenu->addSeparator();
     $fileMenu->addAction(this->{saveAct});
     $fileMenu->addAction(this->{saveAsAct});
+    $fileMenu->addSeparator();
+    my $fileExportMenu = $fileMenu->addMenu("E&xporter");
+
+    $fileExportMenu->addAction(this->{exportAsPngAct});
+    $fileExportMenu->addAction(this->{exportAsPdfAct});
+#=cut
     $fileMenu->addSeparator();
     $fileMenu->addAction(this->{quitAct});
 
