@@ -112,12 +112,14 @@ sub setCurrentFile {
 }
 
 sub maybeSave {
-    if (this->{textEdit}->document()->isModified()) {
-        my $ret = Qt::MessageBox::warning(this, "Application",
-                        "The document has been modified.\n" .
-                        "Do you want to save your changes?",
-                        CAST Qt::MessageBox::Save() | Qt::MessageBox::Discard() | Qt::MessageBox::Cancel(), 'QMessageBox::StandardButtons'); 
+	my $curFile = &basename(this->{curFile});
+    if (this->{textEdit}->isModified()) {
+        my $ret = Qt::MessageBox::warning(this, "TikzG",
+                        "Le fichier \'$curFile\' n' a pas été enregistré.\n" . 
+                        "Voulez-vous l' enregistrer avant la fermeture?",
+                        Qt::MessageBox::Save() | Qt::MessageBox::Discard() | Qt::MessageBox::Cancel()); 
         if ($ret == Qt::MessageBox::Save()) {
+#			printf "save : %s\n", this->{curFile};
             return save();
         }
         elsif ($ret == Qt::MessageBox::Cancel()) {
@@ -246,9 +248,9 @@ sub copyTikzpicture{
 	my $code_tikzpicture= sprintf "\\begin{tikzpicture}%s\n\\end{tikzpicture}\n", this->{textEdit}->text();
 	
 	my $pressePapier = Qt::Application::clipboard();
-	#Pour mettre du texte dans le presse papier
 	$pressePapier->setText($code_tikzpicture);
-	print $code_tikzpicture;
+	
+	#print $code_tikzpicture;
 }
 
 
@@ -265,6 +267,14 @@ sub printSlot {
     this->statusBar()->showMessage("Impression en cours", 2000);
 }
 
+sub closeEvent {
+    my ($event) = @_;
+    if (maybeSave()) {
+        $event->accept();
+    } else {
+        $event->ignore();
+    }
+}
 
 sub undo {
     my $document = this->{textEdit}->document();

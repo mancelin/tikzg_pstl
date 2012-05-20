@@ -1,6 +1,6 @@
 	[ ----------------------  Barre Menu ---------------------------------- ]
 			
-	_Fichier
+x	_Fichier
 x		_Nouveau (Ctrl+N)
 		---------------
 x		_Ouvrir (Ctrl+O)
@@ -13,9 +13,9 @@ x			png
 x			pdf
 x		_Copier source figure tikz (inclut préambule + fin tikz)  (Ctrl+Shift+C)
 		---------------
-		_Imprimer (Ctrl+P)   
+x		_Imprimer (Ctrl+P)   
 		---------------
-		_Quitter	(Alt+F4)  -> demmander si sauvergarder avant quitter si fic non sauvegardé
+x		_Quitter	(Alt+F4)  -> demmander si sauvergarder avant quitter si fic non sauvegardé
 	_Editer
 		_Défaire	(Ctrl+Z)
 		_Refaire (Ctrl+Y)
