@@ -21,6 +21,7 @@ use QtCore4::slots
     copy           => [''],
     paste          => [''],
     delete         => [''],
+    selectAll      => [''],
     about          => [''],
     insertCustomer => ['QString'],
     addParagraph   => ['QString'],
@@ -330,6 +331,10 @@ sub delete {
 	this->{textEdit}->removeSelectedText();
 }
 
+sub selectAll {
+	this->{textEdit}->selectAll();
+}
+
 sub about {
    Qt::MessageBox::about(this, "A propos",
             "<b>TikzG</b> permet de ..." .
@@ -426,6 +431,14 @@ sub createActions {
     this->{deleteAct} = $deleteAct;
     $deleteAct->setStatusTip("Supprimmer le texte sélectionné");
     this->connect($deleteAct, SIGNAL 'triggered()', this, SLOT 'delete()'); 
+    
+    my $selectAllAct = Qt::Action("&Tout sélectionner", this);
+    this->{selectAllAct} = $selectAllAct;
+    $selectAllAct->setShortcut(Qt::KeySequence("Ctrl+A"));
+    $selectAllAct->setStatusTip("Sélectionner tout le texte sélectionné");
+    this->connect($selectAllAct, SIGNAL 'triggered()', this, SLOT 'selectAll()'); 
+    
+  
 
     my $aboutAct = Qt::Action("&About", this);
     this->{aboutAct} = $aboutAct;
@@ -471,6 +484,8 @@ sub createMenus {
 	$editMenu->addAction(this->{copyAct});
 	$editMenu->addAction(this->{pasteAct});
 	$editMenu->addAction(this->{deleteAct});
+	$editMenu->addSeparator();
+	$editMenu->addAction(this->{selectAllAct});
 	
 	
 	
