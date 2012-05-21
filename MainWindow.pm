@@ -29,6 +29,8 @@ use QtCore4::slots
  #   myEvent        => [''],	# dbg
     documentWasModified => [];
 use LabelImage;
+#use ZoneImage;
+#use LabelImageToolbar;
 use TikzParser;
 use TikzObjects;
 use Data::Dumper; 
@@ -93,6 +95,9 @@ sub NEW {
 	}
 }
 
+sub density {
+	return $density;
+}
 
 sub closeEvent {
     my ($event) = @_;
@@ -523,16 +528,36 @@ sub createDockWindows {
     $dock->setAllowedAreas(Qt::LeftDockWidgetArea() | Qt::RightDockWidgetArea());
     $dock->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
   #  my $view = Qt::Label($dock);
-    my $view = LabelImage($dock,\$density);
-
+  
+    #my $layoutView = Qt::VBoxLayout();
+    
+   # my $view = LabelImage($dock,\$density);
+    my $view = LabelImage();
+    #$layoutView->addWidget($view);
+    
+    #my $view = ZoneImage($dock,\$density);
+   
     this->{zoneGraphe} = $view;
  #   this->{zoneGraphe}->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
+    
     $dock->setWidget($view);
+    #$dock->setWidget($layoutView);
     this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
     this->{viewMenu}->addAction($dock->toggleViewAction());
+
+=lckz    
+   #  my $viewToolBar = $view->addToolBar("View");
+    # $viewToolBar->addAction(this->{newEditorAct});
+    my $label_image_toolbar = LabelImageToolbar($dock, \$density);  
+    $dock->setWidget($label_image_toolbar);
+    this->{label_image_toolbar} = $label_image_toolbar;
+    this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
     
-   # this->connect($view, SIGNAL 'currentTextChanged(const QString &)',
-   #            this, SLOT 'genImage()');
+    this->{viewMenu}->addAction($dock->toggleViewAction());
+    
+   # this->setToolbar("re");
+    #my $viewToolbar = Qt::QToolBar( $view, "file operations" );
+=cut
 }
 
 
@@ -662,7 +687,7 @@ sub genImage {
     
     # lier l' image générée au QLabel de droite
     if( -e "./tmp/tmp_tikz.png"){
-		this->{zoneGraphe}-> setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
+		this->{zoneGraphe}->{image}-> setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 	} else {
 		# si imposible de generer png, on affiche rien
 		this->{zoneGraphe}-> setPixmap(Qt::Pixmap(""));

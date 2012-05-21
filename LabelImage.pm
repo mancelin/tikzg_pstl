@@ -5,7 +5,8 @@ use warnings;
 use QtCore4;
 use QtGui4;
 #use QtCore4::isa qw( Qt::GraphicsItem );
-use QtCore4::isa qw( Qt::Label );
+#use QtCore4::isa qw( Qt::Label );
+use QtCore4::isa qw( Qt::Widget );
 use Data::Dumper; #
 use MainWindow;
 use Image::Magick;
@@ -13,15 +14,52 @@ use Image::Magick;
 #my $fic="tmp/tmp_tikz_IDC.png";
 
 sub NEW {
-    my ($class,$dock,$ref_density) = @_;
-    $class->SUPER::NEW($dock);
+ #   my ($class,$dock,$ref_density) = @_;
+    shift->SUPER::NEW(@_);
+    #$class->SUPER::NEW($dock);
+    #$class->SUPER::NEW();
+    my $label_image = Qt::Label();
+=rf
     this->setMouseTracking(1);
     this->{zoomFactorImg}=(${$ref_density} / 18) *25; # ?  
     this->{density}= ${$ref_density};
+  
+    my $layout = Qt::VBoxLayout;
+    $layout->addWidget($label_image);
+    this->setLayout($layout);
+=cut
+	
+	$label_image->setMouseTracking(1);
+	this->{image} = $label_image;
+	this->{density} = MainWindow::density();
+	#printf "density : %d\n", this->{density};
+	this->{zoomFactorImg} = (this->{density} / 18) *25;
+     #${$ref_density};
+
+    my $slider = Qt::Slider(Qt::Horizontal());
+    $slider->setRange(0, 99);
+    $slider->setValue(0);
+    
+    my $toolbar = Qt::ToolBar();
+    my $textBox_zoom = Qt::LineEdit();
+    $toolbar->addWidget($textBox_zoom);
+    $toolbar->addSeparator();
+    
+    #$slider->setRange(0, 99);
+    #$slider->setValue(0);
+    
+    my $layout = Qt::VBoxLayout;
+    $layout->addWidget($toolbar);
+    $layout->addWidget($label_image);
+    this->setLayout($layout);
+    
+
+    
     #this->setToolTip(sprintf "Qt::Color(%d, %d, %d)\n%s",
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
       #        'Click and drag this color onto the robot!');
  #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
+#	my $viewToolbar = Qt::QToolBar( this, "file operations" );
 }
 
 =fe
@@ -126,9 +164,9 @@ sub mousePressEvent
     if ($event->button() == Qt::LeftButton()) {
 		print "mousePressEvent : leftButton\n";
 		
-		my $hauteur_label = this->size()->height();
-		my $hauteur_image = this->pixmap()->height();
-		my $largeur_image = this->pixmap()->width();
+		my $hauteur_label = this->{image}->size()->height();
+		my $hauteur_image = this->{image}->pixmap()->height();
+		my $largeur_image = this->{image}->pixmap()->width();
 	   # print " hauteur image : ",$hauteur_image," largeur image : ",$largeur_image,"\n";
 		my $x = $event->x;
 		my $y = int($event->y - ($hauteur_label/2 - $hauteur_image/2));
@@ -215,7 +253,7 @@ sub wheelEvent
 	system("mv tmp_tikz_IDC.png tmp");
 	#MainWindow->refresh_density();
 	this->{zoomFactorImg}=(this->{density} / 18) *25; # ?  
-	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
+	this->{image}->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 	##system("pkill eog");	##
 	#system("eog tmp/tmp_tikz_tmp_IDC.png");	##
 }
