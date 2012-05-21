@@ -16,7 +16,7 @@ x		_Copier source figure tikz (inclut préambule + fin tikz)  (Ctrl+Shift+C)
 x		_Imprimer (Ctrl+P)   
 		---------------
 x		_Quitter	(Alt+F4)  -> demmander si sauvergarder avant quitter si fic non sauvegardé
-	_Editer
+x	_Editer
 x		_Défaire	(Ctrl+Z)
 x		_Refaire (Ctrl+Y)
 		---------------
@@ -25,7 +25,7 @@ x		_Copier	(Ctrl+C)
 x		C_oller	(Ctrl+V)
 x		_Supprimer
 		---------------
-		_Tout sélectionner (Ctrl+A)
+x		_Tout sélectionner (Ctrl+A)
 		---------------
 		_Preferences Scintilla  (Ctrl+Alt+P) ##  idem Affichage/Editeur/
 	_Affichage
