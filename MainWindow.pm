@@ -40,6 +40,8 @@ my @listenoeuds;
 my $density;
 my $timer = Qt::Timer();
 my $generation_img_en_cours = 0;
+my $zoom_factor_image;
+my $textBox_zoom;
 
 sub NEW {
 	#print "nb args : " , scalar(@_), "\n";
@@ -76,6 +78,9 @@ sub NEW {
 
     newEditor();
     
+    this->{textBox_zoom}->setText(sprintf "%s", this->{zoneGraphe}->{zoomFactorImg});
+
+    
     #this->connect($textEdit, SIGNAL 'isModified()',
     this->connect(this->{textEdit}, SIGNAL 'textChanged()',
                   this, SLOT 'documentWasModified()');
@@ -83,6 +88,8 @@ sub NEW {
 #	Qt::Object::connect( $timer, SIGNAL 'timeout()', this, SLOT 'myEvent()' );
     $timer->start(1000);
 
+    
+    
     
  #   print "file : $file\n";
 	if(defined $file){
@@ -101,6 +108,13 @@ sub closeEvent {
     } else {
         $event->ignore();
     }
+}
+
+sub update_textbox_zoom_image {
+	my $zoomFactorImg = int((this->{density} / 18) *25);
+	printf "density : %d\n", this->{density};
+	printf "zoomFactorImg : %d\n", $zoomFactorImg;
+	$textBox_zoom->setText(sprintf "%s", $zoomFactorImg);
 }
 
 sub documentWasModified {
@@ -511,6 +525,17 @@ sub createToolBars {
     $editToolBar->addAction(this->{undoAct});
     $editToolBar->addAction(this->{genAct});
     
+    my $viewToolBar = this->addToolBar("View");
+    my $label_textBox_zoom = Qt::Label("Zoom Image :");
+    $viewToolBar->addWidget($label_textBox_zoom);
+    $textBox_zoom = Qt::LineEdit();
+    $textBox_zoom->setMaxLength(4);
+    $textBox_zoom->setMaximumWidth(40);
+    this->{textBox_zoom} = $textBox_zoom;
+   
+    $viewToolBar->addWidget($textBox_zoom);
+    $viewToolBar->addWidget(Qt::Label("%"));
+    
 }
 
 sub createStatusBar {
@@ -579,7 +604,7 @@ sub proprieteDraw{
     $sens->addItem(this->tr('<->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $sens->addItem(this->tr('->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $sens->addItem(this->tr('<-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $sens->addItem(this->tr('-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+	$sens->addItem(this->tr('-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $layout->addWidget($sens);                 #le sens de l'arete
     my $trait=this->Qt::ComboBox();
     $trait->addItem(this->tr('Plein'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
@@ -614,10 +639,12 @@ sub triggerArrowCursor {
 
 
 sub genImage {
-	print "gen Image\n";
-	triggerWaitCursor();
 	$generation_img_en_cours = 1;
 	$timer->stop();
+	
+	print "gen Image\n";  ##
+	triggerWaitCursor();
+	
 	# reinitialisation de liste d' objets tikz et de liste d'instructions
 	@liste_instructions = ();
 	@listenoeuds = ();

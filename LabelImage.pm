@@ -214,7 +214,8 @@ sub wheelEvent
 	system("convert -density $density tmp/tmp_tikz_IDC.pdf tmp_tikz_IDC.png");
 	system("mv tmp_tikz_IDC.png tmp");
 	#MainWindow->refresh_density();
-	this->{zoomFactorImg}=(this->{density} / 18) *25; # ?  
+	this->{zoomFactorImg}=(this->{density} / 18) *25; # ? 
+	MainWindow::update_textbox_zoom_image(); 
 	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 	##system("pkill eog");	##
 	#system("eog tmp/tmp_tikz_tmp_IDC.png");	##
