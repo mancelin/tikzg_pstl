@@ -23,7 +23,7 @@ use QtCore4::slots
     delete         => [''],
     selectAll      => [''],
     about          => [''],
-    insertCustomer => ['QString'],
+    recalcul_density=> [''],
     addParagraph   => ['QString'],
     genImage       => [''],
  #   myEvent        => [''],	# dbg
@@ -38,9 +38,11 @@ use File::Spec;
 my @liste_instructions;
 my @listenoeuds;
 my $density;
+my $zoomFactorImg;
 my $timer = Qt::Timer();
 my $generation_img_en_cours = 0;
 my $zoom_factor_image;
+my $viewMenu;
 my $textBox_zoom;
 
 sub NEW {
@@ -64,6 +66,8 @@ sub NEW {
    # this->{density} = 72;
     $density = 90;
     this->{density} = \$density;
+    this->{zoomFactorImg} = \$zoomFactorImg;
+    this->{zoomFactorImg}=int((	$density / 18) *25);
     
     this->{listeInstructions} = \@liste_instructions; # reference sur liste
     this->{listeNoeuds} = \@listenoeuds;
@@ -78,7 +82,7 @@ sub NEW {
 
     newEditor();
     
-    this->{textBox_zoom}->setText(sprintf "%s", this->{zoneGraphe}->{zoomFactorImg});
+    this->{textBox_zoom}->setText(sprintf "%s", this->{zoomFactorImg});
 
     
     #this->connect($textEdit, SIGNAL 'isModified()',
@@ -532,7 +536,7 @@ sub createToolBars {
     $textBox_zoom->setMaxLength(4);
     $textBox_zoom->setMaximumWidth(40);
     this->{textBox_zoom} = $textBox_zoom;
-   
+    this->connect($textBox_zoom, SIGNAL 'editingFinished()', this, SLOT 'recalcul_density()');
     $viewToolBar->addWidget($textBox_zoom);
     $viewToolBar->addWidget(Qt::Label("%"));
     
@@ -548,11 +552,12 @@ sub createDockWindows {
     $dock->setAllowedAreas(Qt::LeftDockWidgetArea() | Qt::RightDockWidgetArea());
     $dock->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
   #  my $view = Qt::Label($dock);
-    my $view = LabelImage($dock,\$density);
-
-    this->{zoneGraphe} = $view;
+#    my $view = LabelImage($dock,\$density);
+	my $viewMenu = LabelImage($dock,\$density,\$zoomFactorImg);
+	
+    this->{zoneGraphe} = $viewMenu;
  #   this->{zoneGraphe}->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
-    $dock->setWidget($view);
+    $dock->setWidget($viewMenu);
     this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
     this->{viewMenu}->addAction($dock->toggleViewAction());
     
@@ -620,6 +625,33 @@ sub proprieteDraw{
     this->{viewMenu}->addAction($dock->toggleViewAction());
 }
 
+
+sub recalcul_density {
+	my $textZoom = $textBox_zoom->text();
+	# parsing, int ...  
+	################################# TODO
+	
+	this->{zoom_factor_image} = $textZoom;
+	printf "zoom_factor_image : %d\n", this->{zoom_factor_image} ;
+	this->{density} = int(($textZoom/25) * 18);
+	my $density = this->{density};
+	printf "density : %d\n", $density;
+	system("convert -density $density tmp/tmp_tikz.pdf tmp_tikz.png");
+	system("mv tmp_tikz.png tmp");
+	system("convert -density $density tmp/tmp_tikz_IDC.pdf tmp_tikz_IDC.png");
+	system("mv tmp_tikz_IDC.png tmp");
+	this->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
+	#this->{viewMenu}->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
+	
+=vjfd	
+	my $new_zoom=int($textBox_zoom->text());
+	printf "textBox_zoom : %d\n", $new_zoom;
+	$viewMenu->setZoomFactorImg($new_zoom);
+	$viewMenu->wheelEvent();
+=cut
+}
+
+
 sub triggerWaitCursor {
 	this->setCursor(Qt::Cursor(Qt::WaitCursor()));
 	this->{dock}->setCursor(Qt::Cursor(Qt::WaitCursor()));
@@ -634,9 +666,6 @@ sub triggerArrowCursor {
 	this->statusBar()->clearMessage();
 #	this->setStatusTip("");
 }
-
-
-
 
 sub genImage {
 	$generation_img_en_cours = 1;

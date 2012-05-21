@@ -12,11 +12,17 @@ use Image::Magick;
 
 #my $fic="tmp/tmp_tikz_IDC.png";
 
+#my $zoomFactorImg;
+
 sub NEW {
-    my ($class,$dock,$ref_density) = @_;
+    my ($class,$dock,$ref_density,$ref_zoom_factor_image) = @_;
     $class->SUPER::NEW($dock);
     this->setMouseTracking(1);
-    this->{zoomFactorImg}=(${$ref_density} / 18) *25; # ?  
+=old    
+    this->{zoomFactorImg}=int((${$ref_density} / 18) *25); # ?  
+    this->{zoomFactorImg}= \$zoomFactorImg;
+=cut
+	this->{zoomFactorImg}=${$ref_zoom_factor_image};
     this->{density}= ${$ref_density};
     #this->setToolTip(sprintf "Qt::Color(%d, %d, %d)\n%s",
      #         this->{color}->red(), this->{color}->green(), this->{color}->blue(),
@@ -24,23 +30,15 @@ sub NEW {
  #   this->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
 }
 
-=fe
-sub boundingRect
-{
-    return Qt::RectF(-15.5, -15.5, 34, 34);
+=ij
+sub setZoomFactorImg {
+	my ($new_zoom) = @_;
+	printf "new zoom : %d \n", $new_zoom;
+	$zoomFactorImg = $new_zoom;
+	this->{density} = int(($zoomFactorImg/25) * 18);
 }
+=cut	
 
-sub paint
-{
-    my ($painter) = @_;
-    $painter->setPen(Qt::NoPen());
-    $painter->setBrush(Qt::Brush(Qt::darkGray()));
-    $painter->drawEllipse(-12, -12, 30, 30);
-    $painter->setPen(Qt::Pen(Qt::Brush(Qt::Color(Qt::black())), 1));
-    $painter->setBrush(Qt::Brush(this->{color}));
-    $painter->drawEllipse(-15, -15, 30, 30);
-}
-=cut
 
 sub getPixelColorAt {
 	my ($x, $y) = @_;
