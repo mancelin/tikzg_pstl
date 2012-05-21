@@ -16,6 +16,7 @@ use QtCore4::slots
     copyTikzpicture=> [''],
     printSlot      => [''],
     undo           => [''],
+    redo           => [''],
     about          => [''],
     insertCustomer => ['QString'],
     addParagraph   => ['QString'],
@@ -302,10 +303,14 @@ sub printSlot {
 }
 
 sub undo {
-    my $document = this->{textEdit}->document();
+    my $document = this->{textEdit};
     $document->undo();
 }
 
+sub redo {
+    my $document = this->{textEdit};
+    $document->redo();
+}
 
 sub about {
    Qt::MessageBox::about(this, "A propos",
@@ -369,13 +374,18 @@ sub createActions {
     this->connect($quitAct, SIGNAL 'triggered()', this, SLOT 'close()');
     
     
-    my $undoAct = Qt::Action(Qt::Icon("images/undo.png"), "&Undo", this);
+    my $undoAct = Qt::Action(Qt::Icon("images/undo.png"), "&Défaire", this);
     this->{undoAct} = $undoAct;
     $undoAct->setShortcut(Qt::KeySequence("Ctrl+Z"));
-    $undoAct->setStatusTip("Undo the last editing action");
+    $undoAct->setStatusTip("Annuler la derniére action");
     this->connect($undoAct, SIGNAL 'triggered()', this, SLOT 'undo()');
 
-    
+	my $redoAct = Qt::Action(Qt::Icon("images/redo.png"), "&Refaire", this);
+    this->{redoAct} = $redoAct;
+    $redoAct->setShortcut(Qt::KeySequence("Ctrl+Y"));
+    $redoAct->setStatusTip("Refaire la derniére action");
+    this->connect($redoAct, SIGNAL 'triggered()', this, SLOT 'redo()');
+   
 
     my $aboutAct = Qt::Action("&About", this);
     this->{aboutAct} = $aboutAct;
@@ -413,9 +423,10 @@ sub createMenus {
 	$fileMenu->addSeparator();
     $fileMenu->addAction(this->{quitAct});
     
-    my $editMenu = this->menuBar()->addMenu("&Edit");
+    my $editMenu = this->menuBar()->addMenu("&Éditer");
     $editMenu->addAction(this->{undoAct});
-
+	$editMenu->addAction(this->{redoAct});
+	
     my $viewMenu = this->menuBar()->addMenu("&View");
     this->{viewMenu} = $viewMenu;
 
