@@ -17,6 +17,10 @@ use QtCore4::slots
     printSlot      => [''],
     undo           => [''],
     redo           => [''],
+    cut            => [''],
+    copy           => [''],
+    paste          => [''],
+    delete         => [''],
     about          => [''],
     insertCustomer => ['QString'],
     addParagraph   => ['QString'],
@@ -303,13 +307,27 @@ sub printSlot {
 }
 
 sub undo {
-    my $document = this->{textEdit};
-    $document->undo();
+    this->{textEdit}->undo();
 }
 
 sub redo {
-    my $document = this->{textEdit};
-    $document->redo();
+	this->{textEdit}->redo();
+}
+
+sub cut {
+	this->{textEdit}->cut();
+}
+
+sub copy {
+	this->{textEdit}->copy();
+}
+
+sub paste {
+	this->{textEdit}->paste();
+}
+
+sub delete {
+	this->{textEdit}->removeSelectedText();
 }
 
 sub about {
@@ -386,6 +404,28 @@ sub createActions {
     $redoAct->setStatusTip("Refaire la derniére action");
     this->connect($redoAct, SIGNAL 'triggered()', this, SLOT 'redo()');
    
+    my $cutAct = Qt::Action(Qt::Icon("images/cut.png"), "Co&uper", this);
+    this->{cutAct} = $cutAct;
+    $cutAct->setShortcut(Qt::KeySequence("Ctrl+X"));
+    $cutAct->setStatusTip("Couper le texte sélectionné");
+    this->connect($cutAct, SIGNAL 'triggered()', this, SLOT 'cut()'); 
+
+	my $copyAct = Qt::Action(Qt::Icon("images/copy.png"), "&Copier", this);
+    this->{copyAct} = $copyAct;
+    $copyAct->setShortcut(Qt::KeySequence("Ctrl+C"));
+    $copyAct->setStatusTip("Copier le texte sélectionné");
+    this->connect($copyAct, SIGNAL 'triggered()', this, SLOT 'copy()'); 
+
+	my $pasteAct = Qt::Action(Qt::Icon("images/paste.png"), "C&oller", this);
+    this->{pasteAct} = $pasteAct;
+    $pasteAct->setShortcut(Qt::KeySequence("Ctrl+V"));
+    $pasteAct->setStatusTip("Coller le texte copié");
+    this->connect($pasteAct, SIGNAL 'triggered()', this, SLOT 'paste()'); 
+
+	my $deleteAct = Qt::Action("&Supprimer", this);
+    this->{deleteAct} = $deleteAct;
+    $deleteAct->setStatusTip("Supprimmer le texte sélectionné");
+    this->connect($deleteAct, SIGNAL 'triggered()', this, SLOT 'delete()'); 
 
     my $aboutAct = Qt::Action("&About", this);
     this->{aboutAct} = $aboutAct;
@@ -426,6 +466,14 @@ sub createMenus {
     my $editMenu = this->menuBar()->addMenu("&Éditer");
     $editMenu->addAction(this->{undoAct});
 	$editMenu->addAction(this->{redoAct});
+	$editMenu->addSeparator();
+	$editMenu->addAction(this->{cutAct});
+	$editMenu->addAction(this->{copyAct});
+	$editMenu->addAction(this->{pasteAct});
+	$editMenu->addAction(this->{deleteAct});
+	
+	
+	
 	
     my $viewMenu = this->menuBar()->addMenu("&View");
     this->{viewMenu} = $viewMenu;

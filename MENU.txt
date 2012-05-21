@@ -17,13 +17,13 @@ x		_Imprimer (Ctrl+P)
 		---------------
 x		_Quitter	(Alt+F4)  -> demmander si sauvergarder avant quitter si fic non sauvegardé
 	_Editer
-		_Défaire	(Ctrl+Z)
-		_Refaire (Ctrl+Y)
+x		_Défaire	(Ctrl+Z)
+x		_Refaire (Ctrl+Y)
 		---------------
-		Co_uper	(Ctrl+X)
-		_Copier	(Ctrl+C)
-		C_oller	(Ctrl+V)
-		_Supprimer
+x		Co_uper	(Ctrl+X)
+x		_Copier	(Ctrl+C)
+x		C_oller	(Ctrl+V)
+x		_Supprimer
 		---------------
 		_Tout sélectionner (Ctrl+A)
 		---------------
