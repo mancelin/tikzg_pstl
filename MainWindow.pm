@@ -37,6 +37,7 @@ use File::Spec;
 
 my @liste_instructions;
 my @listenoeuds;
+my @liste_noeuds_rel;
 my $density;
 my $zoomFactorImg;
 my $timer = Qt::Timer();
@@ -777,7 +778,10 @@ sub parse {
 }
 
 
-sub list_of_nodes{
+
+######      fonctions pour acceder au objets Tikz	#####
+
+sub list_of_nodes {
 =dbg
 	print "list nodes \n";
 	print "-"x80;
@@ -796,6 +800,38 @@ sub list_of_nodes{
 	#print Dumper(\@{listenoeuds}); #dbg
 }
 
+# rend la liste des noeuds liés au noeud passé en paramètre
+sub list_of_relative_nodes {
+	my ($node) = @_;
+	#printf "list_of_relative_nodes %s\n", $node->{nom};
+	@liste_noeuds_rel =();
+	foreach my $elem (@liste_instructions){
+		if(($elem->{type} eq "node") && ($elem->{nom} ne $node->{nom}) ){
+			#printf "elem nom : %s, node nom : %s\n", $elem->{nom}, $node->{nom};
+			if(param_contient_noeud($node->{nom}, values $elem->{params})) {
+				#print "adding %s\n", $elem->{nom};
+				push (@liste_noeuds_rel, $elem->{nom});
+			}
+		}
+	}
+}
+
+
+# retourne 1 si le hash de paramètres params_node contient le noeud nom_noeud
+sub param_contient_noeud {
+	my ($nom_noeud, @params_node) = @_;
+	#printf "nom_noeud : %s\n params_node : \n", $nom_noeud;
+	#print Dumper(@params_node);
+	#print "-"x80;
+	foreach my $param (@params_node){
+		if($param =~ /\Q$nom_noeud/){		
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
 sub nb_IDC{
 	my $nb_IDC = 0;
 #	printf "nb_IDC => length liste_instructions : %d\n", scalar(@liste_instructions);
@@ -811,7 +847,7 @@ sub nb_IDC{
 }
 
 
-sub object_ofIDC{
+sub object_ofIDC {
 	my ($idc) = @_;
 	$idc="$idc,fill=$idc";
 #	print " >>> idc : $idc\n";
@@ -820,11 +856,15 @@ sub object_ofIDC{
 	foreach my $elem (@liste_instructions){
 		if(defined($elem->{colorId}) && ($elem->{colorId} eq $idc) ) {
 	#		print $elem->{colorId},"  ", $elem->{ligne},"\n";
+			print $elem->{nom},"\n";
+			list_of_relative_nodes($elem);
+			print "-"x80;
+			print "relative nodes :\n";
+			print Dumper(@liste_noeuds_rel);
 			return $elem;
 		}
 	}	
 }
-
 
 
 1;

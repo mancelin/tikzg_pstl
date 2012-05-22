@@ -122,7 +122,7 @@ sub mousePressEvent
 {
     my ($event) = @_;
     if ($event->button() == Qt::LeftButton()) {
-		print "mousePressEvent : leftButton\n";
+	#	print "mousePressEvent : leftButton\n";
 		
 		my $hauteur_label = this->size()->height();
 		my $hauteur_image = this->pixmap()->height();
@@ -135,14 +135,14 @@ sub mousePressEvent
 	#		print "nb_IDC : ", MainWindow::nb_IDC();
 			my $idcClicked = getPixelColorAt($x,$y);
 			my $objTikz = MainWindow::object_ofIDC($idcClicked);
-			print Dumper($objTikz);
+	#		print Dumper($objTikz);		# MUTE
 		}	
 	#	$fic= "tmp/tmp_tikz_IDC.png";
 	#	this->setPixmap(Qt::Pixmap("tmp/tmp_tikz"));	
     }
     
     if ($event->button() == Qt::RightButton()) {
-		print "mousePressEvent : RightButton\n";
+	#	print "mousePressEvent : RightButton\n";
 	#	$fic = "tmp/IDC1.png";
 	#	this->setPixmap(Qt::Pixmap("gen_list_IDC/IDC55.png"));
     }
@@ -177,7 +177,7 @@ sub mouseReleaseEvent
 	
 	
 #	
-    print "mouseReleaseEvent\n";
+ #   print "mouseReleaseEvent\n";
 }
 
 
