@@ -41,7 +41,6 @@ my $density;
 my $zoomFactorImg;
 my $timer = Qt::Timer();
 my $generation_img_en_cours = 0;
-my $zoom_factor_image;
 my $viewMenu;
 my $textBox_zoom;
 
@@ -68,6 +67,7 @@ sub NEW {
     this->{density} = \$density;
     this->{zoomFactorImg} = \$zoomFactorImg;
     this->{zoomFactorImg}=int((	$density / 18) *25);
+    #printf "zoom_factor_image : %d\n", this->{zoomFactorImg};
     
     this->{listeInstructions} = \@liste_instructions; # reference sur liste
     this->{listeNoeuds} = \@listenoeuds;
@@ -116,8 +116,8 @@ sub closeEvent {
 
 sub update_textbox_zoom_image {
 	my $zoomFactorImg = int((this->{density} / 18) *25);
-	printf "density : %d\n", this->{density};
-	printf "zoomFactorImg : %d\n", $zoomFactorImg;
+#	printf "density : %d\n", this->{density};
+#	printf "zoomFactorImg : %d\n", $zoomFactorImg;
 	$textBox_zoom->setText(sprintf "%s", $zoomFactorImg);
 }
 
@@ -628,28 +628,24 @@ sub proprieteDraw{
 
 sub recalcul_density {
 	my $textZoom = $textBox_zoom->text();
-	# parsing, int ...  
-	################################# TODO
-	
-	this->{zoom_factor_image} = $textZoom;
-	printf "zoom_factor_image : %d\n", this->{zoom_factor_image} ;
-	this->{density} = int(($textZoom/25) * 18);
-	my $density = this->{density};
-	printf "density : %d\n", $density;
-	system("convert -density $density tmp/tmp_tikz.pdf tmp_tikz.png");
-	system("mv tmp_tikz.png tmp");
-	system("convert -density $density tmp/tmp_tikz_IDC.pdf tmp_tikz_IDC.png");
-	system("mv tmp_tikz_IDC.png tmp");
-	this->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
-	#this->{viewMenu}->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
-	
-=vjfd	
-	my $new_zoom=int($textBox_zoom->text());
-	printf "textBox_zoom : %d\n", $new_zoom;
-	$viewMenu->setZoomFactorImg($new_zoom);
-	$viewMenu->wheelEvent();
-=cut
+	if( $textZoom =~ /(^\s*(\d+)\s*$)/){
+		printf "1 : %d, 2 : %d\n", $1, $2;
+		this->{zoomFactorImg} = $textZoom;
+		printf "zoom_factor_image : %d\n", this->{zoomFactorImg} ;
+		this->{density} = int(($textZoom/25) * 18);
+		my $density = this->{density};
+		printf "density : %d\n", $density;
+		system("convert -density $density tmp/tmp_tikz.pdf tmp_tikz.png");
+		system("mv tmp_tikz.png tmp");
+		system("convert -density $density tmp/tmp_tikz_IDC.pdf tmp_tikz_IDC.png");
+		system("mv tmp_tikz_IDC.png tmp");
+		this->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
+	} else {	# si la valeur courante de la textbox de zoom n' est pas numérique, on reinitialise la textbox a la derniére valeur correcte
+		printf "zoom_factor_image : %d\n", this->{zoomFactorImg};
+		$textBox_zoom->setText(this->{zoomFactorImg});
+	}
 }
+	
 
 
 sub triggerWaitCursor {
