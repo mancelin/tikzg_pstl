@@ -865,6 +865,18 @@ sub tikzobj_of_node {
 	}
 }
 
+# retourne l' index de l' objet dont la ligne est passé en paramétre dans la liste liste_instructions, -1 si non trouvé
+sub index_of_line {
+	my ($ligne) = @_;
+	my $i=0;
+	foreach my $elem (@liste_instructions){
+		if($elem->{ligne} == $ligne) {
+			return $i;
+		}
+		$i++;
+	}
+	return (-1);
+}
 
 sub nb_IDC{
 	my $nb_IDC = 0;
@@ -912,6 +924,9 @@ sub object_ofIDC {
 			my $a_node = tikzobj_of_node("n1");
 			print "/"x80;
 			print Dumper($a_node);
+			
+			my $index_n1 = index_of_line($a_node->{ligne});
+			print "index_n1 : $index_n1\n";
 			
 			#print "+"x28, " liste instruction aftr " , "+"x28;
 			
