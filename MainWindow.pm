@@ -855,6 +855,16 @@ sub list_of_relative_nodes_of_draw {
 	
 }
 
+# retourne l' objet tikz associé au noeud passé en paramétre
+sub tikzobj_of_node {
+	my ($node_name) = @_;
+	foreach my $elem (@liste_instructions){
+		if(($elem->{type} eq "node") && ($elem->{nom} eq $node_name)) {
+			return $elem;
+		}
+	}
+}
+
 
 sub nb_IDC{
 	my $nb_IDC = 0;
@@ -890,12 +900,22 @@ sub object_ofIDC {
 				print "*"x80;
 				print "relative draw :\n";
 				print Dumper(@liste_arretes_rel);
-			} else {if ($elem->{type} eq "draw"){
+			} elsif ($elem->{type} eq "draw"){
 				list_of_relative_nodes_of_draw($elem);
 				print "_"x80;
 				print "list_of_relative_nodes_of_draw :\n";
 				print Dumper(@liste_noeuds_rel);
-			}}
+			}
+			print "-"x28, "  liste instruction bfr " , "-"x28;
+			print Dumper(@liste_instructions);
+			
+			my $a_node = tikzobj_of_node("n1");
+			print "/"x80;
+			print Dumper($a_node);
+			
+			#print "+"x28, " liste instruction aftr " , "+"x28;
+			
+			#print Dumper(@liste_instructions);
 			return $elem;
 		}
 	}	
