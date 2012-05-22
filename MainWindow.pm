@@ -38,6 +38,7 @@ use File::Spec;
 my @liste_instructions;
 my @listenoeuds;
 my @liste_noeuds_rel;
+my @liste_arretes_rel;
 my $density;
 my $zoomFactorImg;
 my $timer = Qt::Timer();
@@ -174,7 +175,7 @@ sub maybeSave {
 	my $curFile = &basename(this->{curFile});
     if (this->{textEdit}->isModified()) {
         my $ret = Qt::MessageBox::warning(this, "TikzG",
-                        "Le fichier \'$curFile\' n' a pas été enregistré.\n" . 
+                        "Le fichier \'$curFile\' n' a pas Ã©tÃ© enregistrÃ©.\n" . 
                         "Voulez-vous l' enregistrer avant la fermeture?",
                         Qt::MessageBox::Save() | Qt::MessageBox::Discard() | Qt::MessageBox::Cancel()); 
         if ($ret == Qt::MessageBox::Save()) {
@@ -215,7 +216,7 @@ sub saveFile {
     my $FH;
     if(!(open $FH, '>', $fileName)) {
         Qt::MessageBox::warning(this, "Dock Widgets",
-                                 sprintf("Impossible d\' écrire le fichier %s:\n%s.",
+                                 sprintf("Impossible d\' Ã©crire le fichier %s:\n%s.",
                                  $fileName,
                                  $!));
         return;
@@ -228,7 +229,7 @@ sub saveFile {
     Qt::Application::restoreOverrideCursor();
 
 	setCurrentFile($fileName);
-    this->statusBar()->showMessage("Fichier '$fileName' sauvegardé", 2000);
+    this->statusBar()->showMessage("Fichier '$fileName' sauvegardÃ©", 2000);
 }
 
 
@@ -366,7 +367,7 @@ sub createActions {
                                this);
     this->{newEditorAct} = $newEditorAct;
     $newEditorAct->setShortcut(Qt::KeySequence("Ctrl+N"));
-    $newEditorAct->setStatusTip("Créer un nouveau fichier tikz");
+    $newEditorAct->setStatusTip("CrÃ©er un nouveau fichier tikz");
     this->connect($newEditorAct, SIGNAL 'triggered()', this, SLOT 'newEditor()');
     
     my $loadAct = Qt::Action(Qt::Icon("images/load.png"), "&Ouvrir", this);
@@ -416,45 +417,45 @@ sub createActions {
     this->connect($quitAct, SIGNAL 'triggered()', this, SLOT 'close()');
     
     
-    my $undoAct = Qt::Action(Qt::Icon("images/undo.png"), "&Défaire", this);
+    my $undoAct = Qt::Action(Qt::Icon("images/undo.png"), "&DÃ©faire", this);
     this->{undoAct} = $undoAct;
     $undoAct->setShortcut(Qt::KeySequence("Ctrl+Z"));
-    $undoAct->setStatusTip("Annuler la derniére action");
+    $undoAct->setStatusTip("Annuler la derniÃ©re action");
     this->connect($undoAct, SIGNAL 'triggered()', this, SLOT 'undo()');
 
 	my $redoAct = Qt::Action(Qt::Icon("images/redo.png"), "&Refaire", this);
     this->{redoAct} = $redoAct;
     $redoAct->setShortcut(Qt::KeySequence("Ctrl+Y"));
-    $redoAct->setStatusTip("Refaire la derniére action");
+    $redoAct->setStatusTip("Refaire la derniÃ©re action");
     this->connect($redoAct, SIGNAL 'triggered()', this, SLOT 'redo()');
    
     my $cutAct = Qt::Action(Qt::Icon("images/cut.png"), "Co&uper", this);
     this->{cutAct} = $cutAct;
     $cutAct->setShortcut(Qt::KeySequence("Ctrl+X"));
-    $cutAct->setStatusTip("Couper le texte sélectionné");
+    $cutAct->setStatusTip("Couper le texte sÃ©lectionnÃ©");
     this->connect($cutAct, SIGNAL 'triggered()', this, SLOT 'cut()'); 
 
 	my $copyAct = Qt::Action(Qt::Icon("images/copy.png"), "&Copier", this);
     this->{copyAct} = $copyAct;
     $copyAct->setShortcut(Qt::KeySequence("Ctrl+C"));
-    $copyAct->setStatusTip("Copier le texte sélectionné");
+    $copyAct->setStatusTip("Copier le texte sÃ©lectionnÃ©");
     this->connect($copyAct, SIGNAL 'triggered()', this, SLOT 'copy()'); 
 
 	my $pasteAct = Qt::Action(Qt::Icon("images/paste.png"), "C&oller", this);
     this->{pasteAct} = $pasteAct;
     $pasteAct->setShortcut(Qt::KeySequence("Ctrl+V"));
-    $pasteAct->setStatusTip("Coller le texte copié");
+    $pasteAct->setStatusTip("Coller le texte copiÃ©");
     this->connect($pasteAct, SIGNAL 'triggered()', this, SLOT 'paste()'); 
 
 	my $deleteAct = Qt::Action("&Supprimer", this);
     this->{deleteAct} = $deleteAct;
-    $deleteAct->setStatusTip("Supprimmer le texte sélectionné");
+    $deleteAct->setStatusTip("Supprimmer le texte sÃ©lectionnÃ©");
     this->connect($deleteAct, SIGNAL 'triggered()', this, SLOT 'delete()'); 
     
-    my $selectAllAct = Qt::Action("&Tout sélectionner", this);
+    my $selectAllAct = Qt::Action("&Tout sÃ©lectionner", this);
     this->{selectAllAct} = $selectAllAct;
     $selectAllAct->setShortcut(Qt::KeySequence("Ctrl+A"));
-    $selectAllAct->setStatusTip("Sélectionner tout le texte sélectionné");
+    $selectAllAct->setStatusTip("SÃ©lectionner tout le texte sÃ©lectionnÃ©");
     this->connect($selectAllAct, SIGNAL 'triggered()', this, SLOT 'selectAll()'); 
     
   
@@ -495,7 +496,7 @@ sub createMenus {
 	$fileMenu->addSeparator();
     $fileMenu->addAction(this->{quitAct});
     
-    my $editMenu = this->menuBar()->addMenu("&Éditer");
+    my $editMenu = this->menuBar()->addMenu("&Ã‰diter");
     $editMenu->addAction(this->{undoAct});
 	$editMenu->addAction(this->{redoAct});
 	$editMenu->addSeparator();
@@ -567,7 +568,7 @@ sub createDockWindows {
 }
 
 
-#propriétés du noeud sélectionné
+#propriÃ©tÃ©s du noeud sÃ©lectionnÃ©
 sub proprieteNode{
     my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
@@ -588,7 +589,7 @@ sub proprieteNode{
     $trait->addItem(this->tr('Double'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $layout->addWidget($trait);                 #le type de trait
     $layout->addWidget(this->Qt::LineEdit());   #le texte inscrit dans le noeud
-    $layout->addWidget(this->Qt::ComboBox());   #right of (à compléter après identification du noeud)
+    $layout->addWidget(this->Qt::ComboBox());   #right of (Ã  complÃ©ter aprÃ¨s identification du noeud)
     $layout->addWidget(this->Qt::ComboBox());   #left of  (idem)
     $layout->addWidget(this->Qt::ComboBox());   #up of    (idem)
     $layout->addWidget(this->Qt::ComboBox());   #down of  (idem)
@@ -599,13 +600,13 @@ sub proprieteNode{
 }
 
 
-#proprietes de l'arete selectionné
+#proprietes de l'arete selectionnÃ©
 sub proprieteDraw{
     my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
     my $layout = Qt::VBoxLayout();
     $layout->addWidget(this->Qt::LineEdit());   #le nom
-    $layout->addWidget(this->Qt::ComboBox());   #origine (à compléter après identification de l'arete)
+    $layout->addWidget(this->Qt::ComboBox());   #origine (Ã  complÃ©ter aprÃ¨s identification de l'arete)
     my $sens=this->Qt::ComboBox();
     $sens->addItem(this->tr('<->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $sens->addItem(this->tr('->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
@@ -617,7 +618,7 @@ sub proprieteDraw{
     $trait->addItem(this->tr('Pointille'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $trait->addItem(this->tr('Double'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $layout->addWidget($trait);                 #le type de trait
-    $layout->addWidget(this->Qt::ComboBox());   #destination (à compléter après identification du noeud)
+    $layout->addWidget(this->Qt::ComboBox());   #destination (Ã  complÃ©ter aprÃ¨s identification du noeud)
 
 
     $top->setLayout($layout);
@@ -641,7 +642,7 @@ sub recalcul_density {
 		system("convert -density $density tmp/tmp_tikz_IDC.pdf tmp_tikz_IDC.png");
 		system("mv tmp_tikz_IDC.png tmp");
 		this->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
-	} else {	# si la valeur courante de la textbox de zoom n' est pas numérique, on reinitialise la textbox a la derniére valeur correcte
+	} else {	# si la valeur courante de la textbox de zoom n' est pas numÃ©rique, on reinitialise la textbox a la derniÃ©re valeur correcte
 		printf "zoom_factor_image : %d\n", this->{zoomFactorImg};
 		$textBox_zoom->setText(this->{zoomFactorImg});
 	}
@@ -675,7 +676,7 @@ sub genImage {
 	@liste_instructions = ();
 	@listenoeuds = ();
 	
-	# recupération de val density du LabelImage
+	# recupÃ©ration de val density du LabelImage
 	this->{density}=this->{zoneGraphe}->{density} ;
 	
 	#my ($distance_node, $density)=(this->{nodeDistance}, this->{density});
@@ -713,7 +714,7 @@ sub genImage {
   #  system("perl tikz2png.pl tmp_tikz $distance_node $density");
     system("perl tikz2png.pl tmp_tikz $density");
     
-    # lier l' image générée au QLabel de droite
+    # lier l' image gÃ©nÃ©rÃ©e au QLabel de droite
     if( -e "./tmp/tmp_tikz.png"){
 		this->{zoneGraphe}-> setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 	} else {
@@ -773,7 +774,7 @@ sub parse {
 #	print "_"x80; #dbg
 #	print "parsing\n";
 #	print "~"x80; #dbg
-	#print Dumper(this->{listeInstructions}); #dbg
+#	print Dumper(@liste_instructions); #dbg
 	#@liste_instructions = @{this->{listeInstructions}};
 }
 
@@ -800,7 +801,7 @@ sub list_of_nodes {
 	#print Dumper(\@{listenoeuds}); #dbg
 }
 
-# rend la liste des noeuds liés au noeud passé en paramètre
+# rend la liste des noeuds liÃ©s au noeud passÃ© en paramÃ¨tre
 sub list_of_relative_nodes {
 	my ($node) = @_;
 	#printf "list_of_relative_nodes %s\n", $node->{nom};
@@ -810,14 +811,14 @@ sub list_of_relative_nodes {
 			#printf "elem nom : %s, node nom : %s\n", $elem->{nom}, $node->{nom};
 			if(param_contient_noeud($node->{nom}, values $elem->{params})) {
 				#print "adding %s\n", $elem->{nom};
-				push (@liste_noeuds_rel, $elem->{nom});
+				push (@liste_noeuds_rel, $elem);
 			}
 		}
 	}
 }
 
 
-# retourne 1 si le hash de paramètres params_node contient le noeud nom_noeud
+# retourne 1 si le hash de paramÃ¨tres params_node contient le noeud nom_noeud
 sub param_contient_noeud {
 	my ($nom_noeud, @params_node) = @_;
 	#printf "nom_noeud : %s\n params_node : \n", $nom_noeud;
@@ -831,6 +832,18 @@ sub param_contient_noeud {
 	return 0;
 }
 
+# rend la liste des arráº¿tes liÃ©es au noeud passÃ© en paramÃ¨tre
+sub list_of_relative_draw {
+	my ($node) = @_;
+	#printf "list_of_relative_nodes %s\n", $node->{nom};
+	@liste_arretes_rel =();
+	foreach my $elem (@liste_instructions){
+		if(($elem->{type} eq "draw") && (($elem->{origine} eq $node->{nom}) || ($elem->{but} eq $node->{nom})) ){
+				#print "adding %s\n", $elem->{nom};
+				push (@liste_arretes_rel, $elem);
+		}
+	}
+}
 
 sub nb_IDC{
 	my $nb_IDC = 0;
@@ -861,6 +874,10 @@ sub object_ofIDC {
 			print "-"x80;
 			print "relative nodes :\n";
 			print Dumper(@liste_noeuds_rel);
+			list_of_relative_draw($elem);
+			print "*"x80;
+			print "relative draw :\n";
+			print Dumper(@liste_arretes_rel);
 			return $elem;
 		}
 	}	
