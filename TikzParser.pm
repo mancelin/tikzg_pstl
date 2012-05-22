@@ -22,7 +22,7 @@ sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 	if ($code =~ /(.*[^n]*)\n/){
 		my $premiere_ligne = $1;
 		#printf "premiere_ligne : %s\n", $premiere_ligne;
-		if ($premiere_ligne =~ /(\s*\[)(\s*node\s*distance\s*=\s*)([^s]*)(\s*\])/){	
+		if ($premiere_ligne =~ /(\s*\[)(\s*node\s*distance\s*=\s*)([^\s]*)(\s*\])/){	
 			#printf "1 : %s, 2 : %s,3 : %s,4 : %s\n", $1, $2, $3, $4;
 			$list_TikzObjs[$i_objTikz] = new TikzObjects(ligne => $i_ligne);
 			$list_TikzObjs[$i_objTikz]->{type} = "NodeDistance";
@@ -89,6 +89,7 @@ sub decoupe_lignes {	# une ligne commence par \ et finit par ;
 						}
 					} else { # ligne vide ou commentaire
 						$list_TikzObjs[$i_objTikz] = new TikzObjects(ligne => $i_ligne);
+						chop $line;
 						$list_TikzObjs[$i_objTikz]->{code} = $line;
 						$list_TikzObjs[$i_objTikz]->{type} = "NoCode";
 						$i_objTikz++;

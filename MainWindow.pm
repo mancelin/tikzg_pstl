@@ -878,6 +878,79 @@ sub index_of_line {
 	return (-1);
 }
 
+# retourne la chaine de charactéres correspondant a la liste d' instruction passé en paramètre
+sub string_of_liste_instructions {
+	my (@l_instructions) = @_;
+	my $prog_tikz ="";
+	#printf "length list : %d\n", scalar(@l_instructions);
+	foreach my $elem (@liste_instructions){
+		if ($elem->{type} eq "node"){
+			$prog_tikz.='\node';
+			#print '\node';
+			if (defined($elem->{params_keys}) && (scalar ($elem->{params_keys}) > 0 )) {
+				$prog_tikz.='['.string_of_param($elem, $elem->{params_keys}).'] ';
+			#	print '['.string_of_param($elem, $elem->{params_keys}).'] ';
+			}
+			$prog_tikz.='('.$elem->{nom}.') {'.$elem->{text}.'}'.";\n";
+		} elsif ( $elem->{type} eq "draw" ) {
+			print "draw\n";
+			$prog_tikz.='\draw';
+			if (defined($elem->{params_keys}) && (scalar ($elem->{params_keys}) > 0 )) {
+				$prog_tikz.='['.string_of_param($elem, $elem->{params_keys}).'] ';
+			}
+			$prog_tikz.='('.$elem->{origine}.') -- ('.$elem->{but}.')'.";\n";
+		} #elsif ( $elem->{type} eq "NodeDistance" ) {
+		else {
+			$prog_tikz.=$elem->{code}."\n";
+		}
+	}
+	print "prog tikz :\n", $prog_tikz;
+	return $prog_tikz;	
+}
+
+=cr
+                 'ligne' => 4,
+                 'colorId' => 'red!30!green!32,fill=red!30!green!32',
+                 'params' => {
+                               '->' => undef
+                             },
+                 'params_keys' => [
+                                    '->'
+                                  ],
+                 'origine' => 'n1',
+                 'type' => 'draw',
+                 'but' => 'n2',
+                 'code' => '\\draw[->] (n1) -- (n2);',
+                 'code_segment' => ' -- '
+               }, 'TikzObjects' );
+=cut
+
+
+sub string_of_param {
+	my ($elem, $ref_params_keys) = @_;
+	my @params_keys = @$ref_params_keys;
+	my $length = scalar(@params_keys);
+	#printf "\nlength param_keys : %d\n", $length;
+	#print Dumper($elem->{params});
+	#print "-"x80;
+	#print Dumper(@params_keys);
+	my $res_string="";
+	for (my $i=0; $i < $length; $i++) {
+		#print ">> ", $params_keys[$i], "\n";
+		#print Dumper($params_keys[$i]), "\n";
+		if (defined ($elem->{params}->{$params_keys[$i]} ) ){
+			$res_string.=$params_keys[$i]."=".$elem->{params}->{$params_keys[$i]}.",";
+		} else {
+			$res_string.=$params_keys[$i].",";
+		}
+
+	}
+	# suppression du dernier caractére de $res_string ( , )
+	chop $res_string;
+	#print "res string : $res_string\n";
+	return $res_string;
+}
+
 sub nb_IDC{
 	my $nb_IDC = 0;
 #	printf "nb_IDC => length liste_instructions : %d\n", scalar(@liste_instructions);
@@ -918,8 +991,8 @@ sub object_ofIDC {
 				print "list_of_relative_nodes_of_draw :\n";
 				print Dumper(@liste_noeuds_rel);
 			}
-			print "-"x28, "  liste instruction bfr " , "-"x28;
-			print Dumper(@liste_instructions);
+			#print "-"x28, "  liste instruction bfr " , "-"x28;
+			#print Dumper(@liste_instructions);
 			
 			my $a_node = tikzobj_of_node("n1");
 			print "/"x80;
@@ -927,7 +1000,9 @@ sub object_ofIDC {
 			
 			my $index_n1 = index_of_line($a_node->{ligne});
 			print "index_n1 : $index_n1\n";
-			
+			my $code =string_of_liste_instructions(@liste_instructions);
+			print "\n","-"x80, "code :\n";
+			print $code;
 			#print "+"x28, " liste instruction aftr " , "+"x28;
 			
 			#print Dumper(@liste_instructions);
