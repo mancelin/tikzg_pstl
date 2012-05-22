@@ -95,8 +95,6 @@ sub NEW {
     $timer->start(1000);
 
     
-    
-    
  #   print "file : $file\n";
 	if(defined $file){
 		loadFile($file);
@@ -702,16 +700,7 @@ sub genImage {
     print $FH "\n";
     close $FH;
     
-    # generation d' un fichier png a partir d' un fichier tex
-    
-    # tikz2png.pl file distance_node density"
-    
-    #my $distance_node=50;
-    
-    #my $density=100;	###
-    
-    #my $density=72;
-  #  system("perl tikz2png.pl tmp_tikz $distance_node $density");
+    # generation d' un fichier png a partir du code tikz
     system("perl tikz2png.pl tmp_tikz $density");
     
     # lier l' image générée au QLabel de droite
@@ -804,13 +793,15 @@ sub list_of_nodes {
 # rend la liste des noeuds liés au noeud passé en paramètre
 sub list_of_relative_nodes {
 	my ($node) = @_;
-	#printf "list_of_relative_nodes %s\n", $node->{nom};
-	@liste_noeuds_rel =();				## reinit ptet a faire ailleur
+	@liste_noeuds_rel = ();
+	printf "list_of_relative_nodes %s\n", $node->{nom};
+	print Dumper(@liste_instructions);
 	foreach my $elem (@liste_instructions){
+		#print Dumper($elem);
 		if(($elem->{type} eq "node") && ($elem->{nom} ne $node->{nom}) ){
-			#printf "elem nom : %s, node nom : %s\n", $elem->{nom}, $node->{nom};
+			printf "elem nom : %s, node nom : %s\n", $elem->{nom}, $node->{nom};
 			if(param_contient_noeud($node->{nom}, values $elem->{params})) {
-				#print "adding %s\n", $elem->{nom};
+				printf "adding %s\n", $elem->{nom};
 				push (@liste_noeuds_rel, $elem);
 			}
 		}
@@ -821,9 +812,9 @@ sub list_of_relative_nodes {
 # retourne 1 si le hash de paramètres params_node contient le noeud nom_noeud
 sub param_contient_noeud {
 	my ($nom_noeud, @params_node) = @_;
-	#printf "nom_noeud : %s\n params_node : \n", $nom_noeud;
-	#print Dumper(@params_node);
-	#print "-"x80;
+	printf "nom_noeud : %s\n params_node : \n", $nom_noeud;
+	print Dumper(@params_node);
+	print "-"x80;
 	foreach my $param (@params_node){
 		if($param =~ /\Q$nom_noeud/){		
 			return 1;
@@ -836,7 +827,6 @@ sub param_contient_noeud {
 sub list_of_relative_draw {
 	my ($node) = @_;
 	#printf "list_of_relative_nodes %s\n", $node->{nom};
-	@liste_arretes_rel =();				## reinit ptet a faire ailleur
 	foreach my $elem (@liste_instructions){
 		if(($elem->{type} eq "draw") && (($elem->{origine} eq $node->{nom}) || ($elem->{but} eq $node->{nom})) ){
 				#print "adding %s\n", $elem->{nom};
@@ -849,7 +839,6 @@ sub list_of_relative_draw {
 sub list_of_relative_nodes_of_draw {
 	my ($arrete) = @_;
 	#printf "list_of_relative_nodes %s\n", $node->{nom};
-	@liste_noeuds_rel =();				## reinit ptet a faire ailleur
 	push (@liste_noeuds_rel, $arrete->{origine});
 	push (@liste_noeuds_rel, $arrete->{but});
 	
@@ -865,10 +854,11 @@ sub tikzobj_of_node {
 	}
 }
 
-# retourne l' index de l' objet dont la ligne est passé en paramétre dans la liste liste_instructions, -1 si non trouvé
+# retourne l' index de l' objet dont la ligne est passé en paramétre dans la liste passée en paramètre, -1 si non trouvé
 sub index_of_line {
 	my ($ligne) = @_;
 	my $i=0;
+	printf "index_of_line : $ligne\n";
 	foreach my $elem (@liste_instructions){
 		if($elem->{ligne} == $ligne) {
 			return $i;
@@ -880,7 +870,7 @@ sub index_of_line {
 
 # retourne la chaine de charactéres correspondant a la liste d' instruction passé en paramètre
 sub string_of_liste_instructions {
-	my (@l_instructions) = @_;
+	my ($rel_color_actif, @l_instructions) = @_;
 	my $prog_tikz ="";
 	#printf "length list : %d\n", scalar(@l_instructions);
 	foreach my $elem (@liste_instructions){
@@ -888,15 +878,25 @@ sub string_of_liste_instructions {
 			$prog_tikz.='\node';
 			#print '\node';
 			if (defined($elem->{params_keys}) && (scalar ($elem->{params_keys}) > 0 )) {
-				$prog_tikz.='['.string_of_param($elem, $elem->{params_keys}).'] ';
+				$prog_tikz.='['.string_of_param($elem, $elem->{params_keys});
+				if ((defined ($elem->{couleur_rel})) && $rel_color_actif) {
+					$prog_tikz.=",fill=".$elem->{couleur_rel}.'] ';
+				} else {
+					$prog_tikz.='] ';
+				}
 			#	print '['.string_of_param($elem, $elem->{params_keys}).'] ';
 			}
 			$prog_tikz.='('.$elem->{nom}.') {'.$elem->{text}.'}'.";\n";
 		} elsif ( $elem->{type} eq "draw" ) {
-			print "draw\n";
+			#print "draw\n";
 			$prog_tikz.='\draw';
 			if (defined($elem->{params_keys}) && (scalar ($elem->{params_keys}) > 0 )) {
-				$prog_tikz.='['.string_of_param($elem, $elem->{params_keys}).'] ';
+				$prog_tikz.='['.string_of_param($elem, $elem->{params_keys});
+				if ((defined ($elem->{couleur_rel})) && $rel_color_actif) {
+					$prog_tikz.=",fill=".$elem->{couleur_rel}.'] ';
+				} else {
+					$prog_tikz.='] ';
+				}
 			}
 			$prog_tikz.='('.$elem->{origine}.') -- ('.$elem->{but}.')'.";\n";
 		} #elsif ( $elem->{type} eq "NodeDistance" ) {
@@ -904,7 +904,9 @@ sub string_of_liste_instructions {
 			$prog_tikz.=$elem->{code}."\n";
 		}
 	}
-	print "prog tikz :\n", $prog_tikz;
+	#print "prog tikz :\n", $prog_tikz;
+	#print "-"x80;
+	#print "rel_color_actif : $rel_color_actif\n";
 	return $prog_tikz;	
 }
 
@@ -930,14 +932,8 @@ sub string_of_param {
 	my ($elem, $ref_params_keys) = @_;
 	my @params_keys = @$ref_params_keys;
 	my $length = scalar(@params_keys);
-	#printf "\nlength param_keys : %d\n", $length;
-	#print Dumper($elem->{params});
-	#print "-"x80;
-	#print Dumper(@params_keys);
 	my $res_string="";
 	for (my $i=0; $i < $length; $i++) {
-		#print ">> ", $params_keys[$i], "\n";
-		#print Dumper($params_keys[$i]), "\n";
 		if (defined ($elem->{params}->{$params_keys[$i]} ) ){
 			$res_string.=$params_keys[$i]."=".$elem->{params}->{$params_keys[$i]}.",";
 		} else {
@@ -947,9 +943,53 @@ sub string_of_param {
 	}
 	# suppression du dernier caractére de $res_string ( , )
 	chop $res_string;
-	#print "res string : $res_string\n";
+	
 	return $res_string;
 }
+
+# ajoute un couleur a un élément tikz pour le "marquer" en tant que liée a d' autre noeuds
+sub mark_as_rel {
+	my ($objTikz , $color ) = @_;
+	$objTikz->{couleur_rel} = $color;
+	#$objTikz->{params}->{fill}=$color;
+	#return $objTikz;
+}
+
+sub make_list_instructions_rel {
+	my ($objTikz ) = @_;
+	mark_as_rel($objTikz, "blue!40");
+	#"blue!30"
+	#my @liste_instructions_rel = @liste_instructions;
+	#print "?"x80;
+	#print Dumper(@liste_instructions_rel);
+	
+	my @l_rel_objects;
+	#my @l_rel_draw;
+	if ($objTikz->{type} eq "node" ){
+		list_of_relative_nodes($objTikz);
+		list_of_relative_draw($objTikz);
+		@l_rel_objects = (@liste_noeuds_rel,@liste_arretes_rel);
+		#print Dumper(@l_rel_objects);
+	}  ## idem pour draw
+	
+	#foreach my $elem (@list_instructions_rel){
+	foreach my $rel_obj (@l_rel_objects){
+		my $ligne = $rel_obj->{ligne};
+		my $i = index_of_line($ligne);
+		#print "i : $i \n";
+		mark_as_rel($liste_instructions[$i], "blue!20");
+	}
+#=later	
+	my $code =string_of_liste_instructions(1,@liste_instructions);
+	print "\n","-"x80, "code rel:\n";
+	print $code;
+	
+	my $code2 =string_of_liste_instructions(0,@liste_instructions);
+	print "\n","-"x80, "code non_rel:\n";
+	print $code2;
+#=cut
+}
+
 
 sub nb_IDC{
 	my $nb_IDC = 0;
@@ -971,6 +1011,8 @@ sub object_ofIDC {
 	$idc="$idc,fill=$idc";
 #	print " >>> idc : $idc\n";
 	my $nb_IDC = nb_IDC();
+	@liste_noeuds_rel =();	
+	@liste_arretes_rel =();	
 #	print "="x80;
 	foreach my $elem (@liste_instructions){
 		if(defined($elem->{colorId}) && ($elem->{colorId} eq $idc) ) {
@@ -982,9 +1024,12 @@ sub object_ofIDC {
 				print "relative nodes :\n";
 				print Dumper(@liste_noeuds_rel);
 				list_of_relative_draw($elem);
+			
 				print "*"x80;
 				print "relative draw :\n";
 				print Dumper(@liste_arretes_rel);
+				make_list_instructions_rel($elem);
+
 			} elsif ($elem->{type} eq "draw"){
 				list_of_relative_nodes_of_draw($elem);
 				print "_"x80;
@@ -993,18 +1038,21 @@ sub object_ofIDC {
 			}
 			#print "-"x28, "  liste instruction bfr " , "-"x28;
 			#print Dumper(@liste_instructions);
-			
+
+=fv			
 			my $a_node = tikzobj_of_node("n1");
 			print "/"x80;
+			push $a_node->{params_keys},"fill";
+			$a_node->{params}->{fill}="blue!30";
 			print Dumper($a_node);
-			
-			my $index_n1 = index_of_line($a_node->{ligne});
+			my $index_n1 = index_of_line($a_node->{ligne},@liste_instructions);
 			print "index_n1 : $index_n1\n";
+			$liste_instructions[$index_n1] = $a_node;
 			my $code =string_of_liste_instructions(@liste_instructions);
 			print "\n","-"x80, "code :\n";
 			print $code;
 			#print "+"x28, " liste instruction aftr " , "+"x28;
-			
+=cut			
 			#print Dumper(@liste_instructions);
 			return $elem;
 		}
