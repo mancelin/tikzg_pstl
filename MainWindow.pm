@@ -805,7 +805,7 @@ sub list_of_nodes {
 sub list_of_relative_nodes {
 	my ($node) = @_;
 	#printf "list_of_relative_nodes %s\n", $node->{nom};
-	@liste_noeuds_rel =();
+	@liste_noeuds_rel =();				## reinit ptet a faire ailleur
 	foreach my $elem (@liste_instructions){
 		if(($elem->{type} eq "node") && ($elem->{nom} ne $node->{nom}) ){
 			#printf "elem nom : %s, node nom : %s\n", $elem->{nom}, $node->{nom};
@@ -836,7 +836,7 @@ sub param_contient_noeud {
 sub list_of_relative_draw {
 	my ($node) = @_;
 	#printf "list_of_relative_nodes %s\n", $node->{nom};
-	@liste_arretes_rel =();
+	@liste_arretes_rel =();				## reinit ptet a faire ailleur
 	foreach my $elem (@liste_instructions){
 		if(($elem->{type} eq "draw") && (($elem->{origine} eq $node->{nom}) || ($elem->{but} eq $node->{nom})) ){
 				#print "adding %s\n", $elem->{nom};
@@ -844,6 +844,17 @@ sub list_of_relative_draw {
 		}
 	}
 }
+
+# rend la liste des noms des noeuds liés a une arrête passée en paramètre
+sub list_of_relative_nodes_of_draw {
+	my ($arrete) = @_;
+	#printf "list_of_relative_nodes %s\n", $node->{nom};
+	@liste_noeuds_rel =();				## reinit ptet a faire ailleur
+	push (@liste_noeuds_rel, $arrete->{origine});
+	push (@liste_noeuds_rel, $arrete->{but});
+	
+}
+
 
 sub nb_IDC{
 	my $nb_IDC = 0;
@@ -869,15 +880,22 @@ sub object_ofIDC {
 	foreach my $elem (@liste_instructions){
 		if(defined($elem->{colorId}) && ($elem->{colorId} eq $idc) ) {
 	#		print $elem->{colorId},"  ", $elem->{ligne},"\n";
-			print $elem->{nom},"\n";
-			list_of_relative_nodes($elem);
-			print "-"x80;
-			print "relative nodes :\n";
-			print Dumper(@liste_noeuds_rel);
-			list_of_relative_draw($elem);
-			print "*"x80;
-			print "relative draw :\n";
-			print Dumper(@liste_arretes_rel);
+			if($elem->{type} eq "node"){
+				print $elem->{nom},"\n";
+				list_of_relative_nodes($elem);
+				print "-"x80;
+				print "relative nodes :\n";
+				print Dumper(@liste_noeuds_rel);
+				list_of_relative_draw($elem);
+				print "*"x80;
+				print "relative draw :\n";
+				print Dumper(@liste_arretes_rel);
+			} else {if ($elem->{type} eq "draw"){
+				list_of_relative_nodes_of_draw($elem);
+				print "_"x80;
+				print "list_of_relative_nodes_of_draw :\n";
+				print Dumper(@liste_noeuds_rel);
+			}}
 			return $elem;
 		}
 	}	
