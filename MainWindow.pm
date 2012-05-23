@@ -451,7 +451,8 @@ sub createActions {
     $copyTikzpictureAct->setStatusTip("Copier code source figure tikz");
     this->connect($copyTikzpictureAct, SIGNAL 'triggered()', this, SLOT 'copyTikzpicture()');
     
-    my $printAct = Qt::Action(Qt::Icon("images/print.png"), "Imprimer code Tikz", this);
+   # my $printAct = Qt::Action(Qt::Icon("images/print.png"), "Imprimer code Tikz", this);
+    my $printAct = Qt::Action("Imprimer code Tikz", this);
     this->{printAct} = $printAct;
     $printAct->setShortcut(Qt::KeySequence("Ctrl+P"));
     $printAct->setStatusTip("Imprimer le code Tikz");
