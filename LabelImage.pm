@@ -194,13 +194,20 @@ sub mousePressEvent
     if ($event->button() == Qt::RightButton()) {
 	#	print "mousePressEvent : RightButton\n";
 		my ($first_node, $x_fn, $y_fn) = getCenterFirstNode();
-		my $below = $y - $y_fn ;
+		print "x_fn : $x_fn , y_fn : $y_fn\n";
+		#my $zoomFactorImg = this->{zoomFactorImg};
+		my $below = $y - $y_fn;
 		my $right = $x - $x_fn;
+		if(defined this->{zoomFactorImg}){
+			print "zoom factor defined\n";
+			$below = int($below / (this->{zoomFactorImg} /100));
+			$right = int($right / (this->{zoomFactorImg} /100));
+		}
 		print "below : $below, right : $right\n";
 		my $style = "rectangle";
 		my $node_y = '\node['."below of = $first_node, node distance = $below".'] ('.$first_node."_y$below) {};\n";
-		my $new_node = '\node['.$style.",right of = $first_node"."_y$below, node distance = $right".'] ('.$first_node."_y$below"."_x$right) {new};\n";
-		print "$node_y\n $new_node\n";
+		my $new_node = '\node[draw,'.$style.",right of = $first_node"."_y$below, node distance = $right".'] ('.$first_node."_y$below"."_x$right) {new};\n";
+		#print "$node_y\n $new_node\n";
 		MainWindow::appendToEditor($node_y.$new_node);
     }
     
