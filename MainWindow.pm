@@ -39,12 +39,15 @@ my @liste_instructions;
 my @listenoeuds;
 my @liste_noeuds_rel;
 my @liste_arretes_rel;
+my $mainWindow;
 my $density;
 my $zoomFactorImg;
 my $timer = Qt::Timer();
 my $generation_img_en_cours = 0;
 my $viewMenu;
 my $textBox_zoom;
+my $currentFile_tikz;
+#my $gen_rel;
 
 sub NEW {
 	#print "nb args : " , scalar(@_), "\n";
@@ -53,7 +56,7 @@ sub NEW {
 		$file=$_[1];
 	}
 	shift->SUPER::NEW($_[1]);
-
+	$mainWindow=this;
 	my $textEdit = new QsciScintilla;
     this->{textEdit} = $textEdit;
     this->setCentralWidget($textEdit);
@@ -92,6 +95,9 @@ sub NEW {
                   this, SLOT 'documentWasModified()');
 	this->connect( $timer, SIGNAL 'timeout()', this, SLOT 'genImage()' );
 #	Qt::Object::connect( $timer, SIGNAL 'timeout()', this, SLOT 'myEvent()' );
+
+	$currentFile_tikz="tmp_tikz";
+	#$gen_rel=0;
     $timer->start(1000);
 
     
@@ -683,32 +689,43 @@ sub genImage {
 	# suppresions de tous les tmp
 	#clean();
 	
-	
-	# generation du fichier tex
-	my $FH;
+	#my $filename = "tmp/".$currentFile_tikz;#"tmp/tmp_tikz";
 	my $filename = "tmp/tmp_tikz";
-    if(!(open $FH, '>', $filename)) {
-        Qt::MessageBox::warning(this, "Dock Widgets",
-                                 sprintf("Cannot write file %s:\n%s.",
-                                 $filename,
-                                 $!));
-        return;
-    }
+	
+	#if (!$gen_rel){
+	#print "! gen_rel\n";
+	# generation du fichier tikz
+	my $FH;
+	
+	if(!(open $FH, '>', $filename)) {
+		Qt::MessageBox::warning(this, "Dock Widgets",
+								 sprintf("Cannot write file %s:\n%s.",
+								 $filename,
+								 $!));
+		return;
+	}
 
 #    print $FH this->{textEdit}->toPlainText();
 	print $FH this->{textEdit}->text();
-    print $FH "\n";
-    close $FH;
+	print $FH "\n";
+	close $FH;
+	#}
+	
+	#print "-"x80, $currentFile_tikz, "\n","-"x80;
     
     # generation d' un fichier png a partir du code tikz
+    #system("perl tikz2png.pl tmp_tikz $density");
     system("perl tikz2png.pl tmp_tikz $density");
     
     # lier l' image générée au QLabel de droite
-    if( -e "./tmp/tmp_tikz.png"){
+    my $png = "tmp/tmp_tikz.png";
+    #print "png : $png\n";
+    if( -e $png){
 		this->{zoneGraphe}-> setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
+		this->{zoneGraphe}->setPixmap(Qt::Pixmap($png));
 	} else {
 		# si imposible de generer png, on affiche rien
-		this->{zoneGraphe}-> setPixmap(Qt::Pixmap(""));
+		this->{zoneGraphe}->setPixmap(Qt::Pixmap(""));
 	#	my $pic = this->{zoneGraphe}->pixmap();
 		
 	}
@@ -794,14 +811,14 @@ sub list_of_nodes {
 sub list_of_relative_nodes {
 	my ($node) = @_;
 	@liste_noeuds_rel = ();
-	printf "list_of_relative_nodes %s\n", $node->{nom};
-	print Dumper(@liste_instructions);
+	#printf "list_of_relative_nodes %s\n", $node->{nom};
+	#print Dumper(@liste_instructions);
 	foreach my $elem (@liste_instructions){
 		#print Dumper($elem);
 		if(($elem->{type} eq "node") && ($elem->{nom} ne $node->{nom}) ){
-			printf "elem nom : %s, node nom : %s\n", $elem->{nom}, $node->{nom};
+			#printf "elem nom : %s, node nom : %s\n", $elem->{nom}, $node->{nom};
 			if(param_contient_noeud($node->{nom}, values $elem->{params})) {
-				printf "adding %s\n", $elem->{nom};
+				#printf "adding %s\n", $elem->{nom};
 				push (@liste_noeuds_rel, $elem);
 			}
 		}
@@ -812,9 +829,9 @@ sub list_of_relative_nodes {
 # retourne 1 si le hash de paramètres params_node contient le noeud nom_noeud
 sub param_contient_noeud {
 	my ($nom_noeud, @params_node) = @_;
-	printf "nom_noeud : %s\n params_node : \n", $nom_noeud;
-	print Dumper(@params_node);
-	print "-"x80;
+	#printf "nom_noeud : %s\n params_node : \n", $nom_noeud;
+	#print Dumper(@params_node);
+	#print "-"x80;
 	foreach my $param (@params_node){
 		if($param =~ /\Q$nom_noeud/){		
 			return 1;
@@ -858,7 +875,7 @@ sub tikzobj_of_node {
 sub index_of_line {
 	my ($ligne) = @_;
 	my $i=0;
-	printf "index_of_line : $ligne\n";
+	#printf "index_of_line : $ligne\n";
 	foreach my $elem (@liste_instructions){
 		if($elem->{ligne} == $ligne) {
 			return $i;
@@ -893,7 +910,7 @@ sub string_of_liste_instructions {
 			if (defined($elem->{params_keys}) && (scalar ($elem->{params_keys}) > 0 )) {
 				$prog_tikz.='['.string_of_param($elem, $elem->{params_keys});
 				if ((defined ($elem->{couleur_rel})) && $rel_color_actif) {
-					$prog_tikz.=",fill=".$elem->{couleur_rel}.'] ';
+					$prog_tikz.=",".$elem->{couleur_rel}.'] ';
 				} else {
 					$prog_tikz.='] ';
 				}
@@ -957,7 +974,7 @@ sub mark_as_rel {
 
 sub make_list_instructions_rel {
 	my ($objTikz ) = @_;
-	mark_as_rel($objTikz, "blue!40");
+	mark_as_rel($objTikz, "blue!50");
 	#"blue!30"
 	#my @liste_instructions_rel = @liste_instructions;
 	#print "?"x80;
@@ -976,18 +993,55 @@ sub make_list_instructions_rel {
 	foreach my $rel_obj (@l_rel_objects){
 		my $ligne = $rel_obj->{ligne};
 		my $i = index_of_line($ligne);
-		#print "i : $i \n";
-		mark_as_rel($liste_instructions[$i], "blue!20");
+		if ($rel_obj->{type} eq "node") {
+			mark_as_rel($liste_instructions[$i], "red!20");
+		} elsif ($rel_obj->{type} eq "draw") {
+			mark_as_rel($liste_instructions[$i], "red");
+		}
 	}
 #=later	
-	my $code =string_of_liste_instructions(1,@liste_instructions);
+	unless (open FICTIKZ_REL, ">tmp_tikz_rel"){
+		die "Impossible d'ecrire sur 'tmp_tikz_rel' : $!";
+	}
+	
+	my $entete_tikz= 
+	q (\documentclass{article}
+	\usepackage[graphics,tightpage,active]{preview}
+	\usepackage[utf8]{inputenc}  
+	\usepackage{xcolor}
+	\usepackage{tikz}
+	\PreviewEnvironment{tikzpicture}
+	\begin{document}
+	\begin{tikzpicture});
+	
+	my $fin=
+	q(\end{tikzpicture}
+	\end{document}
+	);
+
+	my $code_rel =string_of_liste_instructions(1,@liste_instructions);
+	print FICTIKZ_REL $entete_tikz.$code_rel.$fin;
+	close FICTIKZ_REL;
+	print "code rel :\n",$code_rel;
+	#$currentFile_tikz = "tmp_tikz_rel";
+	system("pdflatex -halt-on-error tmp_tikz_rel > /dev/null");
+	#my $img=$currentFile_tikz.".png";
+	#print "img : $img\n";
+	system("convert -density $density tmp_tikz_rel.pdf tmp_tikz_rel.png");
+
+	system("rm *.log *.aux *.pdf");
+	system("mv tmp_tikz_rel.png tmp");
+	$mainWindow->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz_rel.png"));
+#	$gen_rel=1;
+	
+=later
 	print "\n","-"x80, "code rel:\n";
 	print $code;
 	
 	my $code2 =string_of_liste_instructions(0,@liste_instructions);
 	print "\n","-"x80, "code non_rel:\n";
 	print $code2;
-#=cut
+=cut
 }
 
 
@@ -1019,6 +1073,7 @@ sub object_ofIDC {
 	#		print $elem->{colorId},"  ", $elem->{ligne},"\n";
 			if($elem->{type} eq "node"){
 				print $elem->{nom},"\n";
+=MUTE
 				list_of_relative_nodes($elem);
 				print "-"x80;
 				print "relative nodes :\n";
@@ -1028,6 +1083,7 @@ sub object_ofIDC {
 				print "*"x80;
 				print "relative draw :\n";
 				print Dumper(@liste_arretes_rel);
+=cut
 				make_list_instructions_rel($elem);
 
 			} elsif ($elem->{type} eq "draw"){
