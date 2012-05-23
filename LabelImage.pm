@@ -140,6 +140,7 @@ sub getCenterFirstNode {
 	$x = int(($x_fin - $x_deb)/2 + $x_deb);
 	$y = int(($y_fin - $y_deb)/2 + $y_deb);
 	printf "x : %d, y : %d\n", $x, $y;
+	return ($x,$y);
 }
 
 sub mouseMoveEvent {
@@ -192,8 +193,10 @@ sub mousePressEvent
     
     if ($event->button() == Qt::RightButton()) {
 	#	print "mousePressEvent : RightButton\n";
-		getCenterFirstNode();
-		
+		my ($x_fn, $y_fn) = getCenterFirstNode();
+		my $below = $y - $y_fn ;
+		my $right = $x - $x_fn;
+		print "below : $below, right : $right\n";
     }
     
     
