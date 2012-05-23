@@ -972,6 +972,15 @@ sub index_of_line {
 	return (-1);
 }
 
+sub getFirstNode {
+	foreach my $elem (@liste_instructions){
+		if ($elem->{type} eq "node"){
+			return $elem;
+		}
+	}
+}
+	
+
 # retourne la chaine de charactéres correspondant a la liste d' instruction passé en paramètre
 sub string_of_liste_instructions {
 	my ($rel_color_actif, @l_instructions) = @_;

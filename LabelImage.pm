@@ -64,10 +64,9 @@ sub IDC_of_RGB {
 	}
 	
 	LECT_FIC:
-	while(<LIST_IDC>){ # && ($nb_IDC > 0)){
+	while(<LIST_IDC>){
 		my $line = $_;
 		chomp $line;
-		#print $line; #dbg
 		$nb_IDC--;
 		last LECT_FIC if ($nb_IDC < 0);
 		my ($idc, $sep, $r, $g, $b) = split / /,$line;
@@ -80,18 +79,67 @@ sub IDC_of_RGB {
 	return "none";
 }
 
+
+sub RGB_of_IDC {
+	my ($idc_param) = @_;
+	print "idc : $idc_param\n";
+	my $nb_IDC = MainWindow::nb_IDC();
+	print "   nb_IDC : $nb_IDC\n";
+	
+	unless(open LIST_IDC, "list_IDC"){
+		die "Impossible d'ouvrir 'list_IDC' : $!";
+	}
+	
+	LECT_FIC:
+	while(<LIST_IDC>){
+		my $line = $_;
+		chomp $line;
+		$nb_IDC--;
+		last LECT_FIC if ($nb_IDC < 0);
+		my ($idc, $sep, $r, $g, $b) = split / /,$line;
+		if ( $idc eq $idc_param ) {
+			close LIST_IDC;
+			return ($r,$g,$b);
+		}
+	}
+	close LIST_IDC;
+	return "none";
+}
+
+
 sub getCenterFirstNode {
+	print "get center first node\n";
+	my $first_node = MainWindow::getFirstNode();
+	printf "first node : %s, IDC : %s\n", $first_node->{nom}, $first_node->{colorId} ;
+	my ($idc) = split /,/,$first_node->{colorId};
+	#print "idc : $idc\n";
+	my ($red,$green,$blue) = RGB_of_IDC($idc);
+	print "RGB : $red $green $blue\n";
 	my $im = Image::Magick->new();
-	my ($x,$y,$x_deb,$x_fin,$y_deb,$y_fin);
+	my ($x,$y);
 	my $rc = $im->Read("./tmp/tmp_tikz_IDC.png");
 	die $rc if $rc;
 	my ($w, $h) = $im->Get('width', 'height');
+	my ($x_deb,$x_fin,$y_deb,$y_fin) = ($w,0,$h,0);
 	printf "width : %d, height : %d\n", $w, $h;
-	
-	my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
-	print " [$x,$y] => r : $r, g : $g, b : $b\n";
-	printf "IDC : %s\n", &IDC_of_RGB($r,$g,$b);
-	return &IDC_of_RGB($r,$g,$b);
+	for($y=0;$y <$h; $y++){
+		for($x=0;$x < $w; $x++){
+			my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
+			if(($r == $red) && ($g == $green) && ($b == $blue)){
+				#print "$r $g $b\n";
+				if($x < $x_deb) { 
+					print " x : $x\n";
+					$x_deb = $x; }
+				if($x > $x_fin) { $x_fin = $x; }
+				if($y < $y_deb) { $y_deb = $y; }
+				if($y > $y_fin) { $y_fin = $y; }
+			}
+		}
+	}	
+	printf "x_deb : %d , x_fin : %d, y_deb : %d, y_fin : %d\n", $x_deb,$x_fin,$y_deb,$y_fin;
+	$x = int(($x_fin - $x_deb)/2 + $x_deb);
+	$y = int(($y_fin - $y_deb)/2 + $y_deb);
+	printf "x : %d, y : %d\n", $x, $y;
 }
 
 sub mouseMoveEvent {
