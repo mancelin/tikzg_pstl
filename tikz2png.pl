@@ -107,12 +107,13 @@ my $pdf_tmp=$filename.".pdf";
 
 # transformation du pdf en png
 $img=$filename.".png";
-system("convert -density $density $pdf_tmp $img");
+if (-e $pdf_tmp) {
+	system("convert -density $density $pdf_tmp $img");
 
-system("mv $pdf_tmp tmp/$pdf_tmp");
-system("rm *.log *.aux");
-system("mv $img tmp");
-
+	system("mv $pdf_tmp tmp/$pdf_tmp");
+	system("rm *.log *.aux");
+	system("mv $img tmp");
+}
 
 
 # generation tex,pdf, png pour l' image avec les colors ID
@@ -136,12 +137,14 @@ system("pdflatex -halt-on-error $nom_fic_tex_IDC > /dev/null");
 
 my $pdf_tmp_IDC=$filename."_IDC.pdf";
 $img_IDC=$filename."_IDC.png";
-system("convert -density $density $pdf_tmp_IDC $img_IDC");
+if (-e $pdf_tmp_IDC){
+	system("convert -density $density $pdf_tmp_IDC $img_IDC");
 
-# deplacement du pdf généré dans tmp
-system("mv $pdf_tmp_IDC tmp/$pdf_tmp_IDC");
-system("rm *.log *.aux");
-system("mv $img_IDC tmp");
+	# deplacement du pdf généré dans tmp
+	system("mv $pdf_tmp_IDC tmp/$pdf_tmp_IDC");
+	system("rm *.log *.aux");
+	system("mv $img_IDC tmp");
+}
 
 # nettoyage
 #system("rm *tmp*");
