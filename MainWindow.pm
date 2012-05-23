@@ -1243,5 +1243,12 @@ sub object_ofIDC {
 	}	
 }
 
+sub appendToEditor {
+	my ($append_text) = @_;
+	my $text = $mainWindow->{textEdit}->text();
+	$text.=$append_text;
+	$mainWindow->{textEdit}->setText($text);
+}
+
 
 1;

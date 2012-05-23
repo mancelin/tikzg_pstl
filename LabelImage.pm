@@ -140,7 +140,7 @@ sub getCenterFirstNode {
 	$x = int(($x_fin - $x_deb)/2 + $x_deb);
 	$y = int(($y_fin - $y_deb)/2 + $y_deb);
 	printf "x : %d, y : %d\n", $x, $y;
-	return ($x,$y);
+	return ($first_node->{nom}, $x,$y);
 }
 
 sub mouseMoveEvent {
@@ -193,10 +193,15 @@ sub mousePressEvent
     
     if ($event->button() == Qt::RightButton()) {
 	#	print "mousePressEvent : RightButton\n";
-		my ($x_fn, $y_fn) = getCenterFirstNode();
+		my ($first_node, $x_fn, $y_fn) = getCenterFirstNode();
 		my $below = $y - $y_fn ;
 		my $right = $x - $x_fn;
 		print "below : $below, right : $right\n";
+		my $style = "rectangle";
+		my $node_y = '\node['."below of = $first_node, node distance = $below".'] ('.$first_node."_y$below) {};\n";
+		my $new_node = '\node['.$style.",right of = $first_node"."_y$below, node distance = $right".'] ('.$first_node."_y$below"."_x$right) {new};\n";
+		print "$node_y\n $new_node\n";
+		MainWindow::appendToEditor($node_y.$new_node);
     }
     
     
