@@ -228,7 +228,9 @@ sub saveFile {
     }
 
     Qt::Application::setOverrideCursor(Qt::Cursor(Qt::WaitCursor()));
-    print $FH this->{textEdit}->text();
+    my $text =this->{textEdit}->text();
+    utf8::encode($text);
+    print $FH $text;
     print $FH "\n";
     close $FH;
     Qt::Application::restoreOverrideCursor();
