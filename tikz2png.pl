@@ -55,6 +55,7 @@ sub gen_next_ColorId{
 
 my $tikz_code="";
 my $tikz_code_colorID="";
+reset_ColorId();
 
 while (my $ligne_colorID=<FICTIKZ>) {
 	

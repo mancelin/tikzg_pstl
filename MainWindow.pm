@@ -24,6 +24,7 @@ use QtCore4::slots
     selectAll      => [''],
  #   fullscreen     => [''],
 	toogle_showLineNumber => [''],
+	toogle_syntaxColoration => [''],
     about          => [''],
     recalcul_density=> [''],
     addParagraph   => ['QString'],
@@ -37,6 +38,7 @@ use Data::Dumper;
 use File::Basename;
 use File::Spec;
 use utf8;
+
 
 my @liste_instructions;
 my @listenoeuds;
@@ -385,9 +387,18 @@ sub toogle_showLineNumber {
 		#print "UNcheck !\n";
 		this->{textEdit}->setMarginLineNumbers (1, 0);
 	}
-	
 }
 
+sub toogle_syntaxColoration {
+	if (this->{toogle_syntaxColorationAct}->isChecked() ){
+		#print "check !\n";
+		my $lexerTeX = new QsciLexerTeX;
+		this->{textEdit}->setLexer($lexerTeX);
+	} else {
+		#print "UNcheck !\n";
+		this->{textEdit}->setLexer();
+	}
+}
 
 
 sub about {
@@ -507,9 +518,14 @@ sub createActions {
     $toogle_showLineNumberAct->setCheckable(1);
     $toogle_showLineNumberAct->setChecked(1);
     this->connect($toogle_showLineNumberAct, SIGNAL 'triggered()', this, SLOT 'toogle_showLineNumber()');
-    
-    
-    
+ 
+    my $toogle_syntaxColorationAct = Qt::Action("Activer coloration &Syntaxique", this);
+    this->{toogle_syntaxColorationAct} = $toogle_syntaxColorationAct;
+    $toogle_syntaxColorationAct->setStatusTip("Activer coloration Syntaxique");
+    $toogle_syntaxColorationAct->setCheckable(1);
+    $toogle_syntaxColorationAct->setChecked(1);
+    this->connect($toogle_syntaxColorationAct, SIGNAL 'triggered()', this, SLOT 'toogle_syntaxColoration()');
+
 
     my $aboutAct = Qt::Action("&About", this);
     this->{aboutAct} = $aboutAct;
@@ -563,6 +579,7 @@ sub createMenus {
 	
 	my $affichageMenu = this->menuBar()->addMenu("&Affichage");
 	$affichageMenu->addAction(this->{toogle_showLineNumberAct});
+	$affichageMenu->addAction(this->{toogle_syntaxColorationAct});
 	$affichageMenu->addSeparator();
 	
     #my $viewMenu = this->menuBar()->addMenu("&View");
@@ -1113,6 +1130,7 @@ sub make_list_instructions_rel {
 	);
 
 	my $code_rel =string_of_liste_instructions(1,@liste_instructions);
+	utf8::encode($code_rel);
 	print FICTIKZ_REL $entete_tikz.$code_rel.$fin;
 	close FICTIKZ_REL;
 	print "code rel :\n",$code_rel;
