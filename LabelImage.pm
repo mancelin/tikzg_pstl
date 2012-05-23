@@ -42,16 +42,6 @@ sub setZoomFactorImg {
 
 sub getPixelColorAt {
 	my ($x, $y) = @_;
-
-=over	
-	# tmp, to test
-	my ($x, $y,$file) = @_;
-
-	print $_[1];
-	my $x = $_[0];
-	my $y = $_[1];
-	printf "  x : %d, y : %d\n", $x, $y;
-=cut
 	my $im = Image::Magick->new();
 	my $rc = $im->Read("./tmp/tmp_tikz_IDC.png");
 	#my $rc = $im->Read($file); # tmp test
@@ -90,6 +80,20 @@ sub IDC_of_RGB {
 	return "none";
 }
 
+sub getCenterFirstNode {
+	my $im = Image::Magick->new();
+	my ($x,$y,$x_deb,$x_fin,$y_deb,$y_fin);
+	my $rc = $im->Read("./tmp/tmp_tikz_IDC.png");
+	die $rc if $rc;
+	my ($w, $h) = $im->Get('width', 'height');
+	printf "width : %d, height : %d\n", $w, $h;
+	
+	my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
+	print " [$x,$y] => r : $r, g : $g, b : $b\n";
+	printf "IDC : %s\n", &IDC_of_RGB($r,$g,$b);
+	return &IDC_of_RGB($r,$g,$b);
+}
+
 sub mouseMoveEvent {
     my ($event) = @_;
    # printf "heiht : %d, width : %d\n", this->size()->height(), this->size()->width();
@@ -121,16 +125,13 @@ sub mouseMoveEvent {
 sub mousePressEvent
 {
     my ($event) = @_;
+    my $hauteur_label = this->size()->height();
+	my $hauteur_image = this->pixmap()->height();
+	my $largeur_image = this->pixmap()->width();
+    my $x = $event->x;
+	my $y = int($event->y - ($hauteur_label/2 - $hauteur_image/2));
     if ($event->button() == Qt::LeftButton()) {
-	#	print "mousePressEvent : leftButton\n";
-		
-		my $hauteur_label = this->size()->height();
-		my $hauteur_image = this->pixmap()->height();
-		my $largeur_image = this->pixmap()->width();
-	   # print " hauteur image : ",$hauteur_image," largeur image : ",$largeur_image,"\n";
-		my $x = $event->x;
-		my $y = int($event->y - ($hauteur_label/2 - $hauteur_image/2));
-			if(($x <= $largeur_image) && ($y >= 0) && ($y < $hauteur_image)) {
+		if(($x <= $largeur_image) && ($y >= 0) && ($y < $hauteur_image)) {
 	#		print "\n{Image} => x : ",$x," , y : ",$y,"\n";
 	#		print "nb_IDC : ", MainWindow::nb_IDC();
 			my $idcClicked = getPixelColorAt($x,$y);
@@ -143,8 +144,8 @@ sub mousePressEvent
     
     if ($event->button() == Qt::RightButton()) {
 	#	print "mousePressEvent : RightButton\n";
-	#	$fic = "tmp/IDC1.png";
-	#	this->setPixmap(Qt::Pixmap("gen_list_IDC/IDC55.png"));
+		getCenterFirstNode();
+		
     }
     
     

@@ -62,6 +62,7 @@ sub NEW {
 	}
 	shift->SUPER::NEW($_[1]);
 	$mainWindow=this;
+	this->{mainWindow} = \$mainWindow;
 	my $textEdit = new QsciScintilla;
     this->{textEdit} = $textEdit;
     this->setCentralWidget($textEdit);
@@ -625,8 +626,7 @@ sub createDockWindows {
     this->{dock} = $dock;
     $dock->setAllowedAreas(Qt::LeftDockWidgetArea() | Qt::RightDockWidgetArea());
     $dock->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
-  #  my $view = Qt::Label($dock);
-#    my $view = LabelImage($dock,\$density);
+
 	my $viewMenu = LabelImage($dock,\$density,\$zoomFactorImg);
 	
     this->{zoneGraphe} = $viewMenu;
@@ -1075,6 +1075,10 @@ sub mark_as_rel {
 sub make_list_instructions_rel {
 	my ($objTikz , $color_obj_select) = @_;
 	reset_couleur_rel();
+	
+	$mainWindow->{density}=$mainWindow->{zoneGraphe}->{density} ;
+	my ($density)=($mainWindow->{density});
+	
 	#"blue!30"
 	#my @liste_instructions_rel = @liste_instructions;
 	#print "?"x80;
@@ -1143,7 +1147,7 @@ sub make_list_instructions_rel {
 	system("rm *.log *.aux *.pdf");
 	system("mv tmp_tikz_rel.png tmp");
 	$mainWindow->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz_rel.png"));
-#	$gen_rel=1;
+
 	
 =later
 	print "\n","-"x80, "code rel:\n";
