@@ -981,6 +981,18 @@ sub string_of_param {
 	return $res_string;
 }
 
+
+# reinitialise les couleurs rel
+sub reset_couleur_rel {
+	foreach my $elem (@liste_instructions){
+		if(defined($elem->{couleur_rel}) ) {
+			$elem->{couleur_rel} = undef;
+		}
+	}
+}
+			
+	
+
 # ajoute un couleur a un élément tikz pour le "marquer" en tant que liée a d' autre noeuds
 sub mark_as_rel {
 	my ($objTikz , $color ) = @_;
@@ -991,7 +1003,8 @@ sub mark_as_rel {
 
 # cree une image ou les objets relatifs a objTikz sont colorés et l' affiche
 sub make_list_instructions_rel {
-	my ($objTikz ) = @_;
+	my ($objTikz , $color_obj_select) = @_;
+	reset_couleur_rel();
 	#"blue!30"
 	#my @liste_instructions_rel = @liste_instructions;
 	#print "?"x80;
@@ -1000,18 +1013,23 @@ sub make_list_instructions_rel {
 	my @l_rel_objects;
 	#my @l_rel_draw;
 	if ($objTikz->{type} eq "node" ){
-		mark_as_rel($objTikz, "blue!50");
+		#mark_as_rel($objTikz, "blue!50");
+		mark_as_rel($objTikz, $color_obj_select);
 		list_of_relative_nodes($objTikz);
 		list_of_relative_draw($objTikz);
 		@l_rel_objects = (@liste_noeuds_rel,@liste_arretes_rel);
 		#print Dumper(@l_rel_objects);
 	} elsif ($objTikz->{type} eq "draw" ){
-		mark_as_rel($objTikz, "blue!50");
+		#mark_as_rel($objTikz, "blue!50");
+		mark_as_rel($objTikz, $color_obj_select);
 		list_of_relative_nodes_of_draw($objTikz);
 		@l_rel_objects = @liste_noeuds_rel;
 	}
 	
 	#foreach my $elem (@list_instructions_rel){
+	print "+"x80;
+	print Dumper(@l_rel_objects);
+	print "+"x80;
 	foreach my $rel_obj (@l_rel_objects){
 		my $ligne = $rel_obj->{ligne};
 		my $i = index_of_line($ligne);
@@ -1106,13 +1124,17 @@ sub object_ofIDC {
 				print "relative draw :\n";
 				print Dumper(@liste_arretes_rel);
 =cut
-				make_list_instructions_rel($elem);
+				#make_list_instructions_rel($elem);
+				make_list_instructions_rel($elem,"blue!50");
 
 			} elsif ($elem->{type} eq "draw"){
+=MUTE
 				list_of_relative_nodes_of_draw($elem);
 				print "_"x80;
 				print "list_of_relative_nodes_of_draw :\n";
 				print Dumper(@liste_noeuds_rel);
+=cut
+				make_list_instructions_rel($elem, "blue");
 			}
 			#print "-"x28, "  liste instruction bfr " , "-"x28;
 			#print Dumper(@liste_instructions);
