@@ -580,27 +580,45 @@ sub createDockWindows {
 sub proprieteNode{
     my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
-    my $layout = Qt::VBoxLayout();
+    my $layout = Qt::GridLayout();
     my $visible = Qt::CheckBox(this->tr('Visible'));
     $visible->setChecked(1);
     $layout->addWidget($visible);               #cacher le noeud
-    $layout->addWidget(this->Qt::LineEdit());   #le nom du noeud
+    my $nom=Qt::Label(this->tr('Nom:'));
+    $layout->addWidget($nom,1,0);
+    $layout->addWidget(this->Qt::LineEdit(),1,1);   #le nom du noeud
+    my $type=Qt::Label(this->tr('Forme:'));
+    $layout->addWidget($type,2,0);
     my $forme=this->Qt::ComboBox();
     $forme->addItem(this->tr('Cercle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $forme->addItem(this->tr('Rectangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $forme->addItem(this->tr('Triangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($forme);                 #la forme du noeud
-    $layout->addWidget(Qt::LineEdit());         #dimension du noeud
+    $layout->addWidget($forme,2,1);                 #la forme du noeud
+    my $dim=Qt::Label(this->tr('Dimension:'));
+    $layout->addWidget($dim,3,0);
+    $layout->addWidget(Qt::LineEdit(),3,1);         #dimension du noeud
+    my $ty=Qt::Label(this->tr('Type de trait:'));
+    $layout->addWidget($ty,4,0);
     my $trait=this->Qt::ComboBox();
     $trait->addItem(this->tr('Plein'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $trait->addItem(this->tr('Pointille'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $trait->addItem(this->tr('Double'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($trait);                 #le type de trait
-    $layout->addWidget(this->Qt::LineEdit());   #le texte inscrit dans le noeud
-    $layout->addWidget(this->Qt::ComboBox());   #right of (à compléter après identification du noeud)
-    $layout->addWidget(this->Qt::ComboBox());   #left of  (idem)
-    $layout->addWidget(this->Qt::ComboBox());   #up of    (idem)
-    $layout->addWidget(this->Qt::ComboBox());   #down of  (idem)
+    $layout->addWidget($trait,4,1);                 #le type de trait
+    my $texte=Qt::Label(this->tr('Texte:'));
+    $layout->addWidget($texte,5,0);
+    $layout->addWidget(this->Qt::LineEdit(),5,1);   #le texte inscrit dans le noeud
+    my $dte=Qt::Label(this->tr('A droite de:'));
+    $layout->addWidget($dte,6,0);
+    $layout->addWidget(this->Qt::ComboBox(),6,1);   #right of (à compléter après identification du noeud)
+    my $gche=Qt::Label(this->tr('A gauche de:'));
+    $layout->addWidget($gche,7,0);
+    $layout->addWidget(this->Qt::ComboBox(),7,1);   #left of  (idem)
+    my $ht=Qt::Label(this->tr('Au dessus de:'));
+    $layout->addWidget($ht,8,0);
+    $layout->addWidget(this->Qt::ComboBox(),8,1);   #up of    (idem)
+    my $bs=Qt::Label(this->tr('En dessous de:'));
+    $layout->addWidget($bs,9,0);
+    $layout->addWidget(this->Qt::ComboBox(),9,1);   #down of  (idem)
     $top->setLayout($layout);
     $dock->setWidget($top);
     this->addDockWidget(Qt::LeftDockWidgetArea(), $dock);
@@ -612,21 +630,31 @@ sub proprieteNode{
 sub proprieteDraw{
     my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
-    my $layout = Qt::VBoxLayout();
-    $layout->addWidget(this->Qt::LineEdit());   #le nom
-    $layout->addWidget(this->Qt::ComboBox());   #origine (à compléter après identification de l'arete)
+    my $layout = Qt::GridLayout();
+    my $nom=Qt::Label(this->tr('Nom:'));
+    $layout->addWidget($nom,1,0);
+    $layout->addWidget(this->Qt::LineEdit(),1,1);   #le nom
+    my $orig=Qt::Label(this->tr('Origine:'));
+    $layout->addWidget($orig,2,0);
+    $layout->addWidget(this->Qt::ComboBox(),2,1);   #origine (à compléter après identification de l'arete)
+    my $dir=Qt::Label(this->tr('Sens:'));
+    $layout->addWidget($dir,3,0);
     my $sens=this->Qt::ComboBox();
     $sens->addItem(this->tr('<->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $sens->addItem(this->tr('->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $sens->addItem(this->tr('<-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-	$sens->addItem(this->tr('-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($sens);                 #le sens de l'arete
+    $sens->addItem(this->tr('-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $layout->addWidget($sens,3,1);                 #le sens de l'arete
+    my $ty=Qt::Label(this->tr('Type de trait:'));
+    $layout->addWidget($ty,4,0);
     my $trait=this->Qt::ComboBox();
     $trait->addItem(this->tr('Plein'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $trait->addItem(this->tr('Pointille'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $trait->addItem(this->tr('Double'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($trait);                 #le type de trait
-    $layout->addWidget(this->Qt::ComboBox());   #destination (à compléter après identification du noeud)
+    $layout->addWidget($trait,4,1);                 #le type de trait
+    my $des=Qt::Label(this->tr('Destination:'));
+    $layout->addWidget($des,5,0);
+    $layout->addWidget(this->Qt::ComboBox(),5,1);   #destination (à compléter après identification du noeud)
 
 
     $top->setLayout($layout);
@@ -634,7 +662,6 @@ sub proprieteDraw{
     this->addDockWidget(Qt::LeftDockWidgetArea(), $dock);
     this->{viewMenu}->addAction($dock->toggleViewAction());
 }
-
 
 sub recalcul_density {
 	my $textZoom = $textBox_zoom->text();
