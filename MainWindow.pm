@@ -807,6 +807,22 @@ sub list_of_nodes {
 	#print Dumper(\@{listenoeuds}); #dbg
 }
 
+# rend la liste des objets tikz correspondant au noeud passé en paramétre
+sub get_objsTikz_of_nodes {
+	my @node_names = @_;
+	my @list_objsTikz;
+	my $i=0;
+	foreach my $elem (@liste_instructions){
+		if(($i < scalar(@node_names)) && ($elem->{type} eq "node") && ($elem->{nom} eq $node_names[$i])) {
+			printf "elemnt : %s\n", $elem->{nom};
+			push (@list_objsTikz, $elem);
+			$i++;
+		}
+	}
+	return @list_objsTikz;
+}
+
+
 # rend la liste des noeuds liés au noeud passé en paramètre
 sub list_of_relative_nodes {
 	my ($node) = @_;
@@ -856,9 +872,10 @@ sub list_of_relative_draw {
 sub list_of_relative_nodes_of_draw {
 	my ($arrete) = @_;
 	#printf "list_of_relative_nodes %s\n", $node->{nom};
-	push (@liste_noeuds_rel, $arrete->{origine});
-	push (@liste_noeuds_rel, $arrete->{but});
-	
+	my @liste_noms_noeuds_rel;
+	push (@liste_noms_noeuds_rel, $arrete->{origine});
+	push (@liste_noms_noeuds_rel, $arrete->{but});
+	@liste_noeuds_rel=get_objsTikz_of_nodes(@liste_noms_noeuds_rel);
 }
 
 # retourne l' objet tikz associé au noeud passé en paramétre
@@ -972,9 +989,9 @@ sub mark_as_rel {
 	#return $objTikz;
 }
 
+# cree une image ou les objets relatifs a objTikz sont colorés et l' affiche
 sub make_list_instructions_rel {
 	my ($objTikz ) = @_;
-	mark_as_rel($objTikz, "blue!50");
 	#"blue!30"
 	#my @liste_instructions_rel = @liste_instructions;
 	#print "?"x80;
@@ -983,11 +1000,16 @@ sub make_list_instructions_rel {
 	my @l_rel_objects;
 	#my @l_rel_draw;
 	if ($objTikz->{type} eq "node" ){
+		mark_as_rel($objTikz, "blue!50");
 		list_of_relative_nodes($objTikz);
 		list_of_relative_draw($objTikz);
 		@l_rel_objects = (@liste_noeuds_rel,@liste_arretes_rel);
 		#print Dumper(@l_rel_objects);
-	}  ## idem pour draw
+	} elsif ($objTikz->{type} eq "draw" ){
+		mark_as_rel($objTikz, "blue!50");
+		list_of_relative_nodes_of_draw($objTikz);
+		@l_rel_objects = @liste_noeuds_rel;
+	}
 	
 	#foreach my $elem (@list_instructions_rel){
 	foreach my $rel_obj (@l_rel_objects){
