@@ -22,6 +22,8 @@ use QtCore4::slots
     paste          => [''],
     delete         => [''],
     selectAll      => [''],
+ #   fullscreen     => [''],
+	toogle_showLineNumber => [''],
     about          => [''],
     recalcul_density=> [''],
     addParagraph   => ['QString'],
@@ -364,6 +366,30 @@ sub selectAll {
 	this->{textEdit}->selectAll();
 }
 
+=no fullscreen
+sub fullscreen {
+	if(this->isFullscreen()){
+		this->showNormal();
+	} else {
+		this->showFullScreen ();
+	}
+}
+=cut
+
+
+sub toogle_showLineNumber {
+	if (this->{toogle_showLineNumberAct}->isChecked() ){
+		#print "check !\n";
+		this->{textEdit}->setMarginLineNumbers (1, 1);
+	} else {
+		#print "UNcheck !\n";
+		this->{textEdit}->setMarginLineNumbers (1, 0);
+	}
+	
+}
+
+
+
 sub about {
    Qt::MessageBox::about(this, "A propos",
             "<b>TikzG</b> permet de ..." .
@@ -467,7 +493,23 @@ sub createActions {
     $selectAllAct->setStatusTip("Sélectionner tout le texte sélectionné");
     this->connect($selectAllAct, SIGNAL 'triggered()', this, SLOT 'selectAll()'); 
     
-  
+=no fullscreen	
+	my $fullscreenAct = Qt::Action("Plein é&cran ", this);
+    this->{fullscreenAct} = $fullscreenAct;
+    $fullscreenAct->setShortcut(Qt::KeySequence("F11"));
+    $fullscreenAct->setStatusTip("Afficher en plein écran");
+    this->connect($fullscreenAct, SIGNAL 'triggered()', this, SLOT 'fullscreen()'); 
+=cut
+	
+	my $toogle_showLineNumberAct = Qt::Action("Afficher les numéros de &ligne", this);
+    this->{toogle_showLineNumberAct} = $toogle_showLineNumberAct;
+    $toogle_showLineNumberAct->setStatusTip("Aficher numéros de ligne");
+    $toogle_showLineNumberAct->setCheckable(1);
+    $toogle_showLineNumberAct->setChecked(1);
+    this->connect($toogle_showLineNumberAct, SIGNAL 'triggered()', this, SLOT 'toogle_showLineNumber()');
+    
+    
+    
 
     my $aboutAct = Qt::Action("&About", this);
     this->{aboutAct} = $aboutAct;
@@ -519,13 +561,14 @@ sub createMenus {
 	$editMenu->addSeparator();
 	$editMenu->addAction(this->{selectAllAct});
 	
+	my $affichageMenu = this->menuBar()->addMenu("&Affichage");
+	$affichageMenu->addAction(this->{toogle_showLineNumberAct});
+	$affichageMenu->addSeparator();
 	
-	
-	
-    my $viewMenu = this->menuBar()->addMenu("&View");
-    this->{viewMenu} = $viewMenu;
+    #my $viewMenu = this->menuBar()->addMenu("&View");
+    #this->{viewMenu} = $viewMenu;
 
-    this->menuBar()->addSeparator();
+ #   this->menuBar()->addSeparator();
 
     my $helpMenu = this->menuBar()->addMenu("&Help");
     $helpMenu->addAction(this->{aboutAct});
@@ -573,7 +616,7 @@ sub createDockWindows {
  #   this->{zoneGraphe}->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
     $dock->setWidget($viewMenu);
     this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
-    this->{viewMenu}->addAction($dock->toggleViewAction());
+    #this->{viewMenu}->addAction($dock->toggleViewAction());
     
    # this->connect($view, SIGNAL 'currentTextChanged(const QString &)',
    #            this, SLOT 'genImage()');
