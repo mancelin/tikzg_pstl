@@ -34,6 +34,7 @@ use TikzObjects;
 use Data::Dumper; 
 use File::Basename;
 use File::Spec;
+use utf8;
 
 my @liste_instructions;
 my @listenoeuds;
@@ -501,6 +502,9 @@ sub createMenus {
     $fileMenu->addAction(this->{quitAct});
     
     my $editMenu = this->menuBar()->addMenu("&Éditer");
+    #my $strMenu ="&Éditer";
+   # utf8::decode($strMenu);
+    #my $editMenu = this->menuBar()->addMenu($strMenu);
     $editMenu->addAction(this->{undoAct});
 	$editMenu->addAction(this->{redoAct});
 	$editMenu->addSeparator();
