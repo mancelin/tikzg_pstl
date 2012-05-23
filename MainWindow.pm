@@ -267,6 +267,8 @@ sub loadFile {
 	}
 
     Qt::Application::setOverrideCursor(Qt::Cursor(Qt::WaitCursor()));
+    #print "text :\n$text\n";
+    utf8::decode($text);
     this->{textEdit}->setText($text);
     Qt::Application::restoreOverrideCursor();
     close FH;
@@ -710,7 +712,9 @@ sub genImage {
 	}
 
 #    print $FH this->{textEdit}->toPlainText();
-	print $FH this->{textEdit}->text();
+	my $text = this->{textEdit}->text();
+	utf8::encode($text); 
+	print $FH $text;
 	print $FH "\n";
 	close $FH;
 	#}
