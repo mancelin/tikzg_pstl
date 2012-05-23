@@ -29,10 +29,10 @@ x		_Tout sélectionner (Ctrl+A)
 		---------------
 		_Preferences Scintilla  (Ctrl+Alt+P) ##  idem Affichage/Editeur/
 	_Affichage
-		Plein é_cran    (F11)
+	()	Plein é_cran    (F11)
 		---------------
 		_Editeur
-			Afficher les numéros de _ligne
+x			Afficher les numéros de _ligne
 			Activer coloration Syntaxique
 		---------------
 		Zoom _texte

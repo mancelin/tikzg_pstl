@@ -22,6 +22,9 @@ use QtCore4::slots
     paste          => [''],
     delete         => [''],
     selectAll      => [''],
+ #   fullscreen     => [''],
+	toogle_showLineNumber => [''],
+	toogle_syntaxColoration => [''],
     about          => [''],
     recalcul_density=> [''],
     addParagraph   => ['QString'],
@@ -35,6 +38,7 @@ use Data::Dumper;
 use File::Basename;
 use File::Spec;
 use utf8;
+
 
 my @liste_instructions;
 my @listenoeuds;
@@ -58,6 +62,7 @@ sub NEW {
 	}
 	shift->SUPER::NEW($_[1]);
 	$mainWindow=this;
+	this->{mainWindow} = \$mainWindow;
 	my $textEdit = new QsciScintilla;
     this->{textEdit} = $textEdit;
     this->setCentralWidget($textEdit);
@@ -228,7 +233,9 @@ sub saveFile {
     }
 
     Qt::Application::setOverrideCursor(Qt::Cursor(Qt::WaitCursor()));
-    print $FH this->{textEdit}->text();
+    my $text =this->{textEdit}->text();
+    utf8::encode($text);
+    print $FH $text;
     print $FH "\n";
     close $FH;
     Qt::Application::restoreOverrideCursor();
@@ -267,6 +274,8 @@ sub loadFile {
 	}
 
     Qt::Application::setOverrideCursor(Qt::Cursor(Qt::WaitCursor()));
+    #print "text :\n$text\n";
+    utf8::decode($text);
     this->{textEdit}->setText($text);
     Qt::Application::restoreOverrideCursor();
     close FH;
@@ -360,6 +369,39 @@ sub selectAll {
 	this->{textEdit}->selectAll();
 }
 
+=no fullscreen
+sub fullscreen {
+	if(this->isFullscreen()){
+		this->showNormal();
+	} else {
+		this->showFullScreen ();
+	}
+}
+=cut
+
+
+sub toogle_showLineNumber {
+	if (this->{toogle_showLineNumberAct}->isChecked() ){
+		#print "check !\n";
+		this->{textEdit}->setMarginLineNumbers (1, 1);
+	} else {
+		#print "UNcheck !\n";
+		this->{textEdit}->setMarginLineNumbers (1, 0);
+	}
+}
+
+sub toogle_syntaxColoration {
+	if (this->{toogle_syntaxColorationAct}->isChecked() ){
+		#print "check !\n";
+		my $lexerTeX = new QsciLexerTeX;
+		this->{textEdit}->setLexer($lexerTeX);
+	} else {
+		#print "UNcheck !\n";
+		this->{textEdit}->setLexer();
+	}
+}
+
+
 sub about {
    Qt::MessageBox::about(this, "A propos",
             "<b>TikzG</b> permet de ..." .
@@ -409,7 +451,8 @@ sub createActions {
     $copyTikzpictureAct->setStatusTip("Copier code source figure tikz");
     this->connect($copyTikzpictureAct, SIGNAL 'triggered()', this, SLOT 'copyTikzpicture()');
     
-    my $printAct = Qt::Action(Qt::Icon("images/print.png"), "Imprimer code Tikz", this);
+   # my $printAct = Qt::Action(Qt::Icon("images/print.png"), "Imprimer code Tikz", this);
+    my $printAct = Qt::Action("Imprimer code Tikz", this);
     this->{printAct} = $printAct;
     $printAct->setShortcut(Qt::KeySequence("Ctrl+P"));
     $printAct->setStatusTip("Imprimer le code Tikz");
@@ -463,7 +506,28 @@ sub createActions {
     $selectAllAct->setStatusTip("Sélectionner tout le texte sélectionné");
     this->connect($selectAllAct, SIGNAL 'triggered()', this, SLOT 'selectAll()'); 
     
-  
+=no fullscreen	
+	my $fullscreenAct = Qt::Action("Plein é&cran ", this);
+    this->{fullscreenAct} = $fullscreenAct;
+    $fullscreenAct->setShortcut(Qt::KeySequence("F11"));
+    $fullscreenAct->setStatusTip("Afficher en plein écran");
+    this->connect($fullscreenAct, SIGNAL 'triggered()', this, SLOT 'fullscreen()'); 
+=cut
+	
+	my $toogle_showLineNumberAct = Qt::Action("Afficher les numéros de &ligne", this);
+    this->{toogle_showLineNumberAct} = $toogle_showLineNumberAct;
+    $toogle_showLineNumberAct->setStatusTip("Aficher numéros de ligne");
+    $toogle_showLineNumberAct->setCheckable(1);
+    $toogle_showLineNumberAct->setChecked(1);
+    this->connect($toogle_showLineNumberAct, SIGNAL 'triggered()', this, SLOT 'toogle_showLineNumber()');
+ 
+    my $toogle_syntaxColorationAct = Qt::Action("Activer coloration &Syntaxique", this);
+    this->{toogle_syntaxColorationAct} = $toogle_syntaxColorationAct;
+    $toogle_syntaxColorationAct->setStatusTip("Activer coloration Syntaxique");
+    $toogle_syntaxColorationAct->setCheckable(1);
+    $toogle_syntaxColorationAct->setChecked(1);
+    this->connect($toogle_syntaxColorationAct, SIGNAL 'triggered()', this, SLOT 'toogle_syntaxColoration()');
+
 
     my $aboutAct = Qt::Action("&About", this);
     this->{aboutAct} = $aboutAct;
@@ -515,13 +579,15 @@ sub createMenus {
 	$editMenu->addSeparator();
 	$editMenu->addAction(this->{selectAllAct});
 	
+	my $affichageMenu = this->menuBar()->addMenu("&Affichage");
+	$affichageMenu->addAction(this->{toogle_showLineNumberAct});
+	$affichageMenu->addAction(this->{toogle_syntaxColorationAct});
+	$affichageMenu->addSeparator();
 	
-	
-	
-    my $viewMenu = this->menuBar()->addMenu("&View");
-    this->{viewMenu} = $viewMenu;
+    #my $viewMenu = this->menuBar()->addMenu("&View");
+    #this->{viewMenu} = $viewMenu;
 
-    this->menuBar()->addSeparator();
+ #   this->menuBar()->addSeparator();
 
     my $helpMenu = this->menuBar()->addMenu("&Help");
     $helpMenu->addAction(this->{aboutAct});
@@ -561,15 +627,14 @@ sub createDockWindows {
     this->{dock} = $dock;
     $dock->setAllowedAreas(Qt::LeftDockWidgetArea() | Qt::RightDockWidgetArea());
     $dock->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
-  #  my $view = Qt::Label($dock);
-#    my $view = LabelImage($dock,\$density);
+
 	my $viewMenu = LabelImage($dock,\$density,\$zoomFactorImg);
 	
     this->{zoneGraphe} = $viewMenu;
  #   this->{zoneGraphe}->setCursor(Qt::Cursor(Qt::OpenHandCursor()));
     $dock->setWidget($viewMenu);
     this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
-    this->{viewMenu}->addAction($dock->toggleViewAction());
+    #this->{viewMenu}->addAction($dock->toggleViewAction());
     
    # this->connect($view, SIGNAL 'currentTextChanged(const QString &)',
    #            this, SLOT 'genImage()');
@@ -737,7 +802,9 @@ sub genImage {
 	}
 
 #    print $FH this->{textEdit}->toPlainText();
-	print $FH this->{textEdit}->text();
+	my $text = this->{textEdit}->text();
+	utf8::encode($text); 
+	print $FH $text;
 	print $FH "\n";
 	close $FH;
 	#}
@@ -933,6 +1000,15 @@ sub index_of_line {
 	return (-1);
 }
 
+sub getFirstNode {
+	foreach my $elem (@liste_instructions){
+		if ($elem->{type} eq "node"){
+			return $elem;
+		}
+	}
+}
+	
+
 # retourne la chaine de charactéres correspondant a la liste d' instruction passé en paramètre
 sub string_of_liste_instructions {
 	my ($rel_color_actif, @l_instructions) = @_;
@@ -1036,6 +1112,10 @@ sub mark_as_rel {
 sub make_list_instructions_rel {
 	my ($objTikz , $color_obj_select) = @_;
 	reset_couleur_rel();
+	
+	$mainWindow->{density}=$mainWindow->{zoneGraphe}->{density} ;
+	my ($density)=($mainWindow->{density});
+	
 	#"blue!30"
 	#my @liste_instructions_rel = @liste_instructions;
 	#print "?"x80;
@@ -1091,6 +1171,7 @@ sub make_list_instructions_rel {
 	);
 
 	my $code_rel =string_of_liste_instructions(1,@liste_instructions);
+	utf8::encode($code_rel);
 	print FICTIKZ_REL $entete_tikz.$code_rel.$fin;
 	close FICTIKZ_REL;
 	print "code rel :\n",$code_rel;
@@ -1103,7 +1184,7 @@ sub make_list_instructions_rel {
 	system("rm *.log *.aux *.pdf");
 	system("mv tmp_tikz_rel.png tmp");
 	$mainWindow->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz_rel.png"));
-#	$gen_rel=1;
+
 	
 =later
 	print "\n","-"x80, "code rel:\n";
@@ -1188,6 +1269,13 @@ sub object_ofIDC {
 			return $elem;
 		}
 	}	
+}
+
+sub appendToEditor {
+	my ($append_text) = @_;
+	my $text = $mainWindow->{textEdit}->text();
+	$text.=$append_text;
+	$mainWindow->{textEdit}->setText($text);
 }
 
 

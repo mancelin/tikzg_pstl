@@ -42,16 +42,6 @@ sub setZoomFactorImg {
 
 sub getPixelColorAt {
 	my ($x, $y) = @_;
-
-=over	
-	# tmp, to test
-	my ($x, $y,$file) = @_;
-
-	print $_[1];
-	my $x = $_[0];
-	my $y = $_[1];
-	printf "  x : %d, y : %d\n", $x, $y;
-=cut
 	my $im = Image::Magick->new();
 	my $rc = $im->Read("./tmp/tmp_tikz_IDC.png");
 	#my $rc = $im->Read($file); # tmp test
@@ -74,10 +64,9 @@ sub IDC_of_RGB {
 	}
 	
 	LECT_FIC:
-	while(<LIST_IDC>){ # && ($nb_IDC > 0)){
+	while(<LIST_IDC>){
 		my $line = $_;
 		chomp $line;
-		#print $line; #dbg
 		$nb_IDC--;
 		last LECT_FIC if ($nb_IDC < 0);
 		my ($idc, $sep, $r, $g, $b) = split / /,$line;
@@ -88,6 +77,70 @@ sub IDC_of_RGB {
 	}
 	close LIST_IDC;
 	return "none";
+}
+
+
+sub RGB_of_IDC {
+	my ($idc_param) = @_;
+	print "idc : $idc_param\n";
+	my $nb_IDC = MainWindow::nb_IDC();
+	print "   nb_IDC : $nb_IDC\n";
+	
+	unless(open LIST_IDC, "list_IDC"){
+		die "Impossible d'ouvrir 'list_IDC' : $!";
+	}
+	
+	LECT_FIC:
+	while(<LIST_IDC>){
+		my $line = $_;
+		chomp $line;
+		$nb_IDC--;
+		last LECT_FIC if ($nb_IDC < 0);
+		my ($idc, $sep, $r, $g, $b) = split / /,$line;
+		if ( $idc eq $idc_param ) {
+			close LIST_IDC;
+			return ($r,$g,$b);
+		}
+	}
+	close LIST_IDC;
+	return "none";
+}
+
+
+sub getCenterFirstNode {
+	print "get center first node\n";
+	my $first_node = MainWindow::getFirstNode();
+	printf "first node : %s, IDC : %s\n", $first_node->{nom}, $first_node->{colorId} ;
+	my ($idc) = split /,/,$first_node->{colorId};
+	#print "idc : $idc\n";
+	my ($red,$green,$blue) = RGB_of_IDC($idc);
+	print "RGB : $red $green $blue\n";
+	my $im = Image::Magick->new();
+	my ($x,$y);
+	my $rc = $im->Read("./tmp/tmp_tikz_IDC.png");
+	die $rc if $rc;
+	my ($w, $h) = $im->Get('width', 'height');
+	my ($x_deb,$x_fin,$y_deb,$y_fin) = ($w,0,$h,0);
+	printf "width : %d, height : %d\n", $w, $h;
+	for($y=0;$y <$h; $y++){
+		for($x=0;$x < $w; $x++){
+			my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
+			if(($r == $red) && ($g == $green) && ($b == $blue)){
+				#print "$r $g $b\n";
+				if($x < $x_deb) { 
+					print " x : $x\n";
+					$x_deb = $x; }
+				if($x > $x_fin) { $x_fin = $x; }
+				if($y < $y_deb) { $y_deb = $y; }
+				if($y > $y_fin) { $y_fin = $y; }
+			}
+		}
+	}	
+	printf "x_deb : %d , x_fin : %d, y_deb : %d, y_fin : %d\n", $x_deb,$x_fin,$y_deb,$y_fin;
+	$x = int(($x_fin - $x_deb)/2 + $x_deb);
+	$y = int(($y_fin - $y_deb)/2 + $y_deb);
+	printf "x : %d, y : %d\n", $x, $y;
+	return ($first_node->{nom}, $x,$y);
 }
 
 sub mouseMoveEvent {
@@ -121,16 +174,13 @@ sub mouseMoveEvent {
 sub mousePressEvent
 {
     my ($event) = @_;
+    my $hauteur_label = this->size()->height();
+	my $hauteur_image = this->pixmap()->height();
+	my $largeur_image = this->pixmap()->width();
+    my $x = $event->x;
+	my $y = int($event->y - ($hauteur_label/2 - $hauteur_image/2));
     if ($event->button() == Qt::LeftButton()) {
-	#	print "mousePressEvent : leftButton\n";
-		
-		my $hauteur_label = this->size()->height();
-		my $hauteur_image = this->pixmap()->height();
-		my $largeur_image = this->pixmap()->width();
-	   # print " hauteur image : ",$hauteur_image," largeur image : ",$largeur_image,"\n";
-		my $x = $event->x;
-		my $y = int($event->y - ($hauteur_label/2 - $hauteur_image/2));
-			if(($x <= $largeur_image) && ($y >= 0) && ($y < $hauteur_image)) {
+		if(($x <= $largeur_image) && ($y >= 0) && ($y < $hauteur_image)) {
 	#		print "\n{Image} => x : ",$x," , y : ",$y,"\n";
 	#		print "nb_IDC : ", MainWindow::nb_IDC();
 			my $idcClicked = getPixelColorAt($x,$y);
@@ -143,8 +193,15 @@ sub mousePressEvent
     
     if ($event->button() == Qt::RightButton()) {
 	#	print "mousePressEvent : RightButton\n";
-	#	$fic = "tmp/IDC1.png";
-	#	this->setPixmap(Qt::Pixmap("gen_list_IDC/IDC55.png"));
+		my ($first_node, $x_fn, $y_fn) = getCenterFirstNode();
+		my $below = $y - $y_fn ;
+		my $right = $x - $x_fn;
+		print "below : $below, right : $right\n";
+		my $style = "rectangle";
+		my $node_y = '\node['."below of = $first_node, node distance = $below".'] ('.$first_node."_y$below) {};\n";
+		my $new_node = '\node['.$style.",right of = $first_node"."_y$below, node distance = $right".'] ('.$first_node."_y$below"."_x$right) {new};\n";
+		print "$node_y\n $new_node\n";
+		MainWindow::appendToEditor($node_y.$new_node);
     }
     
     

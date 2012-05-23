@@ -2,7 +2,7 @@ package ColorId;
 
 use Exporter;
 @ISA = ('Exporter');
-@EXPORT = qw(gen_next_ColorId);
+@EXPORT = qw(gen_next_ColorId reset_ColorId);
 
 my $rv=30; # red value
 my $gv=29; # green value
