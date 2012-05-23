@@ -15,7 +15,28 @@
  \tableofcontents
  \newpage
 
+Pour la soutenance résumer. choisir de présenter 
+les choses sous formes de diagramme et passer du 
+temps sur les difficultés.
+2 membres du jury auront lu le rapport. 
 
+	Plan\\
+ Introduction\\
+ Presentation Générale \\
+   Etat Actuel\\
+   Motivations\\ 
+   Objectifs\\ 
+   (Fontionnalites)\\
+ Outils\\ 
+   Materiels\\ 
+   Langage de programmation\\ 
+ Developpement\\ 
+   Gestion du projet\\
+   Implementation\\
+   Résultats\\
+ Conclusion\\
+   (Bilan, Difficultés, ce que le projet nous a apporté)\\ 
+ Perspectives
 
  \newpage
  \section{Introduction}
