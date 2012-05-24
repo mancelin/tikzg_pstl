@@ -131,6 +131,7 @@ sub listhash_of_params{
 	return @listhash;
 }
 
+=pas utilisé
 sub lists_kv_of_params{ # rend couple liste clées, liste valeurs correspondant aux paramétres
 	#print $_[0],"\n";
 	local @list_of_params=split /,/,$_[0];
@@ -165,5 +166,6 @@ sub hash_of_instruction{
 	}
 	return @list_of_hash;
 }
+=cut
 
 1;

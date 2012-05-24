@@ -27,7 +27,8 @@ use QtCore4::slots
 	toogle_syntaxColoration => [''],
     about          => [''],
     recalcul_density=> [''],
-    addParagraph   => ['QString'],
+    addParagraph   => ['QString'], # ex
+    instruction_of_proprieteDraw => [],
     genImage       => [''],
  #   myEvent        => [''],	# dbg
     documentWasModified => [];
@@ -674,9 +675,13 @@ sub find_last_prop {
 	return "";
 }	
 	
+sub instruction_of_proprieteDraw {
+	print $mainWindow->{textBox_nom}->text(), "\n";
+}
+
 
 #propriétés du noeud sélectionné
-sub proprieteNode{
+sub proprieteNode {
 	my ($node) = @_;
 	my $node_props;
 	my @params_keys = $node->{params_keys};
@@ -697,12 +702,16 @@ sub proprieteNode{
     $layout->addWidget($nom,1,0);
     my $textBox_nom=Qt::LineEdit();
     $textBox_nom->setText($node->{nom});
+    $mainWindow->{textBox_nom}=$textBox_nom;
+    this->connect($textBox_nom, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
     $layout->addWidget($textBox_nom,1,1);   #le nom du noeud
     
     my $forme=Qt::Label(this->tr('Forme:'));
     $layout->addWidget($forme,2,0);
     my $derniere_forme_noeud = find_last_prop([@params_keys,[@forme_noeud]]);
     print "derniere_forme_noeud : $derniere_forme_noeud\n";
+    $forme
+    foreach 
     my $textBox_forme=Qt::LineEdit();
     $textBox_forme->setText($derniere_forme_noeud);
     $layout->addWidget($textBox_forme,2,1);                 #la forme du noeud

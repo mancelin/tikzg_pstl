@@ -65,5 +65,5 @@ cd ../..
 
 # quelques modules perl
 cpan install List::MoreUtils
-cpan install Ix::IxHash
+#cpan install Ix::IxHash
 #cpan install Image::PNG
