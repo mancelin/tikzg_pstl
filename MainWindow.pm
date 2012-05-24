@@ -539,10 +539,10 @@ sub createActions {
     $aboutQtAct->setStatusTip("Show the Qt4 library's About box");
     this->connect($aboutQtAct, SIGNAL 'triggered()', Qt::qApp(), SLOT 'aboutQt()');
     
-    my $genAct = Qt::Action("generer image", this);
+    my $genAct = Qt::Action("Générer image", this);
     this->{genAct} = $genAct;
     $genAct->setShortcut(Qt::KeySequence("Ctrl+R"));
-    $genAct->setStatusTip("genere une image");
+    $genAct->setStatusTip("Génére l' image correspondant au code tikz");
     this->connect($genAct, SIGNAL 'triggered()', this, SLOT 'genImage()');
 
 }
@@ -583,7 +583,7 @@ sub createMenus {
 	$affichageMenu->addAction(this->{toogle_showLineNumberAct});
 	$affichageMenu->addAction(this->{toogle_syntaxColorationAct});
 	$affichageMenu->addSeparator();
-	
+	$affichageMenu->addAction(this->{genAct});
     #my $viewMenu = this->menuBar()->addMenu("&View");
     #this->{viewMenu} = $viewMenu;
 
@@ -603,7 +603,8 @@ sub createToolBars {
 	
     my $editToolBar = this->addToolBar("Edit");
     $editToolBar->addAction(this->{undoAct});
-    $editToolBar->addAction(this->{genAct});
+    $editToolBar->addAction(this->{redoAct});
+    #$editToolBar->addAction(this->{genAct});
     
     my $viewToolBar = this->addToolBar("View");
     my $label_textBox_zoom = Qt::Label("Zoom Image :");
@@ -638,22 +639,27 @@ sub createDockWindows {
     
    # this->connect($view, SIGNAL 'currentTextChanged(const QString &)',
    #            this, SLOT 'genImage()');
+   my $dock_prop = Qt::DockWidget("Propriétés", this);
+   this->{dock_prop} = $dock_prop;
 }
 
 
 #propriétés du noeud sélectionné
 sub proprieteNode{
-    my $dock = Qt::DockWidget("Proprietes", this);
+	print "propriété node\n";
+    #my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
     my $layout = Qt::GridLayout();
-    my $visible = Qt::CheckBox(this->tr('Visible'));
+    my $visible = Qt::CheckBox($mainWindow->tr('Visible'));
     $visible->setChecked(1);
     $layout->addWidget($visible);               #cacher le noeud
+
     my $nom=Qt::Label(this->tr('Nom:'));
     $layout->addWidget($nom,1,0);
     $layout->addWidget(this->Qt::LineEdit(),1,1);   #le nom du noeud
     my $type=Qt::Label(this->tr('Forme:'));
     $layout->addWidget($type,2,0);
+    
     my $forme=this->Qt::ComboBox();
     $forme->addItem(this->tr('Cercle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $forme->addItem(this->tr('Rectangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
@@ -685,15 +691,19 @@ sub proprieteNode{
     $layout->addWidget($bs,9,0);
     $layout->addWidget(this->Qt::ComboBox(),9,1);   #down of  (idem)
     $top->setLayout($layout);
-    $dock->setWidget($top);
-    this->addDockWidget(Qt::LeftDockWidgetArea(), $dock);
-    this->{viewMenu}->addAction($dock->toggleViewAction());
+    
+    my $dock_prop = $mainWindow->{dock_prop};
+    $dock_prop->setWidget($top);
+  #  print "BOOM \n";
+    $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
+    #$mainWindow->{viewMenu}->addAction($dock->toggleViewAction());
+  #  print "BOOM2 \n";
 }
 
 
-#proprietes de l'arete selectionné
+#proprietes de l'arrête selectionnée
 sub proprieteDraw{
-    my $dock = Qt::DockWidget("Proprietes", this);
+   # my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
     my $layout = Qt::GridLayout();
     my $nom=Qt::Label(this->tr('Nom:'));
@@ -1006,6 +1016,7 @@ sub getFirstNode {
 			return $elem;
 		}
 	}
+	return "";
 }
 	
 
@@ -1238,6 +1249,7 @@ sub object_ofIDC {
 =cut
 				#make_list_instructions_rel($elem);
 				make_list_instructions_rel($elem,"blue!50");
+				proprieteNode();
 
 			} elsif ($elem->{type} eq "draw"){
 =MUTE

@@ -110,6 +110,9 @@ sub RGB_of_IDC {
 sub getCenterFirstNode {
 	print "get center first node\n";
 	my $first_node = MainWindow::getFirstNode();
+	if ($first_node eq "") {
+		return "";
+	}
 	printf "first node : %s, IDC : %s\n", $first_node->{nom}, $first_node->{colorId} ;
 	my ($idc) = split /,/,$first_node->{colorId};
 	#print "idc : $idc\n";
@@ -192,44 +195,30 @@ sub mousePressEvent
     }
     
     if ($event->button() == Qt::RightButton()) {
-	#	print "mousePressEvent : RightButton\n";
-		my ($first_node, $x_fn, $y_fn) = getCenterFirstNode();
-		print "x_fn : $x_fn , y_fn : $y_fn\n";
-		#my $zoomFactorImg = this->{zoomFactorImg};
-		my $below = $y - $y_fn;
-		my $right = $x - $x_fn;
-		if(defined this->{zoomFactorImg}){
-			print "zoom factor defined\n";
-			$below = int($below / (this->{zoomFactorImg} /100));
-			$right = int($right / (this->{zoomFactorImg} /100));
-		}
-		print "below : $below, right : $right\n";
 		my $style = "rectangle";
-		my $node_y = '\node['."below of = $first_node, node distance = $below".'] ('.$first_node."_y$below) {};\n";
-		my $new_node = '\node[draw,'.$style.",right of = $first_node"."_y$below, node distance = $right".'] ('.$first_node."_y$below"."_x$right) {new};\n";
-		#print "$node_y\n $new_node\n";
-		MainWindow::appendToEditor($node_y.$new_node);
+		my ($first_node, $x_fn, $y_fn) = getCenterFirstNode();
+		#if ((defined $first_node) && ($first_node ne "")){			
+		if ($first_node ne ""){
+			print "x_fn : $x_fn , y_fn : $y_fn\n";
+			#my $zoomFactorImg = this->{zoomFactorImg};
+			my $below = $y - $y_fn;
+			my $right = $x - $x_fn;
+			if(defined this->{zoomFactorImg}){
+				print "zoom factor defined\n";
+				$below = int($below / (this->{zoomFactorImg} /100));
+				$right = int($right / (this->{zoomFactorImg} /100));
+			}
+			print "below : $below, right : $right\n";
+			
+			my $node_y = '\node['."below of = $first_node, node distance = $below".'] ('.$first_node."_y$below) {};\n";
+			my $new_node = '\node[draw,'.$style.",right of = $first_node"."_y$below, node distance = $right".'] ('.$first_node."_y$below"."_x$right) {new};\n";
+			#print "$node_y\n $new_node\n";
+			MainWindow::appendToEditor($node_y.$new_node);
+		} else {
+			my $new_node = '\node[draw] (first_node) {new};'."\n";
+			MainWindow::appendToEditor($new_node);
+		}
     }
-    
-    
-=old   
-   # this->setPixmap(Qt::Pixmap("tmp/tmp_tikz_IDC.png"));
-    my $rgb = Qt::Color->fromRgb(Qt::Image::pixel( $event->x, $event->y) );
-#		print "RGB : $rgb\n";
-	my $r = $rgb->red();
-	my $g = $rgb->green();
-	my $b = $rgb->blue();
-	#this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.bmp"));
-	print "color (R,G,B)  : ($r,$g,$b)\n";
-		print " x : ",$event->x," , y : ",$event->y,"\n";
-	#this->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
-
-  #  this->setCursor(Qt::Cursor(Qt::ClosedHandCursor()));
-	print "mousePressEvent\n";
-	#print "hasPixmap ? ", this->pixmap(), "\n";
-	#print "is Valid ? : " , $rgb->Qt::Color->isValid();
-
-=cut
 	
 }
 
