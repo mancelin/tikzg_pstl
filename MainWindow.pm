@@ -646,27 +646,73 @@ sub createDockWindows {
 }
 
 
+my @forme_noeud = qw(circle rectangle);
+
+# trouve la derniére propriété appartenant a la liste "liste_props" dans la liste des propriétes d' un objet tikz
+sub find_last_prop {
+	my @list_of_list = @_;
+#	print Dumper(@list_of_list);
+#	print "="x80;
+	#my (@liste_prop_node, @liste_props) = (@{$list_of_list[0]}, @{$list_of_list[1]});
+	#my (@liste_prop_node, @liste_props) = ($list_of_list[0][0], $list_of_list[0][1]);
+	my @liste_prop_node = @{$list_of_list[0][0]};
+	my @liste_props = @{$list_of_list[0][1]};
+	#my (@liste_prop_node, @liste_props) = @_;
+	print "find_last_prop\n";
+	#print Dumper(@liste_prop_node);
+	#print "*"x80;
+	#print Dumper(@liste_props);
+	for (my $i= scalar (@liste_prop_node) - 1; $i >= 0; $i--) {
+		#print "liste_prop_node[$i] : $liste_prop_node[$i] \n"; 
+		foreach my $prop (@liste_props) {
+			#print $liste_prop_node[$i], " eq? $prop\n";
+			if ($prop eq $liste_prop_node[$i]) {
+				return $prop;
+			}
+		}
+	}
+	return "";
+}	
+	
+
 #propriétés du noeud sélectionné
 sub proprieteNode{
+	my ($node) = @_;
+	my $node_props;
+	my @params_keys = $node->{params_keys};
+	#my $l_params_keys = scalar (@param_keys);
+	if( $node->{code} =~ /\[([^\]]*)\]/ ){
+		print $1,"\n";
+		$node_props=$1;
+	}
 	print "propriete node\n";
     #my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
     my $layout = Qt::GridLayout();
-    my $visible = Qt::CheckBox($mainWindow->tr('Visible'));
+    my $visible = Qt::CheckBox($mainWindow->tr('Draw'));
     $visible->setChecked(1);
     $layout->addWidget($visible);               #cacher le noeud
 
     my $nom=Qt::Label(this->tr('Nom:'));
     $layout->addWidget($nom,1,0);
-    $layout->addWidget(this->Qt::LineEdit(),1,1);   #le nom du noeud
-    my $type=Qt::Label(this->tr('Forme:'));
-    $layout->addWidget($type,2,0);
+    my $textBox_nom=Qt::LineEdit();
+    $textBox_nom->setText($node->{nom});
+    $layout->addWidget($textBox_nom,1,1);   #le nom du noeud
     
-    my $forme=this->Qt::ComboBox();
+    my $forme=Qt::Label(this->tr('Forme:'));
+    $layout->addWidget($forme,2,0);
+    my $derniere_forme_noeud = find_last_prop([@params_keys,[@forme_noeud]]);
+    print "derniere_forme_noeud : $derniere_forme_noeud\n";
+    my $textBox_forme=Qt::LineEdit();
+    $textBox_forme->setText($derniere_forme_noeud);
+    $layout->addWidget($textBox_forme,2,1);                 #la forme du noeud
+=vf
     $forme->addItem(this->tr('Cercle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $forme->addItem(this->tr('Rectangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $forme->addItem(this->tr('Triangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($forme,2,1);                 #la forme du noeud
+=cut    
+    
+    
     my $dim=Qt::Label(this->tr('Dimension:'));
     $layout->addWidget($dim,3,0);
     $layout->addWidget(Qt::LineEdit(),3,1);         #dimension du noeud
@@ -1263,7 +1309,7 @@ sub object_ofIDC {
 =cut
 				#make_list_instructions_rel($elem);
 				make_list_instructions_rel($elem,"blue!50");
-				proprieteNode();
+				proprieteNode($elem);
 
 			} elsif ($elem->{type} eq "draw"){
 =MUTE
