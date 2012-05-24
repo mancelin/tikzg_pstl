@@ -641,12 +641,14 @@ sub createDockWindows {
    #            this, SLOT 'genImage()');
    my $dock_prop = Qt::DockWidget("Propriétés", this);
    this->{dock_prop} = $dock_prop;
+  # $dock_prop->setFeatures(Qt::DockWidget::DockWidgetMovable() | Qt::DockWidget::DockWidgetFloatable());
+   $dock_prop->setVisible(0);
 }
 
 
 #propriétés du noeud sélectionné
 sub proprieteNode{
-	print "propriété node\n";
+	print "propriete node\n";
     #my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
     my $layout = Qt::GridLayout();
@@ -694,10 +696,9 @@ sub proprieteNode{
     
     my $dock_prop = $mainWindow->{dock_prop};
     $dock_prop->setWidget($top);
-  #  print "BOOM \n";
+    $dock_prop->setVisible(1);
     $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
-    #$mainWindow->{viewMenu}->addAction($dock->toggleViewAction());
-  #  print "BOOM2 \n";
+
 }
 
 
@@ -733,17 +734,30 @@ sub proprieteDraw{
 
 
     $top->setLayout($layout);
-    $dock->setWidget($top);
-    this->addDockWidget(Qt::LeftDockWidgetArea(), $dock);
-    this->{viewMenu}->addAction($dock->toggleViewAction());
+    
+    my $dock_prop = $mainWindow->{dock_prop};
+    $dock_prop->setWidget($top);
+    $dock_prop->setVisible(1);
+    $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
+   # this->{viewMenu}->addAction($dock->toggleViewAction());
 }
+
+=later
+sub cacher_proprietes {
+	print "cacher props\n";
+	my $dock_prop = $mainWindow->{dock_prop};
+    $dock_prop->setVisible(0);
+    $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
+ #   $mainWindow->{dock_prop}->setVisible(0);
+}
+=cut
 
 sub recalcul_density {
 	my $textZoom = $textBox_zoom->text();
 	if( $textZoom =~ /(^\s*(\d+)\s*$)/){
-		printf "1 : %d, 2 : %d\n", $1, $2;
+	#	printf "1 : %d, 2 : %d\n", $1, $2;
 		this->{zoomFactorImg} = $textZoom;
-		printf "zoom_factor_image : %d\n", this->{zoomFactorImg} ;
+	#	printf "zoom_factor_image : %d\n", this->{zoomFactorImg} ;
 		this->{density} = int(($textZoom/25) * 18);
 		my $density = this->{density};
 		printf "density : %d\n", $density;
@@ -753,7 +767,7 @@ sub recalcul_density {
 		system("mv tmp_tikz_IDC.png tmp");
 		this->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
 	} else {	# si la valeur courante de la textbox de zoom n' est pas numérique, on reinitialise la textbox a la derniére valeur correcte
-		printf "zoom_factor_image : %d\n", this->{zoomFactorImg};
+	#	printf "zoom_factor_image : %d\n", this->{zoomFactorImg};
 		$textBox_zoom->setText(this->{zoomFactorImg});
 	}
 }
@@ -1259,6 +1273,9 @@ sub object_ofIDC {
 				print Dumper(@liste_noeuds_rel);
 =cut
 				make_list_instructions_rel($elem, "blue");
+				proprieteDraw();
+			} else {
+				cacher_proprietes();	
 			}
 			#print "-"x28, "  liste instruction bfr " , "-"x28;
 			#print Dumper(@liste_instructions);
