@@ -28,7 +28,7 @@ use QtCore4::slots
     about          => [''],
     recalcul_density=> [''],
     addParagraph   => ['QString'], # ex
-    instruction_of_proprieteDraw => [],
+    instruction_of_proprieteDraw => [''],
     genImage       => [''],
  #   myEvent        => [''],	# dbg
     documentWasModified => [];
@@ -676,7 +676,14 @@ sub find_last_prop {
 }	
 	
 sub instruction_of_proprieteDraw {
+	my $ligne =$mainWindow->{currentObj_line};
+	print "ligne : $ligne\n"; # dbg
+	my $instr = '\node[';
+	print '\node['; # dbg
 	print $mainWindow->{textBox_nom}->text(), "\n";
+	
+	# une fois toutes les propriétées récupérées, remplacement de l' objetTikz de la ligne "ligne" par 
+	# l' objet crée en parsant "instr"
 }
 
 
@@ -685,6 +692,7 @@ sub proprieteNode {
 	my ($node) = @_;
 	my $node_props;
 	my @params_keys = $node->{params_keys};
+	$mainWindow->{currentObj_line}  = $node->{ligne};
 	#my $l_params_keys = scalar (@param_keys);
 	if( $node->{code} =~ /\[([^\]]*)\]/ ){
 		print $1,"\n";
@@ -710,8 +718,8 @@ sub proprieteNode {
     $layout->addWidget($forme,2,0);
     my $derniere_forme_noeud = find_last_prop([@params_keys,[@forme_noeud]]);
     print "derniere_forme_noeud : $derniere_forme_noeud\n";
-    $forme
-    foreach 
+  #  $forme
+   # foreach 
     my $textBox_forme=Qt::LineEdit();
     $textBox_forme->setText($derniere_forme_noeud);
     $layout->addWidget($textBox_forme,2,1);                 #la forme du noeud
