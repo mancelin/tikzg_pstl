@@ -112,7 +112,7 @@ if (-e $pdf_tmp) {
 	system("convert -density $density $pdf_tmp $img");
 
 	system("mv $pdf_tmp tmp/$pdf_tmp");
-	system("rm *.log *.aux");
+#	system("rm *.log *.aux");
 	system("mv $img tmp");
 }
 
@@ -143,11 +143,12 @@ if (-e $pdf_tmp_IDC){
 
 	# deplacement du pdf généré dans tmp
 	system("mv $pdf_tmp_IDC tmp/$pdf_tmp_IDC");
-	system("rm *.log *.aux");
+#	system("rm *.log *.aux");
 	system("mv $img_IDC tmp");
 }
 
 # nettoyage
+system("rm *.aux");
 #system("rm *tmp*");
 
 #affichage IDC

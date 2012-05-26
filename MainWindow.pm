@@ -881,8 +881,8 @@ sub genImage {
 	my $FH;
 	
 	if(!(open $FH, '>', $filename)) {
-		Qt::MessageBox::warning(this, "Dock Widgets",
-								 sprintf("Cannot write file %s:\n%s.",
+		Qt::MessageBox::warning(this, "",
+								 sprintf("Impossible d' écrire le fichier %s:\n%s",
 								 $filename,
 								 $!));
 		return;
@@ -914,11 +914,59 @@ sub genImage {
 	#	my $pic = this->{zoneGraphe}->pixmap();
 		
 	}
-
+	
+   parse_log();
    parse();
    list_of_nodes();
    $generation_img_en_cours = 0;
    triggerArrowCursor();
+}
+
+sub parse_log {
+	#my $FH;
+	my $fichier = "tmp_tikz.log";
+	my $line_number_error;
+	my $log_error="";
+	my $print_next_line = 0;
+	open(LOG, $fichier) || die "Impossible de lire le fichier %s:\n%s", $fichier, $!;
+	
+	while(<LOG>){
+		if($print_next_line){
+			$print_next_line=0;
+			$log_error.=$_;
+			#print $_;
+			next;
+		}
+		
+		if($_ =~ /\QRunaway argument?\E/) {
+			$print_next_line=1;
+			$log_error.=$_;
+		}
+		if($_ =~ /\Q! Package pgfkeys Error\E/){
+			$print_next_line=1;
+			$log_error.=$_;
+		} elsif($_ =~ /! Package.*Error:/){
+			$log_error.=$_;
+		}
+		if($_ =~ /\Q! Undefined control sequence.\E/){
+			$log_error.=$_;
+		}
+		if($_ =~ /^l\.(\d+)/){
+			$print_next_line=1;
+			$log_error.=$_;
+			#printf "erreur ligne %d\n", $1-7; # l' entete fait 7 lignes;
+			$line_number_error = $1-7;
+		}
+		
+		if($_ =~ /\Q!  ==> Fatal error occurred, no output PDF file produced!\E/){
+			print $_;
+		}
+				#my $line=$_;
+		#if(
+		#print $line;
+	}
+	system("rm *.log");
+	print $log_error;
 }
 
 =waste
