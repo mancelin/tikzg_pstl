@@ -66,7 +66,19 @@ sub NEW {
 	this->{mainWindow} = \$mainWindow;
 	my $textEdit = new QsciScintilla;
     this->{textEdit} = $textEdit;
-    this->setCentralWidget($textEdit);
+    my $labelError = Qt::Label();
+    $labelError->setWordWrap(1);
+    $labelError->setStyleSheet("QLabel { background-color : white; color : red; }");
+    this->{labelError} = $labelError;
+    my $layout = Qt::VBoxLayout();
+    $layout->addWidget($textEdit);
+    $layout->addWidget($labelError);
+    my $editorAndLogs=Qt::Widget();
+    $editorAndLogs->setLayout($layout);
+	this->setCentralWidget($editorAndLogs);
+    
+    
+    #this->setCentralWidget($textEdit);
     my $lexerTeX = new QsciLexerTeX;
     this->{textEdit}->setLexer($lexerTeX);
     this->{textEdit}->setMarginLineNumbers (1, 1);
@@ -598,8 +610,10 @@ sub createMenus {
 sub createToolBars {
     my $fileToolBar = this->addToolBar("File");
     $fileToolBar->addAction(this->{newEditorAct});
+    $fileToolBar->addSeparator();
     $fileToolBar->addAction(this->{saveAct});
     $fileToolBar->addAction(this->{loadAct});
+    $fileToolBar->addSeparator();
 	$fileToolBar->addAction(this->{copyTikzpictureAct});
 	
     my $editToolBar = this->addToolBar("Edit");
@@ -948,14 +962,17 @@ sub parse_log {
 		} elsif($_ =~ /! Package.*Error:/){
 			$log_error.=$_;
 		}
-		if($_ =~ /\Q! Undefined control sequence.\E/){
+		if($_ =~ /! Undefined control sequence./){
 			$log_error.=$_;
 		}
-		if($_ =~ /^l\.(\d+)/){
+		if($_ =~ /^(l\.)(\d+)(.*)/){
 			$print_next_line=1;
-			$log_error.=$_;
+			$line_number_error = $2-7;
+			#$log_error.=$_;
+			$log_error.=$1.$line_number_error.$3;
+			#$log_error.=$_;
 			#printf "erreur ligne %d\n", $1-7; # l' entete fait 7 lignes;
-			$line_number_error = $1-7;
+			
 		}
 		
 		if($_ =~ /\Q!  ==> Fatal error occurred, no output PDF file produced!\E/){
@@ -966,6 +983,9 @@ sub parse_log {
 		#print $line;
 	}
 	system("rm *.log");
+	#$mainWindow->{labelError}->setText("<font color='red'>".$log_error."</font>");
+	utf8::decode($log_error); 
+	$mainWindow->{labelError}->setText($log_error);
 	print $log_error;
 }
 
