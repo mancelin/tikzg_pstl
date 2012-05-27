@@ -689,14 +689,33 @@ sub find_last_prop {
 		}
 	}
 	return "";
+}
+
+sub param_in_list {
+	print "param in list \n";
+	print Dumper(@_);
+	my ($param, $ref_liste) = @_;
+	my @liste = @$ref_liste;
+	#print "param : $param\n";
+	foreach my $elem (@liste) {
+		#print "elem : $elem\n";
+		if($elem eq $param) {
+			print "TRUE\n";
+			return 1;
+		}
+	}
+	return 0;
 }	
 	
 sub instruction_of_proprieteDraw {
 	my $ligne =$mainWindow->{currentObj_line};
 	print "ligne : $ligne\n"; # dbg
 	my $instr = '\node[';
-	print '\node['; # dbg
-	print $mainWindow->{textBox_nom}->text(), "\n";
+	print '\node[\n'; # dbg
+	print "textBox_nom :" ,$mainWindow->{textBox_nom}->text(), "\n";
+	print "textBox_text :" ,$mainWindow->{textBox_text}->text(), "\n";
+	print "comboBox_forme :" ,$mainWindow->{comboBox_forme}->lineEdit()->text(), "\n";
+	
 	
 	# une fois toutes les propriétées récupérées, remplacement de l' objetTikz de la ligne "ligne" par 
 	# l' objet crée en parsant "instr"
@@ -719,9 +738,14 @@ sub proprieteNode {
     my $top=Qt::Widget();
     my $layout = Qt::GridLayout();
     
-    my $visible = Qt::CheckBox($mainWindow->tr('Draw'));	#afficher/cacher le noeud
-    $visible->setChecked(1);
-    $layout->addWidget($visible);               
+    my $visible_check = Qt::CheckBox($mainWindow->tr('draw'));	#afficher/cacher le noeud
+    $mainWindow->{visible_check}=$visible_check;
+    if(param_in_list("draw", @params_keys)){
+		$visible_check->setChecked(1);
+	} else {
+		$visible_check->setChecked(0);
+	}
+    $layout->addWidget($visible_check);               
 
     $layout->addWidget(Qt::Label(this->tr('Nom:')),1,0);	#le nom du noeud
     my $textBox_nom=Qt::LineEdit();
@@ -748,8 +772,8 @@ sub proprieteNode {
 		$comboBox_forme->addItem(this->tr($forme_noeud[$i]));
 	}
 	$comboBox_forme->setEditText($derniere_forme_noeud);
-	this->connect($comboBox_forme, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
-	$layout->addWidget($comboBox_forme,3,1); 
+	this->connect($comboBox_forme, SIGNAL 'activated(QString)', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
+	$layout->addWidget($comboBox_forme,3,1);
   #  $forme
    # foreach 
     #my $textBox_forme=Qt::LineEdit();
@@ -760,20 +784,18 @@ sub proprieteNode {
    # $forme->addItem(this->tr('Rectangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
    # $forme->addItem(this->tr('Triangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
 #=cut    
-    my $ty=Qt::Label(this->tr('Type de trait:'));  #le type de trait
-    $layout->addWidget($ty,4,0);
-    my $dash = Qt::CheckBox(this->tr('Dashed'));
-    $dash->setChecked(0);
-    $layout->addWidget($dash,5,0);
-    my $double = Qt::CheckBox(this->tr('Double'));
-    $double->setChecked(0);
-    $layout->addWidget($double,6,0);
-    my $dot = Qt::CheckBox(this->tr('Dotted'));
-    $dot->setChecked(0);
-    $layout->addWidget($dot,5,2);
-    my $arc = Qt::CheckBox(this->tr('Arc'));
-    $arc->setChecked(0);
-    $layout->addWidget($arc,6,2);
+
+    $layout->addWidget(Qt::Label(this->tr('Type de trait:')),4,0); #le type de trait
+    my $check_dashed = Qt::CheckBox(this->tr('dashed'));
+    $check_dashed->setChecked(0);
+    $layout->addWidget($check_dashed,5,0);
+    my $double_check = Qt::CheckBox(this->tr('double'));
+    $double_check->setChecked(0);
+    $layout->addWidget($double_check,5,1);
+    my $dotted_check = Qt::CheckBox(this->tr('dotted'));
+    $dotted_check->setChecked(0);
+	$layout->addWidget($dotted_check,5,2);
+	
     my $grosseur=Qt::Label(this->tr('Grosseur du trait:'));
     $layout->addWidget($grosseur,7,0);
     my $gros=this->Qt::ComboBox();
