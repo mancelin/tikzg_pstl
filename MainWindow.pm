@@ -659,10 +659,14 @@ sub createDockWindows {
 }
 
 
-my @forme_noeud= ("", "rectangle", "circle", "ellipse", "diamond");
+my @forme_noeud = ("", "rectangle", "circle", "ellipse", "diamond");
 #my @type_trait = qw(dashed dotted double);
 my @type_trait = qw(dashed dotted);
-my @grosseur_trait=qw(thin 'very thin' 'ultra thin' thick 'very thick' 'ultra thick');
+my @grosseur_trait = ("thin","very thin","ultra thin","thick",'very thick','ultra thick','line width');
+my @position = ("above", "above left", "above right","below","below left","below right","right","left",
+				"above of", "above left of", "above right of","below of","below left of","below right of","right of","left of");
+
+
 
 
 # trouve la derniére propriété appartenant a la liste "liste_props" dans la liste des propriétes d' un objet tikz
@@ -693,7 +697,7 @@ sub find_last_prop {
 
 sub param_in_list {
 	print "param in list \n";
-	print Dumper(@_);
+	#print Dumper(@_);
 	my ($param, $ref_liste) = @_;
 	my @liste = @$ref_liste;
 	#print "param : $param\n";
@@ -709,20 +713,85 @@ sub param_in_list {
 	
 sub instruction_of_proprieteDraw {
 	my $ligne =$mainWindow->{currentObj_line};
+	my $index_obj_tikz = index_of_line($ligne);
 	print "ligne : $ligne\n"; # dbg
 	my $instr = '\node[';
 	if($mainWindow->{visible_check}->isChecked()){
 		#print "IS CHECK\n";
 		$instr.='draw,';
 	}
+	my $forme_noeud = $mainWindow->{comboBox_forme}->lineEdit()->text();
+	if(param_in_list($forme_noeud, \@forme_noeud)){
+		if($forme_noeud ne ""){
+			$instr.=$forme_noeud.",";
+		}
+	}
+	if($mainWindow->{double_check}->isChecked()){
+		$instr.='double,';
+	}
+	if($mainWindow->{dotted_check}->isChecked() && $mainWindow->{dashed_check}->isChecked()){
+		print "double check \n";
+		printf "dernier type_trait trait : %s\n", $mainWindow->{dernier_type_trait};
+		if($mainWindow->{dernier_style_trait} eq "dashed"){
+			$mainWindow->{dotted_check}->setChecked(0);
+		} elsif($mainWindow->{dernier_style_trait} eq "dotted"){
+			$mainWindow->{dashed_check}->setChecked(0);
+		}
+	}
+	if($mainWindow->{dashed_check}->isChecked()){
+		$instr.='dashed,';
+	}
+	if($mainWindow->{dotted_check}->isChecked()){
+		$instr.='dotted,';
+	}
+	
+	my $grosseur_trait = $mainWindow->{comboBox_grosseur_trait}->lineEdit()->text();
+	if(param_in_list($grosseur_trait, \@grosseur_trait)){
+		if($grosseur_trait ne "line width"){
+			$instr.=$grosseur_trait.",";
+			$mainWindow->{textBox_line_width}->setEnabled(0);
+		} else {
+			$instr.=$grosseur_trait."=".$mainWindow->{textBox_line_width}.",";
+		}
+	}
+	
+#	if(defined($mainWindow->{textBox_position}->text()) && $mainWindow->{textBox_position}->text() ne ""){
+	if($mainWindow->{textBox_position}->text() ne ""){
+		$instr.=$mainWindow->{textBox_position}->text().',';
+	}
+		
+	
+	# idem pour couleurs
+	
+	
+	
+	chop $instr;
+	$instr.=']('.$mainWindow->{textBox_nom}->text().') {';
+	$instr.=$mainWindow->{textBox_text}->text()."};";
+	
 	#print '\node[\n'; # dbg
-	print "textBox_nom :" ,$mainWindow->{textBox_nom}->text(), "\n";
-	print "textBox_text :" ,$mainWindow->{textBox_text}->text(), "\n";
-	print "comboBox_forme :" ,$mainWindow->{comboBox_forme}->lineEdit()->text(), "\n";
+	#print "textBox_nom : " ,$mainWindow->{textBox_nom}->text(), "\n";
+	#print "textBox_text : " ,$mainWindow->{textBox_text}->text(), "\n";
+	#print "comboBox_forme :" ,$mainWindow->{comboBox_forme}->lineEdit()->text(), "\n";
 	
 	
 	print "instr : $instr\n";
 	print "-"x80;
+	$liste_instructions[$index_obj_tikz]->{code} = $instr;
+	TikzObjects::parse_ligne_instruction($liste_instructions[$index_obj_tikz]);
+	
+	my $code_tikz =string_of_liste_instructions(0,@liste_instructions);
+	
+	utf8::decode($code_tikz);
+    this->{textEdit}->setText($code_tikz);
+    genImage();
+	
+	print Dumper($liste_instructions[$index_obj_tikz]);
+	print "_"x80;
+	print Dumper(@liste_instructions);
+	#my $obj_tikz->{code} = $instr;
+	#TikzObjects::parse_ligne_instruction($obj_tikz);
+	#print Dumper($obj_tikz);
 	# une fois toutes les propriétées récupérées, remplacement de l' objetTikz de la ligne "ligne" par 
 	# l' objet crée en parsant "instr"
 }
@@ -750,6 +819,7 @@ sub proprieteNode {
 	} else {
 		$visible_check->setChecked(0);
 	}
+	this->connect($visible_check, SIGNAL 'clicked()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
 	$mainWindow->{visible_check}=$visible_check;
     $layout->addWidget($visible_check);               
 
@@ -768,7 +838,29 @@ sub proprieteNode {
     this->connect($textBox_text, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
     $layout->addWidget($textBox_text,2,1);   
     
-    $layout->addWidget(Qt::Label(this->tr('Forme:')),3,0);	#la forme du noeud
+    $layout->addWidget(Qt::Label(this->tr('Position:')),3,0);	#position du noeud
+    my $textBox_position=Qt::LineEdit();
+    my $positions = "";
+	foreach my $elem(@{$node->{params_keys}}){
+		if(param_in_list($elem, \@position)){
+			if(defined($node->{params}->{$elem})){
+				$positions.="$elem=".$node->{params}->{$elem}.",";
+			} else {
+				$positions.="$elem,";
+			}
+		}
+	}
+	chop $positions;
+    
+    $textBox_position->setText($positions);
+    $mainWindow->{textBox_position}=$textBox_position;
+    this->connect($textBox_position, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
+    $layout->addWidget($textBox_position,3,1);	#la forme du noeud
+    #$layout->addWidget($textBox_position,3,1);	#la forme du noeud
+    
+    
+    
+    $layout->addWidget(Qt::Label(this->tr('Forme:')),4,0);	#la forme du noeud
     my $derniere_forme_noeud = find_last_prop([@params_keys,[@forme_noeud]]);
     print "derniere_forme_noeud : $derniere_forme_noeud\n";
     my $comboBox_forme=this->Qt::ComboBox();
@@ -779,138 +871,78 @@ sub proprieteNode {
 	}
 	$comboBox_forme->setEditText($derniere_forme_noeud);
 	this->connect($comboBox_forme, SIGNAL 'activated(QString)', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
-	$layout->addWidget($comboBox_forme,3,1);  
+	$layout->addWidget($comboBox_forme,4,1);  
 
-    $layout->addWidget(Qt::Label(this->tr('Type de trait:')),4,0); #le type de trait
+    $layout->addWidget(Qt::Label(this->tr('Type de trait:')),5,0); #le type de trait
     
     my $double_check = Qt::CheckBox(this->tr('double'));
+    $mainWindow->{double_check}=$double_check;
+    this->connect($double_check, SIGNAL 'clicked()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
     if(param_in_list("double", @params_keys)){
 		$double_check->setChecked(1);
 	} else {
 		$double_check->setChecked(0);
 	}
 	$mainWindow->{double_check}=$double_check;
-    $layout->addWidget($double_check,5,0);
+    $layout->addWidget($double_check,6,0);
     
     my $dotted_check = Qt::CheckBox(this->tr('dotted'));  # dotted et dashed sont deux propriétées s' excluant
+    $mainWindow->{dotted_check}=$dotted_check;
+    this->connect($dotted_check, SIGNAL 'clicked()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
     my $dashed_check = Qt::CheckBox(this->tr('dashed'));
-    $layout->addWidget($dashed_check,5,1);
-    $layout->addWidget($dotted_check,5,2);
-    my $derniere_style_trait = find_last_prop([@params_keys,[@type_trait]]);
-    print "derniere_style_trait : $derniere_style_trait\n";
-    if($derniere_style_trait eq "dashed"){
+    $mainWindow->{dashed_check}=$dashed_check;
+    this->connect($dashed_check, SIGNAL 'clicked()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
+    $layout->addWidget($dashed_check,6,1);
+    $layout->addWidget($dotted_check,6,2);
+    my $dernier_type_trait = find_last_prop([@params_keys,[@type_trait]]);
+    print "dernier_type_trait : $dernier_type_trait\n";
+    $mainWindow->{dernier_type_trait}=$dernier_type_trait;
+    if($dernier_type_trait eq "dashed"){
 		$dashed_check->setChecked(1);
-	} elsif($derniere_style_trait eq "dotted"){
+	} elsif($dernier_type_trait eq "dotted"){
 		$dotted_check->setChecked(1);
 	}
     
-    
-    my $grosseur=Qt::Label(this->tr('Grosseur du trait:'));
-    $layout->addWidget($grosseur,7,0);
-    my $gros=this->Qt::ComboBox();
-    $gros->addItem(this->tr(''),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Ultra thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Very thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Ultra thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Very thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($gros,7,1);                 #la grosseur de l'arete
-    my $color=Qt::Label(this->tr('Couleur:'));
-    $layout->addWidget($color,8,0);
-    $layout->addWidget(this->Qt::LineEdit(),8,1);   # la couleur de l'arete
-    my $remp=Qt::Label(this->tr('Remplissage:'));
-    $layout->addWidget($remp,9,0);
-    $layout->addWidget(this->Qt::LineEdit(),9,1);   # le remplissage de l'arete
-    
-    $top->setLayout($layout);
-    
-    my $dock_prop = $mainWindow->{dock_prop};
-    $dock_prop->setWidget($top);
-    $dock_prop->setVisible(1);
-    $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
-
-}
-#=cut
-=rvt
-sub proprieteNode{
-	my ($node) = @_;
-	my $node_props;
-	my @params_keys = $node->{params_keys};
-	$mainWindow->{currentObj_line}  = $node->{ligne};
-	#my $l_params_keys = scalar (@param_keys);
-	if( $node->{code} =~ /\[([^\]]*)\]/ ){
-		print $1,"\n";
-		$node_props=$1;
+    $layout->addWidget(Qt::Label(this->tr('Grosseur du trait:')),8,0);
+    my $comboBox_grosseur_trait=this->Qt::ComboBox();
+    $mainWindow->{comboBox_grosseur_trait}=$comboBox_grosseur_trait;
+    my $derniere_grosseur_trait = find_last_prop([@params_keys,[@grosseur_trait]]);
+    print "derniere_grosseur_trait : $derniere_grosseur_trait\n";
+    $comboBox_grosseur_trait->setEditable(1);
+    $comboBox_grosseur_trait->addItem(this->tr(''));
+    for( my $i=0;$i < scalar (@grosseur_trait); $i++){
+		$comboBox_grosseur_trait->addItem(this->tr($grosseur_trait[$i]));
 	}
-	print "propriete node\n";
-    #my $dock = Qt::DockWidget("Proprietes", this);
-    my $top=Qt::Widget();
-    my $layout = Qt::GridLayout();
-    my $visible = Qt::CheckBox(this->tr('Visible'));
-    $visible->setChecked(1);
-    $layout->addWidget($visible);               #cacher le noeud
-    my $nom=Qt::Label(this->tr('Nom:'));
-    $layout->addWidget($nom,1,0);
-    $layout->addWidget(this->Qt::LineEdit(),1,1);   #le nom du noeud
-    my $texte=Qt::Label(this->tr('Texte:'));
-    $layout->addWidget($texte,2,0);
-    $layout->addWidget(this->Qt::LineEdit(),2,1);   #le texte inscrit dans le noeud
-    my $type=Qt::Label(this->tr('Forme:'));
-    $layout->addWidget($type,3,0);
-    my $forme=this->Qt::ComboBox();
-    $forme->addItem(this->tr('Cercle'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $forme->addItem(this->tr('Rectangle'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $forme->addItem(this->tr('Diamond'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $forme->addItem(this->tr('Ellipse'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($forme,3,1);                 #la forme du noeud
-    my $ty=Qt::Label(this->tr('Type de trait:'));  #le type de trait
-    $layout->addWidget($ty,4,0);
-    my $dash = Qt::CheckBox(this->tr('Dashed'));
-    $dash->setChecked(0);
-    $layout->addWidget($dash,5,0);
-    my $double = Qt::CheckBox(this->tr('Double'));
-    $double->setChecked(0);
-    $layout->addWidget($double,6,0);
-    my $dot = Qt::CheckBox(this->tr('Dotted'));
-    $dot->setChecked(0);
-    $layout->addWidget($dot,5,2);
-    my $arc = Qt::CheckBox(this->tr('Arc'));
-    $arc->setChecked(0);
-    $layout->addWidget($arc,6,2);
-    my $grosseur=Qt::Label(this->tr('Grosseur du trait:'));
-    $layout->addWidget($grosseur,7,0);
-    my $gros=this->Qt::ComboBox();
-    $gros->addItem(this->tr(''),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Ultra thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Very thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Ultra thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $gros->addItem(this->tr('Very thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($gros,7,1);                 #la grosseur de l'arete
+	$comboBox_grosseur_trait->setEditText($derniere_grosseur_trait);
+	this->connect($comboBox_grosseur_trait, SIGNAL 'activated(QString)', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
+	$layout->addWidget($comboBox_grosseur_trait,8,1);
+	my $textBox_line_width=Qt::LineEdit();
+	$mainWindow->{textBox_line_width}=$textBox_line_width;
+	$textBox_line_width->setEnabled(0);
+	$layout->addWidget($textBox_line_width,8,2);
+	if($derniere_grosseur_trait eq 'line width'){
+		$textBox_line_width->setEnabled(1);
+	}
+		
+
     my $color=Qt::Label(this->tr('Couleur:'));
-    $layout->addWidget($color,8,0);
-    $layout->addWidget(this->Qt::LineEdit(),8,1);   # la couleur de l'arete
+    $layout->addWidget($color,9,0);
+    $layout->addWidget(this->Qt::LineEdit(),9,1);   # la couleur de l'arete
     my $remp=Qt::Label(this->tr('Remplissage:'));
-    $layout->addWidget($remp,9,0);
-    $layout->addWidget(this->Qt::LineEdit(),9,1);   # le remplissage de l'arete
+    $layout->addWidget($remp,10,0);
+    $layout->addWidget(this->Qt::LineEdit(),10,1);   # le remplissage de l'arete
+    
     $top->setLayout($layout);
     
     my $dock_prop = $mainWindow->{dock_prop};
     $dock_prop->setWidget($top);
     $dock_prop->setVisible(1);
     $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
-    
-    #$dock->setWidget($top);
-    
-    
-    #this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
-    #this->{viewMenu}->addAction($dock->toggleViewAction());
-}
-=cut
 
-#proprietes de l'arete selectionné
+}
+
+
+# propriétes de l'arrête selectionnée
 sub proprieteDraw{
     my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
@@ -1447,9 +1479,9 @@ sub make_list_instructions_rel {
 	}
 	
 	#foreach my $elem (@list_instructions_rel){
-	print "+"x80;
-	print Dumper(@l_rel_objects);
-	print "+"x80;
+	#print "+"x80;
+	#print Dumper(@l_rel_objects);
+	#print "+"x80;
 	foreach my $rel_obj (@l_rel_objects){
 		my $ligne = $rel_obj->{ligne};
 		my $i = index_of_line($ligne);
