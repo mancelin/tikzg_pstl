@@ -779,48 +779,67 @@ sub proprieteNode {
     $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
 
 }
+=cut
 
+my @type_trait = qw(dashed dotted double arc);
+my @grosseur_trait=qw"thin 'very thin' 'ultra thin' thick 'very thick' 'ultra thick'";
 
-#proprietes de l'arrête selectionnée
+#proprietes de l'arete selectionné
 sub proprieteDraw{
-   # my $dock = Qt::DockWidget("Proprietes", this);
+    my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
     my $layout = Qt::GridLayout();
-    my $nom=Qt::Label(this->tr('Nom:'));
-    $layout->addWidget($nom,1,0);
-    $layout->addWidget(this->Qt::LineEdit(),1,1);   #le nom
     my $orig=Qt::Label(this->tr('Origine:'));
-    $layout->addWidget($orig,2,0);
-    $layout->addWidget(this->Qt::ComboBox(),2,1);   #origine (à compléter après identification de l'arete)
+    $layout->addWidget($orig,0,0);
+    $layout->addWidget(this->Qt::ComboBox(),1,0);   #origine (à compléter après identification de l'arete)
     my $dir=Qt::Label(this->tr('Sens:'));
-    $layout->addWidget($dir,3,0);
+    $layout->addWidget($dir,0,1);
     my $sens=this->Qt::ComboBox();
     $sens->addItem(this->tr('<->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $sens->addItem(this->tr('->'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $sens->addItem(this->tr('<-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
     $sens->addItem(this->tr('-'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($sens,3,1);                 #le sens de l'arete
-    my $ty=Qt::Label(this->tr('Type de trait:'));
-    $layout->addWidget($ty,4,0);
-    my $trait=this->Qt::ComboBox();
-    $trait->addItem(this->tr('Plein'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $trait->addItem(this->tr('Pointille'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $trait->addItem(this->tr('Double'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($trait,4,1);                 #le type de trait
+    $layout->addWidget($sens,1,1);                 #le sens de l'arete
     my $des=Qt::Label(this->tr('Destination:'));
-    $layout->addWidget($des,5,0);
-    $layout->addWidget(this->Qt::ComboBox(),5,1);   #destination (à compléter après identification du noeud)
+    $layout->addWidget($des,0,2);
+    $layout->addWidget(this->Qt::ComboBox(),1,2);   #destination (à compléter après identification du noeud)
+    my $ty=Qt::Label(this->tr('Type de trait:'));  #le type de trait
+    $layout->addWidget($ty,2,0);
+    my $dash = Qt::CheckBox(this->tr('Dashed'));
+    $dash->setChecked(0);
+    $layout->addWidget($dash,3,0);                 
+    my $double = Qt::CheckBox(this->tr('Doube'));
+    $double->setChecked(0);
+    $layout->addWidget($double,4,0); 
+    my $dot = Qt::CheckBox(this->tr('Dotted'));
+    $dot->setChecked(0);
+    $layout->addWidget($dot,3,2); 
+    my $arc = Qt::CheckBox(this->tr('Arc'));
+    $arc->setChecked(0);
+    $layout->addWidget($arc,4,2); 
+    my $grosseur=Qt::Label(this->tr('Grosseur du trait:'));
+    $layout->addWidget($grosseur,5,0);
+    my $gros=this->Qt::ComboBox();
+    $gros->addItem(this->tr('Thin'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Ultra thin'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Very thin'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Thick'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Ultra thick'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Very thick'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $layout->addWidget($gros,5,1);                 #la grosseur de l'arete
+    my $color=Qt::Label(this->tr('Couleur:'));
+    $layout->addWidget($color,6,0);
+    $layout->addWidget(this->Qt::LineEdit(),6,1);   # la couleur de l'arete
+    my $remp=Qt::Label(this->tr('Remplissage:'));
+    $layout->addWidget($remp,7,0);
+    $layout->addWidget(this->Qt::LineEdit(),7,1);   # le remplissage de l'arete
 
 
     $top->setLayout($layout);
-    
-    my $dock_prop = $mainWindow->{dock_prop};
-    $dock_prop->setWidget($top);
-    $dock_prop->setVisible(1);
-    $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
-   # this->{viewMenu}->addAction($dock->toggleViewAction());
+    $dock->setWidget($top);
+    this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
+    this->{viewMenu}->addAction($dock->toggleViewAction());
 }
-
 =later
 sub cacher_proprietes {
 	print "cacher props\n";
