@@ -660,8 +660,8 @@ sub createDockWindows {
 
 
 my @forme_noeud= ("", "rectangle", "circle", "ellipse", "diamond");
-#my @type_trait = qw(dashed dotted double arc);
-my @type_trait = qw(dashed dotted double);
+#my @type_trait = qw(dashed dotted double);
+my @type_trait = qw(dashed dotted);
 my @grosseur_trait=qw(thin 'very thin' 'ultra thin' thick 'very thick' 'ultra thick');
 
 
@@ -711,12 +711,18 @@ sub instruction_of_proprieteDraw {
 	my $ligne =$mainWindow->{currentObj_line};
 	print "ligne : $ligne\n"; # dbg
 	my $instr = '\node[';
-	print '\node[\n'; # dbg
+	if($mainWindow->{visible_check}->isChecked()){
+		#print "IS CHECK\n";
+		$instr.='draw,';
+	}
+	#print '\node[\n'; # dbg
 	print "textBox_nom :" ,$mainWindow->{textBox_nom}->text(), "\n";
 	print "textBox_text :" ,$mainWindow->{textBox_text}->text(), "\n";
 	print "comboBox_forme :" ,$mainWindow->{comboBox_forme}->lineEdit()->text(), "\n";
 	
 	
+	print "instr : $instr\n";
+	print "-"x80;
 	# une fois toutes les propriétées récupérées, remplacement de l' objetTikz de la ligne "ligne" par 
 	# l' objet crée en parsant "instr"
 }
@@ -738,13 +744,13 @@ sub proprieteNode {
     my $top=Qt::Widget();
     my $layout = Qt::GridLayout();
     
-    my $visible_check = Qt::CheckBox($mainWindow->tr('draw'));	#afficher/cacher le noeud
-    $mainWindow->{visible_check}=$visible_check;
+    my $visible_check = Qt::CheckBox(this->tr('draw'));	#afficher/cacher le noeud
     if(param_in_list("draw", @params_keys)){
 		$visible_check->setChecked(1);
 	} else {
 		$visible_check->setChecked(0);
 	}
+	$mainWindow->{visible_check}=$visible_check;
     $layout->addWidget($visible_check);               
 
     $layout->addWidget(Qt::Label(this->tr('Nom:')),1,0);	#le nom du noeud
@@ -773,29 +779,32 @@ sub proprieteNode {
 	}
 	$comboBox_forme->setEditText($derniere_forme_noeud);
 	this->connect($comboBox_forme, SIGNAL 'activated(QString)', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
-	$layout->addWidget($comboBox_forme,3,1);
-  #  $forme
-   # foreach 
-    #my $textBox_forme=Qt::LineEdit();
-    #$textBox_forme->setText($derniere_forme_noeud);
-    #$layout->addWidget($textBox_forme,3,1);                 
-#=vf
-   # $forme->addItem(this->tr('Cercle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-   # $forme->addItem(this->tr('Rectangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-   # $forme->addItem(this->tr('Triangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-#=cut    
+	$layout->addWidget($comboBox_forme,3,1);  
 
     $layout->addWidget(Qt::Label(this->tr('Type de trait:')),4,0); #le type de trait
-    my $check_dashed = Qt::CheckBox(this->tr('dashed'));
-    $check_dashed->setChecked(0);
-    $layout->addWidget($check_dashed,5,0);
+    
     my $double_check = Qt::CheckBox(this->tr('double'));
-    $double_check->setChecked(0);
-    $layout->addWidget($double_check,5,1);
-    my $dotted_check = Qt::CheckBox(this->tr('dotted'));
-    $dotted_check->setChecked(0);
-	$layout->addWidget($dotted_check,5,2);
-	
+    if(param_in_list("double", @params_keys)){
+		$double_check->setChecked(1);
+	} else {
+		$double_check->setChecked(0);
+	}
+	$mainWindow->{double_check}=$double_check;
+    $layout->addWidget($double_check,5,0);
+    
+    my $dotted_check = Qt::CheckBox(this->tr('dotted'));  # dotted et dashed sont deux propriétées s' excluant
+    my $dashed_check = Qt::CheckBox(this->tr('dashed'));
+    $layout->addWidget($dashed_check,5,1);
+    $layout->addWidget($dotted_check,5,2);
+    my $derniere_style_trait = find_last_prop([@params_keys,[@type_trait]]);
+    print "derniere_style_trait : $derniere_style_trait\n";
+    if($derniere_style_trait eq "dashed"){
+		$dashed_check->setChecked(1);
+	} elsif($derniere_style_trait eq "dotted"){
+		$dotted_check->setChecked(1);
+	}
+    
+    
     my $grosseur=Qt::Label(this->tr('Grosseur du trait:'));
     $layout->addWidget($grosseur,7,0);
     my $gros=this->Qt::ComboBox();
