@@ -76,6 +76,8 @@ sub NEW {
     my $editorAndLogs=Qt::Widget();
     $editorAndLogs->setLayout($layout);
 	this->setCentralWidget($editorAndLogs);
+	
+	this->setWindowIcon(Qt::Icon("images/logo256.png"));
     
     
     #this->setCentralWidget($textEdit);
@@ -869,7 +871,6 @@ sub triggerArrowCursor {
 sub genImage {
 	$generation_img_en_cours = 1;
 	$timer->stop();
-	
 	print "gen Image\n";  ##
 	triggerWaitCursor();
 	
