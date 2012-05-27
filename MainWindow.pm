@@ -418,10 +418,12 @@ sub toogle_syntaxColoration {
 
 
 sub about {
-   Qt::MessageBox::about(this, "A propos",
-            "<b>TikzG</b> permet de ..." .
-            "........".
-            "................." );
+   Qt::MessageBox::about(this, "À propos de TikzG",
+            "Éditeur graphique Tikz développé dans le cadre d' un projet en M1 Informatique STL à l'UPMC.\n\n" .
+            "Sujet du projet proposé par Frédéric Peschanski.\n\n".
+            "Programme réalisé par :\n".
+            "    Maxime Ancelin\n".
+            "    Aminata Diakathe\n" );
 }
 
 sub createActions {
