@@ -3,7 +3,7 @@ package TikzObjects;
 use Carp;
 use Data::Dumper; #
 use TikzParser;
-use Tie::IxHash; 
+#use Tie::IxHash; 
 use ListDumper; #
 use ColorId;
 

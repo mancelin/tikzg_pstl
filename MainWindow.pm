@@ -544,15 +544,10 @@ sub createActions {
     this->connect($toogle_syntaxColorationAct, SIGNAL 'triggered()', this, SLOT 'toogle_syntaxColoration()');
 
 
-    my $aboutAct = Qt::Action("&About", this);
+    my $aboutAct = Qt::Action("&À propos", this);
     this->{aboutAct} = $aboutAct;
-    $aboutAct->setStatusTip("Show the application's About box");
+    $aboutAct->setStatusTip("À propos de TikzG");
     this->connect($aboutAct, SIGNAL 'triggered()', this, SLOT 'about()');
-
-    my $aboutQtAct = Qt::Action("About &Qt", this);
-    this->{aboutQtAct} = $aboutQtAct;
-    $aboutQtAct->setStatusTip("Show the Qt4 library's About box");
-    this->connect($aboutQtAct, SIGNAL 'triggered()', Qt::qApp(), SLOT 'aboutQt()');
     
     my $genAct = Qt::Action("Générer image", this);
     this->{genAct} = $genAct;
@@ -604,9 +599,8 @@ sub createMenus {
 
  #   this->menuBar()->addSeparator();
 
-    my $helpMenu = this->menuBar()->addMenu("&Help");
+    my $helpMenu = this->menuBar()->addMenu("&Aide");
     $helpMenu->addAction(this->{aboutAct});
-    $helpMenu->addAction(this->{aboutQtAct});
 }
 
 sub createToolBars {
@@ -664,6 +658,10 @@ sub createDockWindows {
 
 
 my @forme_noeud = qw(circle rectangle);
+#my @type_trait = qw(dashed dotted double arc);
+my @type_trait = qw(dashed dotted double);
+my @grosseur_trait=qw"thin 'very thin' 'ultra thin' thick 'very thick' 'ultra thick'";
+
 
 # trouve la derniére propriété appartenant a la liste "liste_props" dans la liste des propriétes d' un objet tikz
 sub find_last_prop {
@@ -779,10 +777,7 @@ sub proprieteNode {
     $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
 
 }
-=cut
-
-my @type_trait = qw(dashed dotted double arc);
-my @grosseur_trait=qw"thin 'very thin' 'ultra thin' thick 'very thick' 'ultra thick'";
+#=cut
 
 #proprietes de l'arete selectionné
 sub proprieteDraw{
@@ -836,10 +831,17 @@ sub proprieteDraw{
 
 
     $top->setLayout($layout);
-    $dock->setWidget($top);
-    this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
-    this->{viewMenu}->addAction($dock->toggleViewAction());
+    
+    my $dock_prop = $mainWindow->{dock_prop};
+    $dock_prop->setWidget($top);
+    $dock_prop->setVisible(1);
+    $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
+    
+    #$dock->setWidget($top);
+    #this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
+    #this->{viewMenu}->addAction($dock->toggleViewAction());
 }
+
 =later
 sub cacher_proprietes {
 	print "cacher props\n";
@@ -1424,7 +1426,7 @@ sub object_ofIDC {
 				print Dumper(@liste_noeuds_rel);
 =cut
 				make_list_instructions_rel($elem, "blue");
-				proprieteDraw();
+				proprieteDraw($elem);
 			} else {
 				cacher_proprietes();	
 			}
