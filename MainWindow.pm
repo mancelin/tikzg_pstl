@@ -659,10 +659,10 @@ sub createDockWindows {
 }
 
 
-my @forme_noeud = qw(circle rectangle);
+my @forme_noeud= ("", "rectangle", "circle", "ellipse", "diamond");
 #my @type_trait = qw(dashed dotted double arc);
 my @type_trait = qw(dashed dotted double);
-my @grosseur_trait=qw"thin 'very thin' 'ultra thin' thick 'very thick' 'ultra thick'";
+my @grosseur_trait=qw(thin 'very thin' 'ultra thin' thick 'very thick' 'ultra thick');
 
 
 # trouve la derniére propriété appartenant a la liste "liste_props" dans la liste des propriétes d' un objet tikz
@@ -708,6 +708,104 @@ sub proprieteNode {
 	my ($node) = @_;
 	my $node_props;
 	my @params_keys = $node->{params_keys};
+	$mainWindow->{currentObj_line} = $node->{ligne};
+	#my $l_params_keys = scalar (@param_keys);
+	if( $node->{code} =~ /\[([^\]]*)\]/ ){
+		print $1,"\n";
+		$node_props=$1;
+	}
+	print "propriete node\n";
+    #my $dock = Qt::DockWidget("Proprietes", this);
+    my $top=Qt::Widget();
+    my $layout = Qt::GridLayout();
+    
+    my $visible = Qt::CheckBox($mainWindow->tr('Draw'));	#afficher/cacher le noeud
+    $visible->setChecked(1);
+    $layout->addWidget($visible);               
+
+    $layout->addWidget(Qt::Label(this->tr('Nom:')),1,0);	#le nom du noeud
+    my $textBox_nom=Qt::LineEdit();
+    $textBox_nom->setText($node->{nom});
+    $mainWindow->{textBox_nom}=$textBox_nom;
+    this->connect($textBox_nom, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
+    $layout->addWidget($textBox_nom,1,1);   
+    
+    #my $texte=Qt::Label(this->tr('Texte:'));
+    $layout->addWidget(Qt::Label(this->tr('Texte:')),2,0);	#le texte inscrit dans le noeud
+    my $textBox_text=Qt::LineEdit();
+    $textBox_text->setText($node->{text});
+    $mainWindow->{textBox_text}=$textBox_text;
+    this->connect($textBox_text, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
+    $layout->addWidget($textBox_text,2,1);   
+    
+    $layout->addWidget(Qt::Label(this->tr('Forme:')),3,0);	#la forme du noeud
+    my $derniere_forme_noeud = find_last_prop([@params_keys,[@forme_noeud]]);
+    print "derniere_forme_noeud : $derniere_forme_noeud\n";
+    my $comboBox_forme=this->Qt::ComboBox();
+    $mainWindow->{comboBox_forme}=$comboBox_forme;
+    $comboBox_forme->setEditable(1);
+    for( my $i=0;$i < scalar (@forme_noeud); $i++){
+		$comboBox_forme->addItem(this->tr($forme_noeud[$i]));
+	}
+	$comboBox_forme->setEditText($derniere_forme_noeud);
+	this->connect($comboBox_forme, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
+	$layout->addWidget($comboBox_forme,3,1); 
+  #  $forme
+   # foreach 
+    #my $textBox_forme=Qt::LineEdit();
+    #$textBox_forme->setText($derniere_forme_noeud);
+    #$layout->addWidget($textBox_forme,3,1);                 
+#=vf
+   # $forme->addItem(this->tr('Cercle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+   # $forme->addItem(this->tr('Rectangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+   # $forme->addItem(this->tr('Triangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+#=cut    
+    my $ty=Qt::Label(this->tr('Type de trait:'));  #le type de trait
+    $layout->addWidget($ty,4,0);
+    my $dash = Qt::CheckBox(this->tr('Dashed'));
+    $dash->setChecked(0);
+    $layout->addWidget($dash,5,0);
+    my $double = Qt::CheckBox(this->tr('Double'));
+    $double->setChecked(0);
+    $layout->addWidget($double,6,0);
+    my $dot = Qt::CheckBox(this->tr('Dotted'));
+    $dot->setChecked(0);
+    $layout->addWidget($dot,5,2);
+    my $arc = Qt::CheckBox(this->tr('Arc'));
+    $arc->setChecked(0);
+    $layout->addWidget($arc,6,2);
+    my $grosseur=Qt::Label(this->tr('Grosseur du trait:'));
+    $layout->addWidget($grosseur,7,0);
+    my $gros=this->Qt::ComboBox();
+    $gros->addItem(this->tr(''),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Ultra thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Very thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Ultra thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Very thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $layout->addWidget($gros,7,1);                 #la grosseur de l'arete
+    my $color=Qt::Label(this->tr('Couleur:'));
+    $layout->addWidget($color,8,0);
+    $layout->addWidget(this->Qt::LineEdit(),8,1);   # la couleur de l'arete
+    my $remp=Qt::Label(this->tr('Remplissage:'));
+    $layout->addWidget($remp,9,0);
+    $layout->addWidget(this->Qt::LineEdit(),9,1);   # le remplissage de l'arete
+    
+    $top->setLayout($layout);
+    
+    my $dock_prop = $mainWindow->{dock_prop};
+    $dock_prop->setWidget($top);
+    $dock_prop->setVisible(1);
+    $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
+
+}
+#=cut
+=rvt
+sub proprieteNode{
+	my ($node) = @_;
+	my $node_props;
+	my @params_keys = $node->{params_keys};
 	$mainWindow->{currentObj_line}  = $node->{ligne};
 	#my $l_params_keys = scalar (@param_keys);
 	if( $node->{code} =~ /\[([^\]]*)\]/ ){
@@ -718,68 +816,68 @@ sub proprieteNode {
     #my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
     my $layout = Qt::GridLayout();
-    my $visible = Qt::CheckBox($mainWindow->tr('Draw'));
+    my $visible = Qt::CheckBox(this->tr('Visible'));
     $visible->setChecked(1);
     $layout->addWidget($visible);               #cacher le noeud
-
     my $nom=Qt::Label(this->tr('Nom:'));
     $layout->addWidget($nom,1,0);
-    my $textBox_nom=Qt::LineEdit();
-    $textBox_nom->setText($node->{nom});
-    $mainWindow->{textBox_nom}=$textBox_nom;
-    this->connect($textBox_nom, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
-    $layout->addWidget($textBox_nom,1,1);   #le nom du noeud
-    
-    my $forme=Qt::Label(this->tr('Forme:'));
-    $layout->addWidget($forme,2,0);
-    my $derniere_forme_noeud = find_last_prop([@params_keys,[@forme_noeud]]);
-    print "derniere_forme_noeud : $derniere_forme_noeud\n";
-  #  $forme
-   # foreach 
-    my $textBox_forme=Qt::LineEdit();
-    $textBox_forme->setText($derniere_forme_noeud);
-    $layout->addWidget($textBox_forme,2,1);                 #la forme du noeud
-=vf
-    $forme->addItem(this->tr('Cercle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $forme->addItem(this->tr('Rectangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $forme->addItem(this->tr('Triangle'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-=cut    
-    
-    
-    my $dim=Qt::Label(this->tr('Dimension:'));
-    $layout->addWidget($dim,3,0);
-    $layout->addWidget(Qt::LineEdit(),3,1);         #dimension du noeud
-    my $ty=Qt::Label(this->tr('Type de trait:'));
-    $layout->addWidget($ty,4,0);
-    my $trait=this->Qt::ComboBox();
-    $trait->addItem(this->tr('Plein'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $trait->addItem(this->tr('Pointille'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $trait->addItem(this->tr('Double'), Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
-    $layout->addWidget($trait,4,1);                 #le type de trait
+    $layout->addWidget(this->Qt::LineEdit(),1,1);   #le nom du noeud
     my $texte=Qt::Label(this->tr('Texte:'));
-    $layout->addWidget($texte,5,0);
-    $layout->addWidget(this->Qt::LineEdit(),5,1);   #le texte inscrit dans le noeud
-    my $dte=Qt::Label(this->tr('A droite de:'));
-    $layout->addWidget($dte,6,0);
-    $layout->addWidget(this->Qt::ComboBox(),6,1);   #right of (à compléter après identification du noeud)
-    my $gche=Qt::Label(this->tr('A gauche de:'));
-    $layout->addWidget($gche,7,0);
-    $layout->addWidget(this->Qt::ComboBox(),7,1);   #left of  (idem)
-    my $ht=Qt::Label(this->tr('Au dessus de:'));
-    $layout->addWidget($ht,8,0);
-    $layout->addWidget(this->Qt::ComboBox(),8,1);   #up of    (idem)
-    my $bs=Qt::Label(this->tr('En dessous de:'));
-    $layout->addWidget($bs,9,0);
-    $layout->addWidget(this->Qt::ComboBox(),9,1);   #down of  (idem)
+    $layout->addWidget($texte,2,0);
+    $layout->addWidget(this->Qt::LineEdit(),2,1);   #le texte inscrit dans le noeud
+    my $type=Qt::Label(this->tr('Forme:'));
+    $layout->addWidget($type,3,0);
+    my $forme=this->Qt::ComboBox();
+    $forme->addItem(this->tr('Cercle'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $forme->addItem(this->tr('Rectangle'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $forme->addItem(this->tr('Diamond'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $forme->addItem(this->tr('Ellipse'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $layout->addWidget($forme,3,1);                 #la forme du noeud
+    my $ty=Qt::Label(this->tr('Type de trait:'));  #le type de trait
+    $layout->addWidget($ty,4,0);
+    my $dash = Qt::CheckBox(this->tr('Dashed'));
+    $dash->setChecked(0);
+    $layout->addWidget($dash,5,0);
+    my $double = Qt::CheckBox(this->tr('Double'));
+    $double->setChecked(0);
+    $layout->addWidget($double,6,0);
+    my $dot = Qt::CheckBox(this->tr('Dotted'));
+    $dot->setChecked(0);
+    $layout->addWidget($dot,5,2);
+    my $arc = Qt::CheckBox(this->tr('Arc'));
+    $arc->setChecked(0);
+    $layout->addWidget($arc,6,2);
+    my $grosseur=Qt::Label(this->tr('Grosseur du trait:'));
+    $layout->addWidget($grosseur,7,0);
+    my $gros=this->Qt::ComboBox();
+    $gros->addItem(this->tr(''),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Ultra thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Very thin'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Ultra thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $gros->addItem(this->tr('Very thick'),Qt::Variant(Qt::Int(${Qt::RegExp::RegExp()})));
+    $layout->addWidget($gros,7,1);                 #la grosseur de l'arete
+    my $color=Qt::Label(this->tr('Couleur:'));
+    $layout->addWidget($color,8,0);
+    $layout->addWidget(this->Qt::LineEdit(),8,1);   # la couleur de l'arete
+    my $remp=Qt::Label(this->tr('Remplissage:'));
+    $layout->addWidget($remp,9,0);
+    $layout->addWidget(this->Qt::LineEdit(),9,1);   # le remplissage de l'arete
     $top->setLayout($layout);
     
     my $dock_prop = $mainWindow->{dock_prop};
     $dock_prop->setWidget($top);
     $dock_prop->setVisible(1);
     $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
-
+    
+    #$dock->setWidget($top);
+    
+    
+    #this->addDockWidget(Qt::RightDockWidgetArea(), $dock);
+    #this->{viewMenu}->addAction($dock->toggleViewAction());
 }
-#=cut
+=cut
 
 #proprietes de l'arete selectionné
 sub proprieteDraw{

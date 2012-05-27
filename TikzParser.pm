@@ -3,7 +3,7 @@ package TikzParser;
 use Exporter;
 @EXPORT = qw(decoupe_lignes parse_liste_instructions listhash_of_params lists_kv_of_params);
 @ISA = ('Exporter');
-use Tie::IxHash; #
+#use Tie::IxHash; #
 use TikzObjects;
 use Data::Dumper; #
 use ListDumper; #
