@@ -659,7 +659,8 @@ sub createDockWindows {
 }
 
 
-my @forme_noeud = ("", "rectangle", "circle", "ellipse", "diamond");
+#my @forme_noeud = ("", "rectangle", "circle", "ellipse", "diamond");
+my @forme_noeud = ("", "rectangle", "circle");
 #my @type_trait = qw(dashed dotted double);
 my @type_trait = qw(dashed dotted);
 my @grosseur_trait = ("thin","very thin","ultra thin","thick",'very thick','ultra thick','line width');
@@ -850,12 +851,11 @@ sub proprieteNode {
 			}
 		}
 	}
-	chop $positions;
-    
+	chop $positions;   
     $textBox_position->setText($positions);
     $mainWindow->{textBox_position}=$textBox_position;
     this->connect($textBox_position, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
-    $layout->addWidget($textBox_position,3,1);	#la forme du noeud
+    $layout->addWidget($textBox_position,2,1,3,2);	#la forme du noeud
     #$layout->addWidget($textBox_position,3,1);	#la forme du noeud
     
     
