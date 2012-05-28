@@ -739,7 +739,12 @@ sub instruction_of_proprieteDraw {
 			$instr.=$grosseur_trait.",";
 			$mainWindow->{textBox_line_width}->setEnabled(0);
 		} else {
-			$instr.=$grosseur_trait."=".$mainWindow->{textBox_line_width}.",";
+			my $line_width = $mainWindow->{textBox_line_width}->text();
+			if($line_width ne ""){ 
+				$instr.=$grosseur_trait."=".$line_width.",";
+			} else {
+				$instr.=$grosseur_trait."=0pt,";
+			}
 		}
 	}
 	
@@ -787,7 +792,7 @@ sub instruction_of_proprieteDraw {
 	#print Dumper(@liste_instructions);
 	#my $obj_tikz->{code} = $instr;
 	#TikzObjects::parse_ligne_instruction($obj_tikz);
-	#print Dumper($obj_tikz);
+#	print Dumper($liste_instructions[$index_obj_tikz]);
 	# une fois toutes les propriétées récupérées, remplacement de l' objetTikz de la ligne "ligne" par 
 	# l' objet crée en parsant "instr"
 }
@@ -951,17 +956,30 @@ sub proprieteNode {
 	$layout->addWidget($comboBox_grosseur_trait,8,1);
 	my $textBox_line_width=Qt::LineEdit();
 	$mainWindow->{textBox_line_width}=$textBox_line_width;
-	$textBox_line_width->setEnabled(0);
+	#$textBox_line_width->setEnabled(0);
 	$layout->addWidget($textBox_line_width,8,2);
 	if($derniere_grosseur_trait eq 'line width'){
 		$textBox_line_width->setEnabled(1);
+		print Dumper($node->{params});
+		my %hash_params = %{$node->{params}};
+		print Dumper(%hash_params);
+		print "-"x80;
+		print Dumper($node->{params}->{'line width'});
+		#$textBox_line_width->setText($node->{params}->{"line width"});
+		#$textBox_line_width->setText("nyyhaaa");
+		
+		#my $line_width = $node->{params}->{'line width'};
+		my $line_width = $hash_params{'line width'};
+		print "line width : $line_width\n";
+		$textBox_line_width->setText($line_width);
+		this->connect($textBox_line_width, SIGNAL 'editingFinished()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
 	}
 		
 
-    my $color=Qt::Label(this->tr('Couleur:'));
+    my $color=Qt::Label(this->tr('#Couleur:'));
     $layout->addWidget($color,9,0);
     $layout->addWidget(this->Qt::LineEdit(),9,1);   # la couleur de l'arete
-    my $remp=Qt::Label(this->tr('Remplissage:'));
+    my $remp=Qt::Label(this->tr('#Remplissage:'));
     $layout->addWidget($remp,10,0);
     $layout->addWidget(this->Qt::LineEdit(),10,1);   # le remplissage de l'arete
     
