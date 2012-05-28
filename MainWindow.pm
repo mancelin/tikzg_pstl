@@ -29,6 +29,8 @@ use QtCore4::slots
     recalcul_density=> [''],
     addParagraph   => ['QString'], # ex
     instruction_of_proprieteDraw => [''],
+    do_check_dotted=> [''],
+    do_check_dashed=> [''],
     genImage       => [''],
  #   myEvent        => [''],	# dbg
     documentWasModified => [];
@@ -54,6 +56,15 @@ my $viewMenu;
 my $textBox_zoom;
 my $currentFile_tikz;
 #my $gen_rel;
+
+# liste pour les propriétés
+#my @forme_noeud = ("", "rectangle", "circle", "ellipse", "diamond");
+my @forme_noeud = ("", "rectangle", "circle");
+#my @type_trait = qw(dashed dotted double);
+my @type_trait = qw(dashed dotted);
+my @grosseur_trait = ("thin","very thin","ultra thin","thick",'very thick','ultra thick','line width');
+my @position = ("above", "above left", "above right","below","below left","below right","right","left",
+				"above of", "above left of", "above right of","below of","below left of","below right of","right of","left of");
 
 sub NEW {
 	#print "nb args : " , scalar(@_), "\n";
@@ -156,14 +167,6 @@ sub documentWasModified {
 		$timer->start();
 	}
 }
-
-=dbg
-# pour test
-sub myEvent {
-	#my ($event) = @_;
-	print "Event !!\n";
-}
-=cut
 
 
 
@@ -303,12 +306,12 @@ sub loadFile {
 sub forceExtension{
 	my ($fileName,$extension) = @_;
 	my ($file,$suffix) = split /[.]/,$fileName;
-	printf "file : %s,  suffix : %s\n", $file, $suffix;
+#	printf "file : %s,  suffix : %s\n", $file, $suffix;
 	if($suffix ne $extension){
-		print "export as $extension $fileName\n";
+#		print "export as $extension $fileName\n";
 		return "$file.$extension";
 	} else  {
-		print "export as $extension $fileName\n";
+#		print "export as $extension $fileName\n";
 		return $fileName;
 	}
 }
@@ -317,9 +320,9 @@ sub exportAsPng{
 	my $fileName = Qt::FileDialog::getSaveFileName(this,
 					" Exporter en tant que", ".",
 					"png (*.png)");
-	print "filename : $fileName\n";
+#	print "filename : $fileName\n";
 	my $pngFile = forceExtension($fileName, "png");
-	print "pngfile  : $pngFile\n";
+#	print "pngfile  : $pngFile\n";
 	system("cp tmp/tmp_tikz.png $pngFile");
 }
 
@@ -327,9 +330,9 @@ sub exportAsPdf{
 	my $fileName = Qt::FileDialog::getSaveFileName(this,
 					" Exporter en tant que", ".",
 					"pdf (*.pdf)");
-	print "filename : $fileName\n";
+#	print "filename : $fileName\n";
 	my $pdfFile = forceExtension($fileName, "pdf");
-	print "pdfFile  : $pdfFile\n";
+#	print "pdfFile  : $pdfFile\n";
 	system("cp tmp/tmp_tikz.pdf $pdfFile");
 }
 
@@ -659,15 +662,6 @@ sub createDockWindows {
 }
 
 
-#my @forme_noeud = ("", "rectangle", "circle", "ellipse", "diamond");
-my @forme_noeud = ("", "rectangle", "circle");
-#my @type_trait = qw(dashed dotted double);
-my @type_trait = qw(dashed dotted);
-my @grosseur_trait = ("thin","very thin","ultra thin","thick",'very thick','ultra thick','line width');
-my @position = ("above", "above left", "above right","below","below left","below right","right","left",
-				"above of", "above left of", "above right of","below of","below left of","below right of","right of","left of");
-
-
 
 
 # trouve la derniére propriété appartenant a la liste "liste_props" dans la liste des propriétes d' un objet tikz
@@ -680,7 +674,7 @@ sub find_last_prop {
 	my @liste_prop_node = @{$list_of_list[0][0]};
 	my @liste_props = @{$list_of_list[0][1]};
 	#my (@liste_prop_node, @liste_props) = @_;
-	print "find_last_prop\n";
+#	print "find_last_prop\n";
 	#print Dumper(@liste_prop_node);
 	#print "*"x80;
 	#print Dumper(@liste_props);
@@ -697,7 +691,7 @@ sub find_last_prop {
 }
 
 sub param_in_list {
-	print "param in list \n";
+	#print "param in list \n";
 	#print Dumper(@_);
 	my ($param, $ref_liste) = @_;
 	my @liste = @$ref_liste;
@@ -705,7 +699,7 @@ sub param_in_list {
 	foreach my $elem (@liste) {
 		#print "elem : $elem\n";
 		if($elem eq $param) {
-			print "TRUE\n";
+#			print "TRUE\n";
 			return 1;
 		}
 	}
@@ -715,7 +709,7 @@ sub param_in_list {
 sub instruction_of_proprieteDraw {
 	my $ligne =$mainWindow->{currentObj_line};
 	my $index_obj_tikz = index_of_line($ligne);
-	print "ligne : $ligne\n"; # dbg
+#	print "ligne : $ligne\n"; # dbg
 	my $instr = '\node[';
 	if($mainWindow->{visible_check}->isChecked()){
 		#print "IS CHECK\n";
@@ -730,22 +724,15 @@ sub instruction_of_proprieteDraw {
 	if($mainWindow->{double_check}->isChecked()){
 		$instr.='double,';
 	}
-	if($mainWindow->{dotted_check}->isChecked() && $mainWindow->{dashed_check}->isChecked()){
-		print "double check \n";
-		printf "dernier type_trait trait : %s\n", $mainWindow->{dernier_type_trait};
-		if($mainWindow->{dernier_style_trait} eq "dashed"){
-			$mainWindow->{dotted_check}->setChecked(0);
-		} elsif($mainWindow->{dernier_style_trait} eq "dotted"){
-			$mainWindow->{dashed_check}->setChecked(0);
-		}
-	}
+
 	if($mainWindow->{dashed_check}->isChecked()){
 		$instr.='dashed,';
 	}
+
 	if($mainWindow->{dotted_check}->isChecked()){
 		$instr.='dotted,';
 	}
-	
+
 	my $grosseur_trait = $mainWindow->{comboBox_grosseur_trait}->lineEdit()->text();
 	if(param_in_list($grosseur_trait, \@grosseur_trait)){
 		if($grosseur_trait ne "line width"){
@@ -776,8 +763,8 @@ sub instruction_of_proprieteDraw {
 	#print "comboBox_forme :" ,$mainWindow->{comboBox_forme}->lineEdit()->text(), "\n";
 	
 	
-	print "instr : $instr\n";
-	print "-"x80;
+#	print "instr : $instr\n";
+#	print "-"x80;
 	$liste_instructions[$index_obj_tikz]->{code} = $instr;
 	TikzObjects::parse_ligne_instruction($liste_instructions[$index_obj_tikz]);
 	
@@ -787,14 +774,40 @@ sub instruction_of_proprieteDraw {
     this->{textEdit}->setText($code_tikz);
     genImage();
 	
-	print Dumper($liste_instructions[$index_obj_tikz]);
-	print "_"x80;
-	print Dumper(@liste_instructions);
+	# mise a jour panneau propriétés
+	proprieteNode($mainWindow->{currentObj_tikz});
+	
+	# affichage image rel image en cours
+	#make_list_instructions_rel($mainWindow->{currentObj_tikz},"blue!50");
+	make_list_instructions_rel($liste_instructions[$index_obj_tikz],"blue!50");
+	
+	
+	#print Dumper($liste_instructions[$index_obj_tikz]);
+	#print "_"x80;
+	#print Dumper(@liste_instructions);
 	#my $obj_tikz->{code} = $instr;
 	#TikzObjects::parse_ligne_instruction($obj_tikz);
 	#print Dumper($obj_tikz);
 	# une fois toutes les propriétées récupérées, remplacement de l' objetTikz de la ligne "ligne" par 
 	# l' objet crée en parsant "instr"
+}
+
+sub do_check_dotted {
+	$mainWindow->{dotted_check}->setChecked(1);
+	$mainWindow->{dashed_check}->setChecked(0);
+	my @params_key =  @{$mainWindow->{currentObj_tikz}->{params_keys}};
+	push (@params_key,"dotted");
+	$mainWindow->{currentObj_tikz}->{params_keys} = \@params_key;
+	instruction_of_proprieteDraw();
+}
+
+sub do_check_dashed {
+	$mainWindow->{dashed_check}->setChecked(1);
+	$mainWindow->{dotted_check}->setChecked(0);
+	my @params_key =  @{$mainWindow->{currentObj_tikz}->{params_keys}};
+	push (@params_key,"dashed");
+	$mainWindow->{currentObj_tikz}->{params_keys} = \@params_key;
+	instruction_of_proprieteDraw();
 }
 
 
@@ -803,13 +816,14 @@ sub proprieteNode {
 	my ($node) = @_;
 	my $node_props;
 	my @params_keys = $node->{params_keys};
+	$mainWindow->{currentObj_tikz} = $node;
 	$mainWindow->{currentObj_line} = $node->{ligne};
 	#my $l_params_keys = scalar (@param_keys);
 	if( $node->{code} =~ /\[([^\]]*)\]/ ){
-		print $1,"\n";
+#		print $1,"\n";
 		$node_props=$1;
 	}
-	print "propriete node\n";
+#	print "propriete node\n";
     #my $dock = Qt::DockWidget("Proprietes", this);
     my $top=Qt::Widget();
     my $layout = Qt::GridLayout();
@@ -862,7 +876,7 @@ sub proprieteNode {
     
     $layout->addWidget(Qt::Label(this->tr('Forme:')),4,0);	#la forme du noeud
     my $derniere_forme_noeud = find_last_prop([@params_keys,[@forme_noeud]]);
-    print "derniere_forme_noeud : $derniere_forme_noeud\n";
+#   print "derniere_forme_noeud : $derniere_forme_noeud\n";
     my $comboBox_forme=this->Qt::ComboBox();
     $mainWindow->{comboBox_forme}=$comboBox_forme;
     $comboBox_forme->setEditable(1);
@@ -888,26 +902,45 @@ sub proprieteNode {
     
     my $dotted_check = Qt::CheckBox(this->tr('dotted'));  # dotted et dashed sont deux propriétées s' excluant
     $mainWindow->{dotted_check}=$dotted_check;
-    this->connect($dotted_check, SIGNAL 'clicked()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
+    this->connect($dotted_check, SIGNAL 'clicked()', $mainWindow, SLOT 'do_check_dotted()');
     my $dashed_check = Qt::CheckBox(this->tr('dashed'));
     $mainWindow->{dashed_check}=$dashed_check;
-    this->connect($dashed_check, SIGNAL 'clicked()', $mainWindow, SLOT 'instruction_of_proprieteDraw()');
+    this->connect($dashed_check, SIGNAL 'clicked()', $mainWindow, SLOT 'do_check_dashed()');
     $layout->addWidget($dashed_check,6,1);
     $layout->addWidget($dotted_check,6,2);
     my $dernier_type_trait = find_last_prop([@params_keys,[@type_trait]]);
-    print "dernier_type_trait : $dernier_type_trait\n";
+#   print "dernier_type_trait : $dernier_type_trait\n";
     $mainWindow->{dernier_type_trait}=$dernier_type_trait;
+    
+    if(param_in_list("double", @params_keys)){
+		$dashed_check->setChecked(1);
+	} else {
+		$dashed_check->setChecked(0);
+	}
+	
+=cr
+	if(param_in_list("dotted", @params_keys)){
+		$dotted_check->setChecked(1);
+	} else {
+		$dotted_check->setChecked(0);
+	}
+=cut
+
     if($dernier_type_trait eq "dashed"){
 		$dashed_check->setChecked(1);
+	#	$dotted_check->setChecked(0);
 	} elsif($dernier_type_trait eq "dotted"){
 		$dotted_check->setChecked(1);
+	#	$dashed_check->setChecked(0);
 	}
+
+	
     
     $layout->addWidget(Qt::Label(this->tr('Grosseur du trait:')),8,0);
     my $comboBox_grosseur_trait=this->Qt::ComboBox();
     $mainWindow->{comboBox_grosseur_trait}=$comboBox_grosseur_trait;
     my $derniere_grosseur_trait = find_last_prop([@params_keys,[@grosseur_trait]]);
-    print "derniere_grosseur_trait : $derniere_grosseur_trait\n";
+#   print "derniere_grosseur_trait : $derniere_grosseur_trait\n";
     $comboBox_grosseur_trait->setEditable(1);
     $comboBox_grosseur_trait->addItem(this->tr(''));
     for( my $i=0;$i < scalar (@grosseur_trait); $i++){
@@ -1287,7 +1320,8 @@ sub param_contient_noeud {
 	#print Dumper(@params_node);
 	#print "-"x80;
 	foreach my $param (@params_node){
-		if($param =~ /\Q$nom_noeud/){		
+		#print "param : $param\n";
+		if(defined($param) && $param =~ /\Q$nom_noeud\E/){		
 			return 1;
 		}
 	}
@@ -1389,6 +1423,7 @@ sub string_of_liste_instructions {
 	#print "prog tikz :\n", $prog_tikz;
 	#print "-"x80;
 	#print "rel_color_actif : $rel_color_actif\n";
+	chop $prog_tikz;
 	return $prog_tikz;	
 }
 
@@ -1492,7 +1527,7 @@ sub make_list_instructions_rel {
 		}
 	}
 #=later	
-	unless (open FICTIKZ_REL, ">tmp_tikz_rel"){
+	unless (open FICTIKZ_REL, ">tmp_tikz_rel.tex"){
 		die "Impossible d'ecrire sur 'tmp_tikz_rel' : $!";
 	}
 	
@@ -1515,26 +1550,17 @@ sub make_list_instructions_rel {
 	utf8::encode($code_rel);
 	print FICTIKZ_REL $entete_tikz.$code_rel.$fin;
 	close FICTIKZ_REL;
-	print "code rel :\n",$code_rel;
+	#print "code rel :\n",$code_rel;
 	#$currentFile_tikz = "tmp_tikz_rel";
-	system("pdflatex -halt-on-error tmp_tikz_rel > /dev/null");
+	system("pdflatex -halt-on-error tmp_tikz_rel.tex > /dev/null");
 	#my $img=$currentFile_tikz.".png";
 	#print "img : $img\n";
 	system("convert -density $density tmp_tikz_rel.pdf tmp_tikz_rel.png");
 
-	system("rm *.log *.aux *.pdf");
+	system("rm tmp_tikz_rel.tex tmp_tikz_rel.log tmp_tikz_rel.aux tmp_tikz_rel.pdf");
 	system("mv tmp_tikz_rel.png tmp");
 	$mainWindow->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz_rel.png"));
 
-	
-=later
-	print "\n","-"x80, "code rel:\n";
-	print $code;
-	
-	my $code2 =string_of_liste_instructions(0,@liste_instructions);
-	print "\n","-"x80, "code non_rel:\n";
-	print $code2;
-=cut
 }
 
 

@@ -48,16 +48,16 @@ sub getPixelColorAt {
 	
 	die $rc if $rc;
 	my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
-	print " [$x,$y] => r : $r, g : $g, b : $b\n";
-	printf "IDC : %s\n", &IDC_of_RGB($r,$g,$b);
+#	print " [$x,$y] => r : $r, g : $g, b : $b\n";
+#	printf "IDC : %s\n", &IDC_of_RGB($r,$g,$b);
 	return &IDC_of_RGB($r,$g,$b);
 }
 	
 sub IDC_of_RGB {
 	my ($red, $green, $blue) = @_;
-	print "RGB : $red $green $blue\n";
+#	print "RGB : $red $green $blue\n";
 	my $nb_IDC = MainWindow::nb_IDC();
-	print "   nb_IDC : $nb_IDC\n";
+#	print "   nb_IDC : $nb_IDC\n";
 	
 	unless(open LIST_IDC, "list_IDC"){
 		die "Impossible d'ouvrir 'list_IDC' : $!";
@@ -82,9 +82,9 @@ sub IDC_of_RGB {
 
 sub RGB_of_IDC {
 	my ($idc_param) = @_;
-	print "idc : $idc_param\n";
+#	print "idc : $idc_param\n";
 	my $nb_IDC = MainWindow::nb_IDC();
-	print "   nb_IDC : $nb_IDC\n";
+#	print "   nb_IDC : $nb_IDC\n";
 	
 	unless(open LIST_IDC, "list_IDC"){
 		die "Impossible d'ouvrir 'list_IDC' : $!";
@@ -108,30 +108,30 @@ sub RGB_of_IDC {
 
 
 sub getCenterFirstNode {
-	print "get center first node\n";
+#	print "get center first node\n";
 	my $first_node = MainWindow::getFirstNode();
 	if ($first_node eq "") {
 		return "";
 	}
-	printf "first node : %s, IDC : %s\n", $first_node->{nom}, $first_node->{colorId} ;
+#	printf "first node : %s, IDC : %s\n", $first_node->{nom}, $first_node->{colorId} ;
 	my ($idc) = split /,/,$first_node->{colorId};
 	#print "idc : $idc\n";
 	my ($red,$green,$blue) = RGB_of_IDC($idc);
-	print "RGB : $red $green $blue\n";
+#	print "RGB : $red $green $blue\n";
 	my $im = Image::Magick->new();
 	my ($x,$y);
 	my $rc = $im->Read("./tmp/tmp_tikz_IDC.png");
 	die $rc if $rc;
 	my ($w, $h) = $im->Get('width', 'height');
 	my ($x_deb,$x_fin,$y_deb,$y_fin) = ($w,0,$h,0);
-	printf "width : %d, height : %d\n", $w, $h;
+#	printf "width : %d, height : %d\n", $w, $h;
 	for($y=0;$y <$h; $y++){
 		for($x=0;$x < $w; $x++){
 			my ($r,$g,$b,$alpha) = split /,/,$im->Get("pixel[$x,$y]");
 			if(($r == $red) && ($g == $green) && ($b == $blue)){
 				#print "$r $g $b\n";
 				if($x < $x_deb) { 
-					print " x : $x\n";
+#					print " x : $x\n";
 					$x_deb = $x; }
 				if($x > $x_fin) { $x_fin = $x; }
 				if($y < $y_deb) { $y_deb = $y; }
@@ -139,10 +139,10 @@ sub getCenterFirstNode {
 			}
 		}
 	}	
-	printf "x_deb : %d , x_fin : %d, y_deb : %d, y_fin : %d\n", $x_deb,$x_fin,$y_deb,$y_fin;
+#	printf "x_deb : %d , x_fin : %d, y_deb : %d, y_fin : %d\n", $x_deb,$x_fin,$y_deb,$y_fin;
 	$x = int(($x_fin - $x_deb)/2 + $x_deb);
 	$y = int(($y_fin - $y_deb)/2 + $y_deb);
-	printf "x : %d, y : %d\n", $x, $y;
+#	printf "x : %d, y : %d\n", $x, $y;
 	return ($first_node->{nom}, $x,$y);
 }
 
@@ -199,16 +199,16 @@ sub mousePressEvent
 		my ($first_node, $x_fn, $y_fn) = getCenterFirstNode();
 		#if ((defined $first_node) && ($first_node ne "")){			
 		if ($first_node ne ""){
-			print "x_fn : $x_fn , y_fn : $y_fn\n";
+#			print "x_fn : $x_fn , y_fn : $y_fn\n";
 			#my $zoomFactorImg = this->{zoomFactorImg};
 			my $below = $y - $y_fn;
 			my $right = $x - $x_fn;
 			if(defined this->{zoomFactorImg}){
-				print "zoom factor defined\n";
+#				print "zoom factor defined\n";
 				$below = int($below / (this->{zoomFactorImg} /100));
 				$right = int($right / (this->{zoomFactorImg} /100));
 			}
-			print "below : $below, right : $right\n";
+#			print "below : $below, right : $right\n";
 			
 			my $node_y = '\node['."below of = $first_node, node distance = $below".'] ('.$first_node."_y$below) {};\n";
 			my $new_node = '\node[draw,'.$style.",right of = $first_node"."_y$below, node distance = $right".'] ('.$first_node."_y$below"."_x$right) {new};\n";
@@ -238,9 +238,9 @@ sub wheelEvent
 {
 	my ($event) = @_;
 	my $delta = $event->delta();
-	print "wheelEvent, delta : $delta - ";
+#	print "wheelEvent, delta : $delta - ";
 	if($delta > 0){
-		print "up\n";
+#		print "up\n";
 		#MainWindow->augmentDensity();
 		this->{density}=this->{density}+18;
 #		MainWindow::augmentDensity();
@@ -249,12 +249,12 @@ sub wheelEvent
 	#		print "ctrl pressed\n";
 	#	}
 	} else {
-		print "down\n";
+#		print "down\n";
 		if( this->{density} > 18 ) {
 			this->{density}=this->{density}-18;
 
 		} else {
-			print ">> density too small\n";
+#			print ">> density too small\n";
 		}
 #		MainWindow::diminueDensity();
 	}
@@ -275,7 +275,7 @@ sub wheelEvent
 sub keyPressEvent
 {
 	my ($event) = @_;
-	print "keyPressEvent\n";
+#	print "keyPressEvent\n";
 }
 
 1;
