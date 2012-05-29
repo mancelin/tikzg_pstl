@@ -422,8 +422,7 @@ sub toogle_syntaxColoration {
 
 sub about {
    Qt::MessageBox::about(this, "À propos de TikzG",
-            "Éditeur graphique Tikz développé dans le cadre d' un projet en M1 Informatique STL à l'UPMC.\n\n" .
-            "Sujet du projet proposé par Frédéric Peschanski.\n\n".
+            "Éditeur graphique Tikz développé dans le cadre d' un projet en M1 Informatique STL à l'UPMC ( sujet proposé par Frédéric Peschanski ).\n\n" .
             "Programme réalisé par :\n".
             "    Maxime Ancelin\n".
             "    Aminata Diakathe\n" );
@@ -1056,15 +1055,15 @@ sub proprieteDraw{
     #this->{viewMenu}->addAction($dock->toggleViewAction());
 }
 
-=later
+#=later
 sub cacher_proprietes {
-	print "cacher props\n";
+	#print "cacher props\n";
 	my $dock_prop = $mainWindow->{dock_prop};
     $dock_prop->setVisible(0);
     $mainWindow->addDockWidget(Qt::RightDockWidgetArea(), $dock_prop);
  #   $mainWindow->{dock_prop}->setVisible(0);
 }
-=cut
+#=cut
 
 sub recalcul_density {
 	my $textZoom = $textBox_zoom->text();
@@ -1624,6 +1623,7 @@ sub object_ofIDC {
 				#make_list_instructions_rel($elem);
 				make_list_instructions_rel($elem,"blue!50");
 				proprieteNode($elem);
+				return;
 
 			} elsif ($elem->{type} eq "draw"){
 =MUTE
@@ -1634,9 +1634,8 @@ sub object_ofIDC {
 =cut
 				make_list_instructions_rel($elem, "blue");
 				proprieteDraw($elem);
-			} else {
-				cacher_proprietes();	
-			}
+				return;
+			} 
 			#print "-"x28, "  liste instruction bfr " , "-"x28;
 			#print Dumper(@liste_instructions);
 
@@ -1657,7 +1656,10 @@ sub object_ofIDC {
 			#print Dumper(@liste_instructions);
 			return $elem;
 		}
-	}	
+	}
+	# reaficher image
+	$mainWindow->{zoneGraphe}->setPixmap(Qt::Pixmap("tmp/tmp_tikz.png"));
+	cacher_proprietes();
 }
 
 sub appendToEditor {
