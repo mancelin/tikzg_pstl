@@ -153,7 +153,7 @@ sub closeEvent {
 }
 
 sub update_textbox_zoom_image {
-	my $zoomFactorImg = int((this->{density} / 18) *25);
+	$zoomFactorImg = int((this->{density} / 18) *25);
 #	printf "density : %d\n", this->{density};
 #	printf "zoomFactorImg : %d\n", $zoomFactorImg;
 	$textBox_zoom->setText(sprintf "%s", $zoomFactorImg);
@@ -1073,8 +1073,11 @@ sub recalcul_density {
 	#	printf "1 : %d, 2 : %d\n", $1, $2;
 		this->{zoomFactorImg} = $textZoom;
 	#	printf "zoom_factor_image : %d\n", this->{zoomFactorImg} ;
-		this->{density} = int(($textZoom/25) * 18);
-		my $density = this->{density};
+		
+		
+		$density = int(($textZoom/25) * 18);
+		this->{zoneGraphe}->{density} = $density;
+		
 		printf "density : %d\n", $density;
 		system("convert -density $density tmp/tmp_tikz.pdf tmp_tikz.png");
 		system("mv tmp_tikz.png tmp");
@@ -1304,7 +1307,7 @@ sub get_objsTikz_of_nodes {
 	my $i=0;
 	foreach my $elem (@liste_instructions){
 		if(($i < scalar(@node_names)) && ($elem->{type} eq "node") && ($elem->{nom} eq $node_names[$i])) {
-			printf "elemnt : %s\n", $elem->{nom};
+#			printf "elemnt : %s\n", $elem->{nom};
 			push (@list_objsTikz, $elem);
 			$i++;
 		}
@@ -1605,12 +1608,13 @@ sub object_ofIDC {
 	my $nb_IDC = nb_IDC();
 	@liste_noeuds_rel =();	
 	@liste_arretes_rel =();	
-#	print "="x80;
+	print "="x80;
+	printf "zoom_factor_image : %d\n", $mainWindow->{zoomFactorImg};
 	foreach my $elem (@liste_instructions){
 		if(defined($elem->{colorId}) && ($elem->{colorId} eq $idc) ) {
 	#		print $elem->{colorId},"  ", $elem->{ligne},"\n";
 			if($elem->{type} eq "node"){
-				print $elem->{nom},"\n";
+		#		print $elem->{nom},"\n";
 =MUTE
 				list_of_relative_nodes($elem);
 				print "-"x80;
