@@ -779,7 +779,8 @@ sub instruction_of_proprieteDraw {
     genImage();
 	
 	# mise a jour panneau propriétés
-	proprieteNode($mainWindow->{currentObj_tikz});
+	#proprieteNode($mainWindow->{currentObj_tikz});
+	proprieteNode($liste_instructions[$index_obj_tikz]);
 	
 	# affichage image rel image en cours
 	#make_list_instructions_rel($mainWindow->{currentObj_tikz},"blue!50");
@@ -799,18 +800,18 @@ sub instruction_of_proprieteDraw {
 sub do_check_dotted {
 	$mainWindow->{dotted_check}->setChecked(1);
 	$mainWindow->{dashed_check}->setChecked(0);
-	my @params_key =  @{$mainWindow->{currentObj_tikz}->{params_keys}};
-	push (@params_key,"dotted");
-	$mainWindow->{currentObj_tikz}->{params_keys} = \@params_key;
+#	my @params_key =  @{$mainWindow->{currentObj_tikz}->{params_keys}};
+#	push (@params_key,"dotted");
+#	$mainWindow->{currentObj_tikz}->{params_keys} = \@params_key;
 	instruction_of_proprieteDraw();
 }
 
 sub do_check_dashed {
 	$mainWindow->{dashed_check}->setChecked(1);
 	$mainWindow->{dotted_check}->setChecked(0);
-	my @params_key =  @{$mainWindow->{currentObj_tikz}->{params_keys}};
-	push (@params_key,"dashed");
-	$mainWindow->{currentObj_tikz}->{params_keys} = \@params_key;
+#	my @params_key =  @{$mainWindow->{currentObj_tikz}->{params_keys}};
+#	push (@params_key,"dashed");
+#	$mainWindow->{currentObj_tikz}->{params_keys} = \@params_key;
 	instruction_of_proprieteDraw();
 }
 
@@ -916,13 +917,14 @@ sub proprieteNode {
 #   print "dernier_type_trait : $dernier_type_trait\n";
     $mainWindow->{dernier_type_trait}=$dernier_type_trait;
     
-    if(param_in_list("double", @params_keys)){
+=old    
+    if(param_in_list("dashed", @params_keys)){
 		$dashed_check->setChecked(1);
 	} else {
 		$dashed_check->setChecked(0);
 	}
 	
-=cr
+
 	if(param_in_list("dotted", @params_keys)){
 		$dotted_check->setChecked(1);
 	} else {
