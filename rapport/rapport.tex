@@ -7,7 +7,7 @@
  \title{RAPPORT DU PROJET STL \\ TIKZ}
  \author{ANCELIN Maxime & DIAKHATE Aminata}
 
- \makeindex    %pour générer l'index
+ \maketable    %pour générer l'index
 
 \begin{document}          %début du document
 
@@ -25,6 +25,8 @@
   \section{Présentation du projet}
   \subsection{Contexte}
   LaTex(Lamport TEX) est un langage et un système de composition de documents. Du fait de sa relative simplicité, il est souvent utilisé dans les domaines techniques et scientifiques pour la production d'un contenu complexe (équations, graphes, ...) ayant une mise en forme standard. Afin d'inclure ces contenus complexes dans les documents en restant dans l'environnement LaTex, LaTex dispose d'un package TikZ permettant d'inclure des figures au format PDF. En effet, TikZ permet d'obtenir des figures géométriques complexes précise et d'une grande qualité. Cependant son apprentissage n'est pas évident. 
+  \newline
+  INSISTER SUR LA DEFINITION DE TIKZ
   \subsection{Motivations}
   Notre encadrant, qui est lui-même un utilisateur de TikZ, a souhaité faciliter l'utilisation de TikZ afin de permettre à un plus grand nombre d'utilisateurs de profiter de ses avantages sans forcément passer par son apprentissage. Pour ce faire, il nous propose donc de mettre en place une interface graphique permettant la construction  visuelle (et non textuelle) des figures.
   \newline
@@ -35,12 +37,22 @@ connaître les sujets proposés, de choisir un projet qui nous permettrait de no
 Toute modification apportée au graphe devra mettre à jour le code source correspondant et vice-versa. 
   \section {Gestion du projet}
   \subsection{Choix technologiques}
-  Pour la réalisation de notre projet, notre encadrant nous a recommandé l'utilisation d'un langage de script tel que Python ou Ruby, permettant l'interfaçage avec des outils externes (notamment pdflatex avec le paquet "preview") et les manipulations textuelles simples (expressions rationnelles etc.), et proposant de plus des bibliothèques portables pour les interfaces utilisateur (Gtk, Qt, WxWindows, etc.).
+  Pour la réalisation de notre projet, notre encadrant nous a recommandé l'utilisation d'un langage de script tel que Python ou Ruby, permettant l'interfaçage avec des outils externes (notamment pdflatex avec le paquet "preview") et les manipulations textuelles simples (expressions rationnelles etc.), et proposant de plus des bibliothèques portables pour les interfaces utilisateur (Gtk, Qt, WxWindows, etc.). Nous avons donc choisi d'utiliser PerlQt qui allie la souplesse, la puissance et le design élégant de Qt au langage Perl. Pour cela, nous avons du choisir entre deux versions de PerlQt4:
+\begin{itemize}
+ \item Une version avec une vue sur Qt-sys.org publié par l'utilisateur "vadiml" et qui n'a pas été mise à jour depuis Février 2008
+ \item Une autre avec une vue sur code.google.com publié par "chrisburel@gmail" qui semblait plus complète et surtout activement maintenue puisque la dernière version datait de quelques jours seulement.
+\end{itemize}
+  Notre choix c'est donc naturellement porté sur la version proposée par "chrisburel@gmail".
+  \newline 
+  Pour notre interface graphique, nous avions besoin d'un éditeur qui nous permettrait d'écrire du code Tikz. Pour cela nous avons choisi Scintilla qui est un composant d'édition de code open source. En effet Scintilla a beaucoup de fonctionnalités qui rendent l'édition de code plus facile telles que la coloration syntaxique, la gestion des numéros de ligne dans la marge, les points d'arrêts pour le débogueur, etc.
+  \newline
+  Au début de notre projet nous n'avions pas utiliser de gestionnaire de version car nous travaillions le plus souvent ensemble ; mais pendant les vacances scolaires du mois d'avril où la distance ne nous permettait pas de continuer à travailler ensemble, nous avons installé git qui est un logiciel de gestion de versions décentralisé libre. 
   \subsection{Difficultés}
   \subsection{Architecture}
-  DIAGRAMME DES CLASSES EN MOINS DETAILLE
+  DIAGRAMME DES CLASSES EN MOINS DETAILLE   
   \subsection{Gestion du temps}
-  DIAGRAMME REPRESENTANT LE TPS PASSE POUR: APPRENDRE TIKZ ET LATEX, INSTALLER LES LOGICIELS, CREER L'INTERFACE GRAPHIQUE BASIQUE, ECRIRE LE PARSER, IDENTIFIER ET DEPLACER UN OBJET, AFFICHER ET MODIFIER LES PROPRIETES DE L'OBJET SELECTIONNE, REDIGER LE RAPPORT, REDIGER LA PRESENTATION
+  DIAGRAMME REPRESENTANT LE TPS PASSE POUR: APPRENDRE TIKZ ET LATEX, INSTALLER LES LOGICIELS, CREER L'INTERFACE GRAPHIQUE BASIQUE, ECRIRE LE PARSER, IDENTIFIER ET DEPLACER UN OBJET, AFFICHER ET MODIFIER LES PROPRIETES DE L'OBJET SELECTIONNE, REDIGER LE RAPPORT, REDIGER LA PRESENTATION, PARSER LES MESSAGES D'ERREUR.
+\include{camembtex.pdf} 
   \subsection{Résultats}
   CAPTURES D'ECRANS
   \section{Conclusion}
