@@ -1,39 +1,42 @@
 \documentclass[a4paper]{report}
- \usepackage[14pt]{extsizes}
- \usepackage[utf8]{inputenc}
- \usepackage[T1]{fontenc}
- \usepackage[french]{babel}
- \usepackage{makeidx}
- \usepackage{graphicx} 
- \title{RAPPORT DU PROJET STL \\ TIKZ}
- \author{ANCELIN Maxime & DIAKHATE Aminata}
+\usepackage[14pt]{extsizes}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{makeidx}
+\usepackage{graphicx} 
+\usepackage{tikz}
+\usepackage{titlesec} 
+\title{RAPPORT DU PROJET STL \\ TIKZ}
+\author{ANCELIN Maxime & DIAKHATE Aminata}
+ 
+%\maketable    %pour générer l'index
+\begin{document}
 
- \maketable    %pour générer l'index
+\titleformat{\chapter}[hang]{\bf\huge}{\thechapter}{2pc}{} 
 
-\begin{document}          %début du document
+%\maketitle
+\tableofcontents
+\newpage
 
- \maketitle
- \tableofcontents
+
  \newpage
-
-
- \newpage
- \section{Introduction}
-  Dans le cadre de notre enseignement universitaire à l'UPMC(Université Pierre Marie Curie) en master Informatique, nous devons réaliser un projet. 
+ \chapter{Introduction}
+  Dans le cadre de notre enseignement universitaire à l'UPMC(Université Pierre Marie Curie) ..
   
-  \section{Présentation du projet}
-  \subsection{Etat Actuel}
+  \chapter{Présentation du projet}
+  \section{Etat Actuel}
   LaTex(Lamport TEX) est un langage et un système de composition de documents. Du fait de sa relative simplicité, il est souvent utilisé dans les domaines techniques et scientifiques pour la production d'un contenu complexe (équations, graphes, ...) ayant une mise en forme standard. Afin d'inclure ces contenus complexes dans les documents en restant dans l'environnement LaTex, LaTex dispose d'un package TikZ permettant d'inclure des figures au format PDF. En effet, TikZ permet d'obtenir des figures géométriques complexes précise et d'une grande qualité. Cependant son apprentissage n'est pas évident. 
-  \subsection{Motivation}
+  \section{Motivation}
   Notre encadrant, qui est lui-même un utilisateur de TikZ, a souhaité faciliter son utilisation afin de permettre à un plus grand nombre d'utilisateurs de profiter des avantages de TikZ sans passer par son apprentissage. Pour ce faire, il nous propose donc de mettre en place une interface graphique permettant la construction  visuelle (et non textuelle) des figures.
   \newline
   Pour ce projet que nous devions réaliser dans le cadre de notre master, nous avions souhaité, avant même de 
 connaître les projets proposés, de choisir un projet qui nous permettrait de nous rapprocher le plus des projets qu'on pourrait rencontrer dans le monde professionnel et qui 
-  \subsection{Objectifs}
+  \section{Objectifs}
 Notre objectif est de pouvoir présenter au terme de ce projet une interface graphique qui permettrait à l'utilisateur de pouvoir créer des graphes non plus textuellement mais visuellement. L'interface graphique devra aussi permettre à l'utilisateur de rédiger du code TikZ et visionner le graphe correspondant ou encore modifier le graphe en bougeant les noeuds sélectionnés ou en modifiant leurs propriétés grâce à un menu.
 Toute modification apportée au graphe devra mettre à jour le code source correspondant et vice-versa. 
-  \section {Gestion du projet}
-  \subsection{Choix technologiques}
+  \chapter {Gestion du projet}
+  \section{Choix technologiques}
   Pour la réalisation de notre projet, notre encadrant nous a recommandé l'utilisation d'un langage de script tel que Python ou Ruby, permettant l'interfaçage avec des outils externes (notamment pdflatex avec le paquet "preview") et les manipulations textuelles simples (expressions rationnelles etc.), et proposant de plus des bibliothèques portables pour les interfaces utilisateurs (Gtk, Qt, WxWindows, etc.). Même si notre encadrant nous a vivement conseillé l'utilisation de Python nous avons quand même choisi de faire notre projet avec Perl. 
 
 Perl nous a semblé être un bon choix de langage car il est adapté au traitement et manipulation de fichiers texte du fait de l'intégration des expressions régulières dans la syntaxe même du langage or nous voulions manipuler des fichers LaTex et Tikz; de plus perl est portable sur la plupart des systèmes d'exploitation, il devient même populaire sous Windows grâce à la distribution gratuite ActivePerl. 
@@ -47,8 +50,8 @@ Pour l'interface utilisateur nous avons choisi la bibliothèque Qt comme nous le
   Pour notre interface graphique, nous avions besoin d'un éditeur qui nous permettrait d'écrire du code Tikz. Pour cela nous avons choisi Scintilla qui est un composant d'édition de code open source. En effet Scintilla a beaucoup de fonctionnalités qui rendent l'édition de code plus facile telles que la coloration syntaxique, la gestion des numéros de ligne dans la marge, les points d'arrêts pour le débogueur, etc.
   \newline
   Au début de notre projet nous n'avions pas utiliser de gestionnaire de version car nous travaillions le plus souvent ensemble ; mais pendant les vacances scolaires du mois d'avril où la distance ne nous permettait pas de continuer à travailler ensemble, nous avons installé git qui est un logiciel de gestion de versions décentralisé libre. 
-\subsection{Difficultés} 
-\subsubsection{Installation de perlqt4}
+\section{Difficultés} 
+\subsection{Installation de perlqt4}
 
 L' installation de perlqt4 nous a pris un peu plus d' une semaine,
 car il nous manquait des dépendances.
@@ -63,17 +66,67 @@ Sous ces linux, il suffit de lancer \textbf{script\_intall\_all.sh}
 afin d' installer perlqt4, Scintilla et tout les packages et modules
 perl requis au fonctionnement de l' application.
 
-\subsubsection{Identification des objets Tikz}
+\section{Difficultés}
+\subsection{Installation de perlqt4}
+L' installation de perlqt4 nous a pris un peu plus d' une semaine,
+car il nous manquait des dépendances.
 
-Afin d' identifier indépendament chaque objet Tikz, nous attribuons à chaque n{\oe}ud une couleur unique.
+Au fur et a mesure que nous découvrions ce qu' il fallait ajouter,
+nous avons enrichi un script d' installation afin de rendre la reinstallation
+plus facile pour les utilisateurs finaux de notre application. Ce
+script a été conçu pour fonctionner sous \textit{Ubuntu 12.04} et devrait marcher
+sans encombre sous \textit{Debian}.
 
-L' idée de base est de générer une image de la même taille que l'
-image originale où chaque objet Tikz aurait une couleur différente. 
-\subsection{Architecture}
+Sous ces \textit{linux}, il suffit de lancer \textbf{script\_intall\_all.sh}
+afin d' installer \textit{perlqt4}, \textit{Scintilla} et tout les packages et modules
+\textit{Perl} requis au fonctionnement de l' application.
+
+\subsection{Identification des objets Tikz}
+Afin d' identifier indépendamment chaque objet Tikz, nous attribuons à chaque n{\oe}ud et à chaque arête du graphe une couleur unique, que nous nomerons le ColorID.
+
+Cette couleur sera ensuite ajoutée au propriétés de chaque objet, puis on générera une image ou chaque objet sera intégralement colorié de cette couleur. 
+Nous nomerons cette image \textit{tmp\_tikz\_IDC.png}
+
+
+Rappelons que dans le cadre de notre projet nous ne nous intéressons qu'aux n{\oe}uds et arêtes (notés \textbf{node} et \textbf{draw}). L'attribution d'un code couleur a chaque objet identifié nous permet de générer une image temporaire où chaque éléments est intégralement coloré en sa couleur.
+
+\vspace{5mm}
+\begin{center}
+\begin{tabular}{ccc}
+\begin{tikzpicture}
+[node distance=40pt]
+\node[rectangle,draw] (n1) {a};
+\node[circle,double,draw,right of=n1] (n2) {$\sqrt{x}$};
+\draw[->] (n1) -- (n2);
+\node[below of=n1,right of = n1,node distance=50pt] (n3) {c};
+\draw[<->,dashed] (n1) -- (n3);
+\end{tikzpicture} &
+$\rightarrow$ &
+\begin{tikzpicture}[node distance=40pt]
+\node[rectangle,draw,red!30!green!30,fill=red!30!green!30] (n1) {a};
+\node[circle,double,draw,right of=n1,red!30!green!31,fill=red!30!green!31] (n2) {$\sqrt{x}$};
+\draw[line width=5pt,red!30!green!32,fill=red!30!green!32] (n1) -- (n2);
+\node[below of=n1,right of = n1,node distance=50pt,red!30!green!33,fill=red!30!green!33] (n3) {c};
+\draw[line width=5pt,red!30!green!34,fill=red!30!green!34] (n1) -- (n3);
+\end{tikzpicture}
+\\ 
+tmp\_tikz.png &  & tmp\_tikz\_IDC.png \\ 
+\end{tabular} 
+\end{center}
+
+Chacuns des objets de tmp\_tikz\_IDC.png a une couleur différente, la variation est juste trés légére.
+
+\subsubsection{Ajout du colorId aux objets Tikz}
+Tout d'abord, donnons un bref aperçu de Tikz.
+Chaque objet Tikz posséde un champ de propriétés. Dans le cas de la couleur et de la couleur de  remplissage (\textit{fill}), la derniére valeur attribuée est la valeur finale.
+On peut donc integralement colorer un objet d'une seule couleur, par exmple en bleu, en ajoutant a la fin des propriétés \textit{blue,fill=blue}.
+On peut avoir une plus grande variétés de couleurs que celles prédefinies en utilisant le package \textit{xcolor}, qui permet de donnner un pourcentage a une couleur et même de les mélanger. Par exemple : blue!50!red!13
+Nous avons décidé de générer 
+\section{Architecture}
   DIAGRAMME DES CLASSES EN MOINS DETAILLE   
-\subsection{Gestion du temps}
+\section{Gestion du temps}
   DIAGRAMME REPRESENTANT LE TPS PASSE POUR: APPRENDRE TIKZ ET LATEX, INSTALLER LES LOGICIELS, CREER L'INTERFACE GRAPHIQUE BASIQUE, ECRIRE LE PARSER, IDENTIFIER ET DEPLACER UN OBJET, AFFICHER ET MODIFIER LES PROPRIETES DE L'OBJET SELECTIONNE, REDIGER LE RAPPORT, REDIGER LA PRESENTATION, PARSER LES MESSAGES D'ERREUR.
-\subsection{Résultats}
+\section{Résultats}
   Nous allons à présent vous présenter en images les résultats de notre projet .
 \newline
   \includegraphics[width=15cm, height=10cm]{img/r_1.png} 
@@ -129,8 +182,8 @@ figures 7: modification graphique des propriétés d'un n{\oe}ud
 \\
 \\
 Lorsqu'on clique sur un objet du graphe ses propriétés s'affichent. Prenons comme exemple les figures 7, on voit que lorsqu'on clique sur le noeud n3, il est coloré en bleu, ses noeuds relatifs en rose et les arêtes auxquelles il est rélié en rouge. A partir de sa fenêtre de propriétés on peut apporter des modifications au n{\oe}ud ainsi sélectionné. 
-\section{Conclusion}
-\section{Perspectives}
+\chapter{Conclusion}
+\chapter{Perspectives}
    
 
 \end{document}
