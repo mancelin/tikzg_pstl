@@ -4,7 +4,7 @@
  \usepackage[T1]{fontenc}
  \usepackage[french]{babel}
  \usepackage{makeidx}
- \title{RAPPORT DU PROJET STL \\ TIKZ}
+ \title{RAPPORT DU PROJET STL \\ TIKZ}
  \author{ANCELIN Maxime & DIAKHATE Aminata}
 
  \maketable    %pour générer l'index
@@ -15,25 +15,43 @@
  \tableofcontents
  \newpage
 
+Pour la soutenance résumer. choisir de présenter 
+les choses sous formes de diagramme et passer du 
+temps sur les difficultés.
+2 membres du jury auront lu le rapport. 
 
+	Plan\\
+ Introduction\\
+ Presentation Générale \\
+   Etat Actuel\\
+   Motivations\\ 
+   Objectifs\\ 
+   (Fontionnalites)\\
+ Outils\\ 
+   Materiels\\ 
+   Langage de programmation\\ 
+ Developpement\\ 
+   Gestion du projet\\
+   Implementation\\
+   Résultats\\
+ Conclusion\\
+   (Bilan, Difficultés, ce que le projet nous a apporté)\\ 
+ Perspectives
 
  \newpage
  \section{Introduction}
-  Dans le cadre de notre enseignement universitaire à l'UPMC(Université Pierre Marie Curie) en master Science et Technologie du Logiciel, nous devons réaliser un projet proposé par nos professeurs. C'est ainsi que nous avons choisi le sujet proposé par Monsieur Frederic Peschanski qui est de créer une interface graphique au dessus d'un sous-ensemble du langage Tikz, permettant la construction visuelle (plutôt que textuelle) des figures. 
-  \newline
-  Nous allons tout au long de notre rapport vous expliquer comment nous avons gérer ce projet. Nous commencerons donc par vous faire une présentation générale de notre projet. Ensuite, nous vous parlerons de la gestion de notre projet ; et pour finir nous vous présenterons nos perspectives pour ce projet.
+  Dans le cadre de notre enseignement universitaire à l'UPMC(Université Pierre Marie Curie) en master Informatique, nous devons réaliser un projet. 
+  
   \section{Présentation du projet}
-  \subsection{Contexte}
+  \subsection{Etat Actuel}
   LaTex(Lamport TEX) est un langage et un système de composition de documents. Du fait de sa relative simplicité, il est souvent utilisé dans les domaines techniques et scientifiques pour la production d'un contenu complexe (équations, graphes, ...) ayant une mise en forme standard. Afin d'inclure ces contenus complexes dans les documents en restant dans l'environnement LaTex, LaTex dispose d'un package TikZ permettant d'inclure des figures au format PDF. En effet, TikZ permet d'obtenir des figures géométriques complexes précise et d'une grande qualité. Cependant son apprentissage n'est pas évident. 
-  \newline
-  INSISTER SUR LA DEFINITION DE TIKZ
-  \subsection{Motivations}
-  Notre encadrant, qui est lui-même un utilisateur de TikZ, a souhaité faciliter l'utilisation de TikZ afin de permettre à un plus grand nombre d'utilisateurs de profiter de ses avantages sans forcément passer par son apprentissage. Pour ce faire, il nous propose donc de mettre en place une interface graphique permettant la construction  visuelle (et non textuelle) des figures.
+  \subsection{Motivation}
+  Notre encadrant, qui est lui-même un utilisateur de TikZ, a souhaité faciliter son utilisation afin de permettre à un plus grand nombre d'utilisateurs de profiter des avantages de TikZ sans passer par son apprentissage. Pour ce faire, il nous propose donc de mettre en place une interface graphique permettant la construction  visuelle (et non textuelle) des figures.
   \newline
   Pour ce projet que nous devions réaliser dans le cadre de notre master, nous avions souhaité, avant même de 
-connaître les sujets proposés, de choisir un projet qui nous permettrait de nous rapprocher le plus des projets qu'on pourrait rencontrer dans le monde professionnel. Par la suite après avoir étudié tous les sujets proposés, ce projet a retenu notre attention parce qu'il nous permettait d'approfondir nos connaissances tout en réalisant un projet qui diffère de nos projets habituels.
+connaître les projets proposés, de choisir un projet qui nous permettrait de nous rapprocher le plus des projets qu'on pourrait rencontrer dans le monde professionnel et qui 
   \subsection{Objectifs}
-  Notre objectif est de pouvoir présenter au terme de ce projet une interface graphique qui permettrait à l'utilisateur de pouvoir créer des graphes non plus textuellement mais visuellement. L'interface graphique devra aussi permettre à l'utilisateur de rédiger du code TikZ et visionner le graphe correspondant ou encore modifier le graphe en bougeant les noeuds sélectionnés ou en modifiant leurs propriétés grâce à un menu.
+Notre objectif est de pouvoir présenter au terme de ce projet une interface graphique qui permettrait à l'utilisateur de pouvoir créer des graphes non plus textuellement mais visuellement. L'interface graphique devra aussi permettre à l'utilisateur de rédiger du code TikZ et visionner le graphe correspondant ou encore modifier le graphe en bougeant les noeuds sélectionnés ou en modifiant leurs propriétés grâce à un menu.
 Toute modification apportée au graphe devra mettre à jour le code source correspondant et vice-versa. 
   \section {Gestion du projet}
   \subsection{Choix technologiques}
@@ -47,8 +65,7 @@ Toute modification apportée au graphe devra mettre à jour le code source corre
   Pour notre interface graphique, nous avions besoin d'un éditeur qui nous permettrait d'écrire du code Tikz. Pour cela nous avons choisi Scintilla qui est un composant d'édition de code open source. En effet Scintilla a beaucoup de fonctionnalités qui rendent l'édition de code plus facile telles que la coloration syntaxique, la gestion des numéros de ligne dans la marge, les points d'arrêts pour le débogueur, etc.
   \newline
   Au début de notre projet nous n'avions pas utiliser de gestionnaire de version car nous travaillions le plus souvent ensemble ; mais pendant les vacances scolaires du mois d'avril où la distance ne nous permettait pas de continuer à travailler ensemble, nous avons installé git qui est un logiciel de gestion de versions décentralisé libre. 
-  \subsection{Difficultés}
-  
+\subsection{Difficultés} 
 \subsubsection{Installation de perlqt4}
 
 L' installation de perlqt4 nous a pris un peu plus d' une semaine,
@@ -66,22 +83,18 @@ perl requis au fonctionnement de l' application.
 
 \subsubsection{Identification des objets Tikz}
 
-Afin d' identifier indépendament chaque objet Tikz, on a mis en place
-un systéme se basant sur les couleurs.
+Afin d' identifier indépendament chaque objet Tikz, nous attribuons à chaque n{\oe}ud une couleur unique.
 
 L' idée de base est de générer une image de la même taille que l'
-image originale où chaque objet Tikz aurait une couleur différente.  
-  
-  
-  \subsection{Architecture}
+image originale où chaque objet Tikz aurait une couleur différente. 
+\subsection{Architecture}
   DIAGRAMME DES CLASSES EN MOINS DETAILLE   
-  \subsection{Gestion du temps}
+\subsection{Gestion du temps}
   DIAGRAMME REPRESENTANT LE TPS PASSE POUR: APPRENDRE TIKZ ET LATEX, INSTALLER LES LOGICIELS, CREER L'INTERFACE GRAPHIQUE BASIQUE, ECRIRE LE PARSER, IDENTIFIER ET DEPLACER UN OBJET, AFFICHER ET MODIFIER LES PROPRIETES DE L'OBJET SELECTIONNE, REDIGER LE RAPPORT, REDIGER LA PRESENTATION, PARSER LES MESSAGES D'ERREUR.
-\include{camembtex.pdf} 
-  \subsection{Résultats}
+\subsection{Résultats}
   CAPTURES D'ECRANS
-  \section{Conclusion}
-  \section{Perspectives}
+\section{Conclusion}
+\section{Perspectives}
    
 
 \end{document}
