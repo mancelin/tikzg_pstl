@@ -4,7 +4,7 @@
  \usepackage[T1]{fontenc}
  \usepackage[french]{babel}
  \usepackage{makeidx}
- \title{RAPPORT DU PROJET STL \\ TIKZ}
+ \title{RAPPORT DU PROJET STL \\ TIKZ}
  \author{ANCELIN Maxime & DIAKHATE Aminata}
 
  \maketable    %pour générer l'index
@@ -48,6 +48,31 @@ Toute modification apportée au graphe devra mettre à jour le code source corre
   \newline
   Au début de notre projet nous n'avions pas utiliser de gestionnaire de version car nous travaillions le plus souvent ensemble ; mais pendant les vacances scolaires du mois d'avril où la distance ne nous permettait pas de continuer à travailler ensemble, nous avons installé git qui est un logiciel de gestion de versions décentralisé libre. 
   \subsection{Difficultés}
+  
+\subsubsection{Installation de perlqt4}
+
+L' installation de perlqt4 nous a pris un peu plus d' une semaine,
+car il nous manquait des dépendances.
+
+Au fur et a mesure que nous découvrions ce qu' il fallait ajouter,
+nous avons enrichi un script d' installation afin de rendre la reinstallation
+plus facile pour les utilisateurs finaux de notre application. Ce
+script a été conçu pour fonctionner sous Ubuntu 12.04 et devrait marcher
+sans encombre sous Debian.
+
+Sous ces linux, il suffit de lancer \textbf{script\_intall\_all.sh}
+afin d' installer perlqt4, Scintilla et tout les packages et modules
+perl requis au fonctionnement de l' application.
+
+\subsubsection{Identification des objets Tikz}
+
+Afin d' identifier indépendament chaque objet Tikz, on a mis en place
+un systéme se basant sur les couleurs.
+
+L' idée de base est de générer une image de la même taille que l'
+image originale où chaque objet Tikz aurait une couleur différente.  
+  
+  
   \subsection{Architecture}
   DIAGRAMME DES CLASSES EN MOINS DETAILLE   
   \subsection{Gestion du temps}
