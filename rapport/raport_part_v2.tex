@@ -23,6 +23,20 @@
 \newenvironment{bluepar}{\par\color{blue}}{\par}
 \newenvironment{yellowpar}{\par\color{orange}}{\par}
 
+\renewcommand{\labelitemi}{$\bullet$}
+
+\setcounter{tocdepth}{3}
+%\makeatletter
+%\newcounter {subsubsubsection}[subsubsection]
+%\renewcommand\thesubsubsubsection{\thesubsubsection .\@alph\c@subsubsubsection}
+%\newcommand\subsubsubsection{\@startsection{subsubsubsection}{4}{\z@}%
+%                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+%                                     {1.5ex \@plus .2ex}%
+%                                     {\normalfont\normalsize\bfseries}}
+%\newcommand*\l@subsubsubsection{\@dottedtocline{3}{10.0em}{4.1em}}
+%\newcommand*{\subsubsubsectionmark}[1]{}
+%\makeatother
+
 \tableofcontents
 \newpage
 
@@ -158,7 +172,7 @@ Ensuite, nous introduirons la méthode de génération de couleur unique pour ch
 
 Finalement, nous montrerons comment exploiter l'image colorID dans le cadre de notre projet.
 
-\subsection{Comment colorer un objet Tikz intégralement d'une couleur}
+\subsubsection{Comment colorer un objet Tikz intégralement d'une couleur}
 Chaque objet Tikz posséde un champ de propriétés. Dans le cas de la couleur et de la couleur de  remplissage (\textit{fill}), la derniére valeur attribuée est la valeur finale.
 On peut integralement colorer un objet d'une seule couleur, par exemple en bleu, en ajoutant a la fin des propriétés \textit{blue,fill=blue}.
 \begin{center}
@@ -238,7 +252,8 @@ Afin d'établir une correspondance entre ces deux formats de couleur, on a mis e
 
 Le script \textbf{gen\_list\_IDC.pl} génere la liste \textbf{list\_IDC}.
 Ce script a un temps d'éxécution assez long, c'est à dire plus d'une vingtaine de minutes, mais n'a plus a être réexécuté, vu que le fichier produit \textbf{list\_IDC} est distribué avec notre logiciel.
-
+\newline
+\\
 Pour chacune des 5041 valeurs de colorID, ce script agit comme suit :
 \begin{itemize}
 \item génération d'une figure contenant un seul n{\oe}ud coloré du colorID courrant
@@ -267,6 +282,26 @@ red!30!green!35 => 49601 58596 42662
 \textit{6 premiéres lignes de \textbf{list\_IDC}}
 \end{flushright}
 
+\subsubsection{Identification gr\^ace au ColorID}
+Comme nous l'avons vu précedement, tout élèment Tikz est enregistré dans un liste d'objets au sein de notre programme. Soit \textit{n} le nombre d'élèments courant dans notre liste d'instructions Tikz.
+Les objets Tikz représentant un n{\oe}ud ou une arête possédent un champ colorId.
+En connaissant la position du curseur sur l'image de la figure affichée, nous pouvons aller chercher dans l'image avec les colorID correspondante la couleur RGB du pixel a ces coordonnées précises.
+
+Cette couleur RGB est ensuite traduite en ColorID en vérifiant s'il existe, parmi les \textit{n} premiéres lignes de la liste \textit{list\_IDC}, un triplet RGB avec exactement les mêmes valeurs.
+
+Une fois le ColorID obtenu, on parcourt notre liste d'instruction jusqu'a trouver un élément qui ait la même valeur dans le champ ColorID, puis on retourne cet élèment.
+
+À partir de cet instant, on peut connaitre l'objet séléctionné en cours, ce qui ouvre la porte vers de nombreuses intéractions :
+\begin{itemize}
+\item Selectionner un n{\oe}ud ou une arête par clic sur le graphe
+\item Modification de l'affichage du graphe en fonction de l'objet sélectionné
+\item Edition des propriétés, texte, nom d'un objet selectionné
+%\item Déplacer un objet sélectioné depuis l'image affichée
+\end{itemize}
+
+%On peut repérer la position du curseur 
+
+%n{\oe}ud
 
 \end{document}
 
