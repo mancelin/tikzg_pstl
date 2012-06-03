@@ -387,7 +387,66 @@ Une fois le ColorID obtenu, on parcourt notre liste d'instruction jusqu'a trouve
 %\item Déplacer un objet sélectioné depuis l'image affichée
 \end{itemize}
 
-%On peut repérer la position du curseur 
+
+\subsection{Colorer les arêtes et n{\oe}ud relatifs à la sélection}
+
+\subsection{Placer un n{\oe}ud aux coordonnées d'un clic sur l'image}
+Dans le but de faciliter l'utilisation de Tikz, nous avons mis en place un systéme permettant l' ajout d'un n{\oe}ud aux coordonnées exactes d'un clic gauche.
+
+Cet ajout se passe en trois étapes, que nous apronfondirons par la suite :
+\begin{itemize}
+\item Detection des coordonnées du centre du premier n{\oe}ud de notre liste d'instructions
+\item Création d'un n{\oe}ud invisible par rapport a la distance verticale séparant le premier n{\oe}ud des coordonnées du clic
+\item Création du n{\oe}ud aux coordonnées du clic
+\end{itemize}
+
+\subsubsection{Détection des coordonnées du premier n{\oe}ud}
+Pour créer un n{\oe}ud aux coordonnées d'un clic, nous avons décidé de nous baser sur les coordonnées du premier n{\oe}ud.
+
+Dans notre module principal, \textit{MainWindow.pl}, la fonction \textit{getFirstNode} permet de récupérer l'objet Tikz relatif a ce n{\oe}ud.
+Nous y récupérons ensuite la valeur du colorID, puis nous la traduisons en couleur RGB à l'aide de la fonction \textit{RGB\_of\_IDC}, définie dans \textit{LabelImage.pm}.
+
+Enfin nous parcourons l'image \textit{tmp\_tikz\_IDC.png} afin de trouver les bornes minimales/maximales du premier n{\oe}ud sur l'axe horizontal (\textit{x\_deb},\textit{x\_fin}) et sur l'axe vertical (\textit{y\_deb},\textit{y\_fin}).\\
+\newline
+Le centre du premier n{\oe}ud est aux coordonnées (\textit{x\_centre},\textit{y\_centre}) où :
+
+\textit{x\_centre} = int((\textit{x\_fin} - \textit{x\_deb})/2 + \textit{x\_deb})
+
+\textit{y\_centre} = int((\textit{y\_fin} - \textit{y\_deb})/2 + \textit{y\_deb})
+
+\subsubsection{Création d'un n{\oe}ud invisible intermédiare}
+Une fois les coordonnées du premier n{\oe}ud connues, on peut donner l'écart entre la position courante du curseur et le centre du premier n{\oe}ud, que nous nomerons ici \textbf{\$first\_node}.
+
+Afin de créer le n{\oe}ud aux coordonnées du clic, nous ajoutons tout d'abord un n{\oe}ud invisible sur l'axe vertical de \textbf{n1}.
+Soit \textbf{\$below} le décalage vertical entre la position de du n{\oe}ud intermédiaire et de \textbf{\$first\_node}.
+
+La valeur \textbf{\$below} est négative si la position du curseur est au dessus de celle du premier n{\oe}ud et positive sinon. %Prenons par exemple \textbf{\$below} = 60
+
+Nous nomerons le n{\oe}ud intermédiaire en fonction du premier n{\oe}ud et de son décalage \textbf{\$below}, ici \textit{\$first\_node\_y\$below}.
+Ce n{\oe}ud a pour seules propriétés :
+\begin{itemize}
+\item below of = \$first\_node
+\item node distance = \$below
+\end{itemize}
+Le texte de ce n{\oe}ud est vide 
+
+Par exemple, si le nom du premier n{\oe}ud est n1 et la position du clic est 60 pixel au dessous du centre de n1, on ajoute à la fin de notre code Tikz l'instruction \\
+	\verb?\node[below of = n1, node distance = 60] (n1_y60) {};?
+\subsubsection{Création du n{\oe}ud final}
+Une fois le n{\oe}ud intermédiaire créé, nous pouvons definir la position du n{\oe}ud aux coordonnés du clic par rapport a celui-ci.
+
+En Tikz, on peut désigner toute position sur l'axe horizontal par rapport a \textit{right of}, une valeur a gauche est simplement une valeur négative.
+
+Nous sauvegardons dans la variable \textbf{\$right} le décalage horizontal par rapport au premier n{\oe}ud.
+
+Finalement nous générons une instruction Tikz en fonction du n{\oe}ud intermédiaire précédement généré et de la distance \textbf{\$right} calculée.
+
+
+En poursuivant l'exemple précédent, si la position du clic est 52 pixel a droite du centre de n1, on ajoute à la fin de notre code Tikz l'instruction \\
+	\verb?\node[draw,rectangle,right of = n1_y60, node distance = 52]?\\
+	\verb?                                             (n1_y60_x52) {new};?
+
+
 
 %n{\oe}ud
 
