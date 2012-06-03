@@ -10,6 +10,14 @@
 \usepackage{calc}
 \usepackage{tikz}
 \usepackage{titlesec} 
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
 \title{RAPPORT DU PROJET STL \\ TIKZ}
 \author{ANCELIN Maxime & DIAKHATE Aminata}
 
@@ -103,7 +111,11 @@ Pour accélerer la génération du pdf, on supprime l'affichage des messages de 
 pdflatex -halt-on-error tmp_tikz.tex > /dev/null
 \end{lstlisting}
 Ce fichier pdf est ensuite converti en png à l'aide de la commande \textbf{convert} du logiciel libre \textit{ImageMagick}, puis affichée dans un composant flottant de la fen\^etre principale.
-
+La fonction de génération d'image par rapport au code Tikz peut être appellée :
+\begin{itemize}
+\item Manuellement (en cliquant \textit{Génerer image} ou en faisant le racourci Ctrl+R)
+\item Automatiquement (Si le code Tikz courrant n' a pas deja été généré, 1 seconde d'innaction depuis la derniére modification du code de l'éditeur Tikz)
+\end{itemize}
 \subsection{Modifier l'échelle d'une image générée}
 A partir du pdf généré par \textbf{pdflatex}, nous pouvons connaitre la taille finale de l'image.
 Le paramétre \textbf{density} de la commande \textbf{convert} permet de jouer sur l'échelle de l'image sans perdre de qualité.
@@ -130,6 +142,82 @@ Ce parseur reconnait de nombreux messages de d'erreurs et a un mécanisme en pla
 \parbox[t]{1.2\textwidth}{
 {\small \lstinputlisting[inputencoding=utf8/latin1]{parseur_logs.pl}}
 }
+
+\subsection{Creation d'une structure objet pour toute instruction Tikz}
+Afin de faciliter l'accés a tous les champs des instructions Tikz composant une figure et de permettre une intéraction avec l'utilisateur, nous avons mis en place une structure objet Tikz.
+
+Cette structure est définie dans le module \textit{TikzObjects.pm}.
+
+Notre programme a une liste interne contenant la liste des instruction de la figure Tikz courante.
+Cette liste est crée a chaque génération de l'image png correspondant au code Tikz a l'aide du module \textit{TikzParser.pm}. Nous n'entrerons pas dans les détails de comment sont reconnues et traitées les instructions Tikz par le parseur.
+Par la suite, nous allons montrer les champs des différents élèments reconnus par notre parseur d'objets Tikz en montrant un exemple pour chaque type d'instruction.
+
+\subsubsection{nodeDistance}
+Cet objet Tikz contient la distance par défault entre deux n{\oe}uds pour la figure Tikz en cours.
+\begin{verbatim}
+ 'ligne' => 1,
+ 'nodeDistance' => '50pt',
+ 'type' => 'NodeDistance',
+ 'code' => '[node distance=50pt]'
+\end{verbatim}
+
+\subsubsection{node}
+Cet objet Tikz contient tout les champs nécessaires d'un n{\oe}ud.
+\begin{verbatim}
+ 'nom' => 'n2',
+ 'params_keys' => [
+                    'circle',
+                    'double',
+                    'draw',
+                    'right of'
+                  ],
+ 'params' => {
+               'double' => undef,
+               'right of' => 'n1',
+               'draw' => undef,
+               'circle' => undef
+             },
+ 'ligne' => 3,
+ 'text' => '$\\frac{\\sqrt{x}}{x^y}$',
+ 'type' => 'node',
+ 'colorId' => 'red!30!green!31,fill=red!30!green!31',
+ 'code' => '\\node[circle,double,draw,right of=n1] (n2) {$\\frac{\\sqrt{x}}{x^y}$};'
+\end{verbatim}
+
+\subsubsection{draw}
+Cet objet Tikz contient tout les champs nécessaires d'une ar\^ete.
+\begin{verbatim}
+ 'ligne' => 4,
+ 'colorId' => 'red!30!green!32,fill=red!30!green!32',
+ 'params' => {
+               '->' => undef
+             },
+ 'params_keys' => [
+                     '->'
+                  ],
+ 'origine' => 'n1',
+ 'type' => 'draw',
+ 'but' => 'n2',
+ 'code' => '\\draw[->] (n1) -- (n2);',
+ 'code_segment' => ' -- '
+\end{verbatim}
+
+\subsubsection{NoCode}
+Cet objet Tikz contient une ligne vide, sans instruction.
+\begin{verbatim}
+ 'ligne' => 13,
+ 'type' => 'NoCode',
+ 'code' => ''
+\end{verbatim}
+
+\subsubsection{unknown}
+Cet objet Tikz contient toute instructions Tikz non reconnue par notre parseur (ni \textit{node}, ni \textit{draw}).
+\begin{verbatim}
+ 'ligne' => 2,
+ 'type' => 'unknown',
+ 'code' => 
+   '\\tikz \\foreach \\r in {1,2,...,5} \\draw (0,0) circle (\\r mm);'
+\end{verbatim}
 
 \subsection{Identification des objets Tikz}
 Afin d' identifier précisément chaque objet Tikz, nous attribuons à chaque n{\oe}ud et à chaque arête du graphe une couleur unique, que nous nommerons le \textit{ColorID}.
