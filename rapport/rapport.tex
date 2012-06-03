@@ -7,15 +7,16 @@
 \usepackage{graphicx} 
 \usepackage{tikz}
 \usepackage{titlesec} 
+\usepackage{pdfpages}
 \title{RAPPORT DU PROJET STL \\ TIKZ}
-\author{ANCELIN Maxime & DIAKHATE Aminata}
+\author{ANCELIN Maxime & DIAKHATE Aminata \\ \\ \\ Encadrant : PESCHANKSI Frédéric}
  
 %\maketable    %pour générer l'index
 \begin{document}
 
 \titleformat{\chapter}[hang]{\bf\huge}{\thechapter}{2pc}{} 
 
-%\maketitle
+\maketitle
 \tableofcontents
 \newpage
 
@@ -38,6 +39,7 @@ connaître les sujets proposés, de choisir un projet qui nous permettrait de no
   Notre objectif est de pouvoir présenter au terme de ce projet une interface graphique qui permettrait à l'utilisateur de pouvoir créer des graphes non plus textuellement mais visuellement. L'interface graphique devra aussi permettre à l'utilisateur de rédiger du code TikZ et visionner le graphe correspondant ou encore modifier le graphe en bougeant les noeuds sélectionnés ou en modifiant leurs propriétés grâce à un menu.
 Toute modification apportée au graphe devra mettre à jour le code source correspondant et vice-versa. 
   \chapter {Gestion du projet}
+\includepdf{camembtex.pdf}
   \section{Choix technologiques}
   Pour la réalisation de notre projet, notre encadrant nous a recommandé l'utilisation d'un langage de script tel que Python ou Ruby, permettant l'interfaçage avec des outils externes (notamment pdflatex avec le paquet "preview") et les manipulations textuelles simples (expressions rationnelles etc.), et proposant de plus des bibliothèques portables pour les interfaces utilisateurs (Gtk, Qt, WxWindows, etc.). Même si notre encadrant nous a vivement conseillé l'utilisation de Python nous avons quand même choisi de faire notre projet avec Perl. 
 
@@ -196,10 +198,21 @@ Les figures 10, 11 et 12 illustrent bien nos propos ci-dessus. On peut observer 
 \\ 
 figures 12: à propos
 \chapter{Conclusion}
-A la fin de ces quatre mois de projet, les principaux objectifs sont atteints. En effet, avec notre interface graphique l'utilisateur pourra désormais créer graphiquement des noeuds, modifier les propriétés des objets du graphe sélectionnés tout en récupérant le code Tikz correspondant à la création de ce graphe. Il pourra aussi charger directement un fichier Tikz dans l'éditeur afin de visualiser et/ou modifier le graphe. Le code Tikz édité pourra ainsi être sauvegardé de même que le fichier pdf généré par le code Latex englobant le code Tikz.
+Nous avons créer une interface graphique permettant d'éditer du code Tikz, de visualiser l'image généré et de modifier graphiquement les propriétés des n{\oe}uds dans le cadre de notre projet Science et Technologie de Logiciel. En effet, avec notre interface graphique l'utilisateur pourra désormais créer graphiquement des noeuds, modifier les propriétés des objets du graphe sélectionnés tout en récupérant le code Tikz correspondant à la création de ce graphe. Il pourra aussi charger directement un fichier Tikz dans l'éditeur afin de visualiser et/ou modifier le graphe. Le code Tikz édité pourra ainsi être sauvegardé de même que le fichier pdf généré par le code Latex englobant le code Tikz. 
+
+Ce projet nous a permis d’appliquer les connaissances qui nous ont été inculquées au cours
+de nos années de Licence et de Maîtrise Informatique à l’Université Pierre et Marie Curie. Nous avons été confrontés à de nombreux problèmes et dans la plupart des cas nous avons pu trouver une solution alternative afin de les résoudre partiellement.
+Enfin ce projet aura été l’occasion de découvrir et d’utiliser des outils dont nous n’avions pas la
+moindre idée de leurs existences.
+
 
 
 \chapter{Perspectives}
+Au vu des fonctionnalités de notre interface, nous pouvons conclure que les principaux objectifs du projet sont atteints. Toutefois, afin de faciliter la distribution de notre logiciel, nous aurions pu créer un paquet Debian et un exécutable Windows. De même pour une amélioration future de l'application, la gestion de la modification graphique de la position d'un noeud pourra en réaliser. Cependant, le temps et la
+complexité de cette tâche ont été les principaux facteurs qui nous ont rebuté. 
+
+\chapter{Annexe}
+\includepdf[pages = {1-9}]{manuel.pdf}
    
 
 \end{document}
