@@ -22,18 +22,20 @@
 
  \newpage
  \chapter{Introduction}
-  Dans le cadre de notre enseignement universitaire à l'UPMC(Université Pierre Marie Curie) ..
+  Dans le cadre de notre enseignement universitaire à l'UPMC(Université Pierre Marie Curie) en master Science et Technologie du Logiciel, nous devons réaliser un projet proposé par nos professeurs. C'est ainsi que nous avons choisi le sujet proposé par Monsieur Frederic Peschanski qui est de créer une interface graphique au dessus d'un sous-ensemble du langage Tikz, permettant la construction visuelle (plutôt que textuelle) des figures. 
+  \newline
+  Nous allons tout au long de notre rapport vous expliquer comment nous avons gérer ce projet. Nous commencerons donc par vous faire une présentation générale de notre projet. Ensuite, nous vous parlerons de la gestion de notre projet ; et pour finir nous vous présenterons nos perspectives pour ce projet.
   
   \chapter{Présentation du projet}
-  \section{Etat Actuel}
+  \section{Contexte}
   LaTex(Lamport TEX) est un langage et un système de composition de documents. Du fait de sa relative simplicité, il est souvent utilisé dans les domaines techniques et scientifiques pour la production d'un contenu complexe (équations, graphes, ...) ayant une mise en forme standard. Afin d'inclure ces contenus complexes dans les documents en restant dans l'environnement LaTex, LaTex dispose d'un package TikZ permettant d'inclure des figures au format PDF. En effet, TikZ permet d'obtenir des figures géométriques complexes précise et d'une grande qualité. Cependant son apprentissage n'est pas évident. 
-  \section{Motivation}
-  Notre encadrant, qui est lui-même un utilisateur de TikZ, a souhaité faciliter son utilisation afin de permettre à un plus grand nombre d'utilisateurs de profiter des avantages de TikZ sans passer par son apprentissage. Pour ce faire, il nous propose donc de mettre en place une interface graphique permettant la construction  visuelle (et non textuelle) des figures.
+  \subsection{Motivations}
+  Notre encadrant, qui est lui-même un utilisateur de TikZ, a souhaité faciliter l'utilisation de TikZ afin de permettre à un plus grand nombre d'utilisateurs de profiter de ses avantages sans forcément passer par son apprentissage. Pour ce faire, il nous propose donc de mettre en place une interface graphique permettant la construction  visuelle (et non textuelle) des figures.
   \newline
   Pour ce projet que nous devions réaliser dans le cadre de notre master, nous avions souhaité, avant même de 
-connaître les projets proposés, de choisir un projet qui nous permettrait de nous rapprocher le plus des projets qu'on pourrait rencontrer dans le monde professionnel et qui 
+connaître les sujets proposés, de choisir un projet qui nous permettrait de nous rapprocher le plus des projets qu'on pourrait rencontrer dans le monde professionnel. Par la suite après avoir étudié tous les sujets proposés, ce projet a retenu notre attention parce qu'il nous permettait d'approfondir nos connaissances tout en réalisant un projet qui diffère de nos projets habituels.
   \section{Objectifs}
-Notre objectif est de pouvoir présenter au terme de ce projet une interface graphique qui permettrait à l'utilisateur de pouvoir créer des graphes non plus textuellement mais visuellement. L'interface graphique devra aussi permettre à l'utilisateur de rédiger du code TikZ et visionner le graphe correspondant ou encore modifier le graphe en bougeant les noeuds sélectionnés ou en modifiant leurs propriétés grâce à un menu.
+  Notre objectif est de pouvoir présenter au terme de ce projet une interface graphique qui permettrait à l'utilisateur de pouvoir créer des graphes non plus textuellement mais visuellement. L'interface graphique devra aussi permettre à l'utilisateur de rédiger du code TikZ et visionner le graphe correspondant ou encore modifier le graphe en bougeant les noeuds sélectionnés ou en modifiant leurs propriétés grâce à un menu.
 Toute modification apportée au graphe devra mettre à jour le code source correspondant et vice-versa. 
   \chapter {Gestion du projet}
   \section{Choix technologiques}
@@ -50,45 +52,31 @@ Pour l'interface utilisateur nous avons choisi la bibliothèque Qt comme nous le
   Pour notre interface graphique, nous avions besoin d'un éditeur qui nous permettrait d'écrire du code Tikz. Pour cela nous avons choisi Scintilla qui est un composant d'édition de code open source. En effet Scintilla a beaucoup de fonctionnalités qui rendent l'édition de code plus facile telles que la coloration syntaxique, la gestion des numéros de ligne dans la marge, les points d'arrêts pour le débogueur, etc.
   \newline
   Au début de notre projet nous n'avions pas utiliser de gestionnaire de version car nous travaillions le plus souvent ensemble ; mais pendant les vacances scolaires du mois d'avril où la distance ne nous permettait pas de continuer à travailler ensemble, nous avons installé git qui est un logiciel de gestion de versions décentralisé libre. 
-\section{Difficultés} 
-\subsection{Installation de perlqt4}
-
-L' installation de perlqt4 nous a pris un peu plus d' une semaine,
-car il nous manquait des dépendances.
-
-Au fur et a mesure que nous découvrions ce qu' il fallait ajouter,
-nous avons enrichi un script d' installation afin de rendre la reinstallation
-plus facile pour les utilisateurs finaux de notre application. Ce
-script a été conçu pour fonctionner sous Ubuntu 12.04 et devrait marcher
-sans encombre sous Debian.
-
-Sous ces linux, il suffit de lancer \textbf{script\_intall\_all.sh}
-afin d' installer perlqt4, Scintilla et tout les packages et modules
-perl requis au fonctionnement de l' application.
 
 \section{Difficultés}
 \subsection{Installation de perlqt4}
 L' installation de perlqt4 nous a pris un peu plus d' une semaine,
 car il nous manquait des dépendances.
 
-Au fur et a mesure que nous découvrions ce qu' il fallait ajouter,
-nous avons enrichi un script d' installation afin de rendre la reinstallation
+Au fur et à mesure que nous découvrions ce qu' il fallait ajouter,
+nous avons enrichi un script d' installation afin de rendre la réinstallation
 plus facile pour les utilisateurs finaux de notre application. Ce
 script a été conçu pour fonctionner sous \textit{Ubuntu 12.04} et devrait marcher
 sans encombre sous \textit{Debian}.
 
-Sous ces \textit{linux}, il suffit de lancer \textbf{script\_intall\_all.sh}
-afin d' installer \textit{perlqt4}, \textit{Scintilla} et tout les packages et modules
+Sous ces \textit{Linux}, il suffit de lancer \textbf{script\_intall\_all.sh}
+afin d' installer \textit{perlqt4}, \textit{Scintilla} et tous les packages et modules
 \textit{Perl} requis au fonctionnement de l' application.
 
 \subsection{Identification des objets Tikz}
-Afin d' identifier indépendamment chaque objet Tikz, nous attribuons à chaque n{\oe}ud et à chaque arête du graphe une couleur unique, que nous nomerons le ColorID.
+Afin d' identifier indépendamment chaque objet Tikz, nous attribuons à chaque n{\oe}ud et à chaque arête du graphe une couleur unique, que nous nommerons ColorID.
 
-Cette couleur sera ensuite ajoutée au propriétés de chaque objet, puis on générera une image ou chaque objet sera intégralement colorié de cette couleur. 
-Nous nomerons cette image \textit{tmp\_tikz\_IDC.png}
+N'Y A T-IL PAS UNE REPETITION DANS CES 2 PARAGRAPHES?
+Cette couleur sera ensuite ajoutée aux propriétés de chaque objet, puis on générera une image où chaque objet sera intégralement colorié de cette couleur. 
+Nous nommerons cette image \textit{tmp\_tikz\_IDC.png}
 
 
-Rappelons que dans le cadre de notre projet nous ne nous intéressons qu'aux n{\oe}uds et arêtes (notés \textbf{node} et \textbf{draw}). L'attribution d'un code couleur a chaque objet identifié nous permet de générer une image temporaire où chaque éléments est intégralement coloré en sa couleur.
+Rappelons que dans le cadre de notre projet nous ne nous intéressons qu'aux n{\oe}uds et arêtes (notés \textbf{node} et \textbf{draw}). L'attribution d'un code couleur à chaque objet identifié nous permet de générer une image temporaire où chaque élément est intégralement coloré en sa couleur.
 
 \vspace{5mm}
 \begin{center}
@@ -119,8 +107,8 @@ Chacuns des objets de tmp\_tikz\_IDC.png a une couleur différente, la variation
 \subsubsection{Ajout du colorId aux objets Tikz}
 Tout d'abord, donnons un bref aperçu de Tikz.
 Chaque objet Tikz posséde un champ de propriétés. Dans le cas de la couleur et de la couleur de  remplissage (\textit{fill}), la derniére valeur attribuée est la valeur finale.
-On peut donc integralement colorer un objet d'une seule couleur, par exmple en bleu, en ajoutant a la fin des propriétés \textit{blue,fill=blue}.
-On peut avoir une plus grande variétés de couleurs que celles prédefinies en utilisant le package \textit{xcolor}, qui permet de donnner un pourcentage a une couleur et même de les mélanger. Par exemple : blue!50!red!13
+On peut donc intÉgralement colorier un objet d'une seule couleur, par exemple en bleu, en ajoutant à la fin des propriétés \textit{blue,fill=blue}.
+On peut avoir une plus grande variété de couleurs que celles prédefinies en utilisant le package \textit{xcolor}, qui permet de donnner un pourcentage à une couleur et même de les mélanger. Par exemple : blue!50!red!13
 Nous avons décidé de générer 
 \section{Architecture}
   DIAGRAMME DES CLASSES EN MOINS DETAILLE   
@@ -138,7 +126,7 @@ figure 1: génération du graphe à partir du code tikz édité
 \\
   \includegraphics[width=15cm, height=10cm]{img/r_41.png} 
 \\
-figure 2: zoom et désactivation de la coloration et des numéros de ligne dans la marge
+figure 2: zoom et désactivation de la coloration syntaxique et des numéros de ligne dans la marge
 \newline
 \\
 \\
@@ -157,7 +145,7 @@ figure 3: fenêtre du graphe flottante
 figure 4: gestion d'erreurs
 \\
 \\
-	Comme nous pouvons le constater sur la figure 1, le graphe est généré à partir du code Tikz écrit dans l'éditeur de texte. Cette génération est relancée automatique au bout d'une seconde d'inactivité. L'utilisateur pourra choisir de cacher les numéros de ligne ou de désactiver la coloration syntaxique en décochant les cases correspondantes dans la barre de menu ; il pourra aussi définir la valeur du zoom dans la barre d'outil ou zoomer avec la molette de la souris. En effet, sur la figure 1 on peut noter l'affichage des numéros de ligne, la coloration syntaxique du code et la valeur du zoom qui est de 200\%
+	Comme nous pouvons le constater sur la figure 1, le graphe est généré à partir du code Tikz écrit dans l'éditeur de texte. Cette génération est relancée automatique au bout d'une seconde d'inactivité après modification du code source. L'utilisateur pourra choisir de cacher les numéros de ligne ou de désactiver la coloration syntaxique en décochant les cases correspondantes dans la barre de menu ; il pourra aussi définir la valeur du zoom dans la barre d'outil ou zoomer avec la molette de la souris. En effet, sur la figure 1 on peut noter l'affichage des numéros de ligne, la coloration syntaxique du code et la valeur du zoom qui est de 200\%
 alors que sur la figure 2 l'affichage des numéros de ligne est désactivée de même que la coloration syntaxique et la valeur du zoom vaut 275\% après un zoom avec la molette de la souris.
 
 De plus, comme l'atteste les figures 3 et 4, les erreurs sont gérees et la fenêtre du graphe peut être détachée de l'interface et déplacée sans que cela ne modifie ses fonctionnalités.
@@ -169,10 +157,13 @@ De plus, comme l'atteste les figures 3 et 4, les erreurs sont gérees et la fen�
 figures 5: création graphique d'un n{\oe}ud
 \newline
   \includegraphics[width=15cm, height=10cm]{img/r_5.png} 
+\\
 figure 6: modification textuelle des propriétés d'un n{\oe}ud
 \\
 \\
-Un clic droit sur l'interface graphique permet de créer un n{\oe}ud à cet l'endroit qu'on pourra par la suite modifier textuellement ou graphiquement. Le code correspondant au noeud ainsi créé est automatique ajouter au code du graphe (figures 5 et 6). 
+Un clic droit sur l'interface graphique permet de créer un n{\oe}ud à cet endroit. L'utilisateur pourra par la suite modifier textuellement ou graphiquement les propriétés de ce n{\oe}ud. Le code correspondant au noeud ainsi créé est automatique ajouter au code du graphe. 
+
+Par exemple sur la figure 5, le n{\oe}ud contenant le texte "new" a été créé par un clic droit de la souris, et les  lignes 12 et 13 qui correspondent au code Tikz de la création de ce n{\oe}ud ont été rajouté à l'éditeur de texte. Après une modification sur le code du texte de ce n{\oe}ud(new qui devient nouveau), on observe sans surprise que le texte a aussi changé sur le graphe.
 \newline
   \includegraphics[width=15cm, height=10cm]{img/r_8.png} 
 \\
@@ -181,7 +172,29 @@ Un clic droit sur l'interface graphique permet de créer un n{\oe}ud à cet l'en
 figures 7: modification graphique des propriétés d'un n{\oe}ud
 \\
 \\
-Lorsqu'on clique sur un objet du graphe ses propriétés s'affichent. Prenons comme exemple les figures 7, on voit que lorsqu'on clique sur le noeud n3, il est coloré en bleu, ses noeuds relatifs en rose et les arêtes auxquelles il est rélié en rouge. A partir de sa fenêtre de propriétés on peut apporter des modifications au n{\oe}ud ainsi sélectionné. 
+Lorsqu'on clique sur un objet du graphe ses propriétés s'affichent. Prenons comme exemple les figures 7, on voit que lorsqu'on clique sur le noeud n3, il est coloré en bleu, ses noeuds relatifs en rose et les arêtes auxquelles il est rélié en rouge. A partir de sa fenêtre de propriétés on peut apporter des modifications au n{\oe}ud ainsi sélectionné. Et comme on peut le remarquer sur ces figures, le texte "a" contenu dans ce noeud devient "autre texte" après une modification à partir de la fenêtre des propriétés.
+\\
+\\
+\\
+\\
+\\
+  \includegraphics[width=15cm, height=10cm]{img/r_10.png}
+\\ 
+figure 10: sélection d'un n{\oe}ud du graphe
+
+  \includegraphics[width=15cm, height=10cm]{img/r_12.png}
+\\ 
+figure 11: modification d'un n{\oe}ud du graphe
+\\
+  \includegraphics[width=15cm, height=9cm]{img/r_13.png}
+\\ 
+figure 12: après modification d'un n{\oe}ud du graphe
+\\ \\
+Les figures 10, 11 et 12 illustrent bien nos propos ci-dessus. On peut observer que sur la figure 10 la case draw des propriétés qui correspond au dessin du n{\oe}ud est cochée après l'avoir décocher à la figure 11 on voit effectivement que, sur la figure  12, le noeud n'est plus dessiné et la propriété "draw" a disparu à la ligne 7 du code Tikz.
+\\ \\ \\ \\ \\
+  \includegraphics[width=15cm, height=9cm]{img/r7.png}
+\\ 
+figures 12: à propos
 \chapter{Conclusion}
 \chapter{Perspectives}
    
