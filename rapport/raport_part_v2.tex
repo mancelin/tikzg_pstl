@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{listingsutf8}
 \usepackage{verbatim}
+\usepackage{calc}
 \usepackage{tikz}
 \usepackage{titlesec} 
 \title{RAPPORT DU PROJET STL \\ TIKZ}
@@ -17,6 +18,10 @@
 \lstset{frame=shadowbox, rulesepcolor=\color{gray}}
 
 \begin{document} 
+
+\newenvironment{violetpar}{\color{violet}}{}
+\newenvironment{bluepar}{\par\color{blue}}{\par}
+\newenvironment{yellowpar}{\par\color{orange}}{\par}
 
 \tableofcontents
 \newpage
@@ -39,13 +44,60 @@ Sous ces \textit{linux}, il suffit de lancer \textbf{script\_intall\_all.sh}
 afin d' installer \textit{perlqt4}, \textit{Scintilla} et tout les packages et modules
 \textit{Perl} requis au fonctionnement de l' application.
 
+\subsection{Génération d'une image png à partir d'un code Tikz}
+Notre éditeur de texte sur \textbf{TikzG} ne contient que le code d'une figure Tikz, c'est à dire les instructions comprises entre \verb?\begin[tikzpicture]? et \verb?\end[tikzpicture]?. Ce code n'est pas directement compilable.
+
+Afin de générer un pdf valide en fonction du code Tikz et d'ajuster la taille du pdf a la taille de la figure Tikz, nous encapsulons le \textcolor{blue}{code} entre un \textcolor{violet}{préambule} \textit{latex/tikz} et un \textcolor{orange}{postambule} \textit{tikz/latex} et sauvegardons le tout dans un fichier tex temporaire : \textit{tmp\_tikz.tex}.
+
+\newpage
+
+\hrule
+\begin{violetpar}
+\begin{verbatim}
+\documentclass{article}
+\usepackage[graphics,tightpage,active]{preview}
+\usepackage[utf8]{inputenc}  
+\usepackage{xcolor}
+\usepackage{tikz}
+\PreviewEnvironment{tikzpicture}
+\begin{document}
+\begin{tikzpicture}\end{verbatim}
+\end{violetpar}
+\begin{bluepar}
+\begin{verbatim}[node distance=40pt]
+\node[rectangle,draw] (n1) {a};
+\node[circle,double,draw,right of=n1] (n2) {$\sqrt{x}$};
+\draw[->] (n1) -- (n2);
+\node[below of=n1,right of = n1,node distance=50pt] (n3) {c};
+\draw[<->,dashed] (n1) -- (n3);
+\end{verbatim}
+\end{bluepar}
+\begin{yellowpar}
+\begin{verbatim}
+\end{tikzpicture}
+\end{document}
+\end{verbatim}
+\end{yellowpar}
+\hrule
+\begin{flushright}
+tmp\_tikz.tex
+\end{flushright}
+
+Le fichier tex ainsi assemblé est ensuite compilé a l'aide de la commande pdflatex, créant le fichier \textit{tmp\_latex.pdf}. Afin de ne pas bloquer notre application si la compilation du fichier tex échoue, on utilise l'option \textit{-halt-on-error} de pdflatex.
+Pour accélerer la génération du pdf, on supprimme l'affichage des messages de compilations de pdflatex en redirigeant la commande vers \textbf{/dev/null}
+\begin{lstlisting}[language=bash]
+pdflatex -halt-on-error tmp_tikz.tex > /dev/null
+\end{lstlisting}
+
+
+
 \subsection{Identification des objets Tikz}
-Afin d' identifier précisément chaque objet Tikz, nous attribuons à chaque n{\oe}ud et à chaque arête du graphe une couleur unique, que nous nomerons le \textit{ColorID}.
+Afin d' identifier précisément chaque objet Tikz, nous attribuons à chaque n{\oe}ud et à chaque arête du graphe une couleur unique, que nous nommerons le \textit{ColorID}.
 
-Cette couleur sera ensuite ajoutée au propriétés de chaque objet, puis on générera une image ou chaque objet sera intégralement colorié de cette couleur. 
-Nous nomerons cette image \textit{tmp\_tikz\_IDC.png}
+Cette couleur sera ensuite ajoutée aux propriétés de chaque objet, puis on générera une image où chaque objet sera intégralement colorié de cette couleur. 
+Nous nommerons cette image \textit{tmp\_tikz\_IDC.png}
 
-Rappelons que dans le cadre de notre projet nous ne nous intéressons qu'aux n{\oe}uds et arêtes (notés \textbf{node} et \textbf{draw}). L'attribution d'un code couleur a chaque objet identifié nous permet de générer une image temporaire où chaque éléments est intégralement coloré en sa couleur.
+Rappelons que dans le cadre de notre projet nous ne nous intéressons qu'aux n{\oe}uds et arêtes (notés \textbf{node} et \textbf{draw}). L'attribution d'un code couleur à chaque objet identifié nous permet de générer une image temporaire où chaque éléments est intégralement coloré en sa couleur.
 
 \vspace{5mm}
 \begin{center}
@@ -71,7 +123,7 @@ tmp\_tikz.png &  & tmp\_tikz\_IDC.png \\
 \end{tabular} 
 \end{center}
 
-Chacuns des objets de tmp\_tikz\_IDC.png a une couleur différente, la variation est juste trés légére.
+Chacun des objets de tmp\_tikz\_IDC.png a une couleur différente, la variation est juste très légère.
 \\
 
 Tout d'abord, on expliquera comment on peut modifier un code Tikz afin d'attribuer une couleur a un n{\oe}ud ou une arête.
@@ -80,7 +132,7 @@ Ensuite, nous introduirons la méthode de génération de couleur unique pour ch
 
 Finalement, nous montrerons comment exploiter l'image colorID dans le cadre de notre projet.
 
-\subsubsection{Comment colorer un objet Tikz intégralement d'une couleur}
+subsection{Comment colorer un objet Tikz intégralement d'une couleur}
 Chaque objet Tikz posséde un champ de propriétés. Dans le cas de la couleur et de la couleur de  remplissage (\textit{fill}), la derniére valeur attribuée est la valeur finale.
 On peut integralement colorer un objet d'une seule couleur, par exemple en bleu, en ajoutant a la fin des propriétés \textit{blue,fill=blue}.
 \begin{center}
@@ -152,6 +204,35 @@ Ci dessous, une transformation d' un code Tikz aprés l' ajout des ColorID :
 {\small \textit{code Tikz avec ColorID}}
 \end{flushright}
 \end{small}
+
+\subsubsection{Transformation d'une couleur ColorID en couleur RGB}
+Les couleurs générées par \textbf{gen\_next\_ColorId} ne sont pas directement interprétables en tant que couleurs RGB sur un png.
+
+Afin d'établir une correspondance entre ces deux formats de couleur, on a mis en place un script qui génére une liste de traduction colorID/RGB.
+
+Le script \textbf{gen\_list\_IDC.pl} génere la liste \textbf{list\_IDC}.
+Ce script a un temps d'execution assez long, c'est à dire plus d'une vingtaine de minutes, mais n'a plus a être réexecuté, vu que le fichier produit \textbf{list\_IDC} est distribué avec notre logiciel.
+
+Ce script génére un pour chacune des 5041 valeurs de couleur un n{\oe}ud coloré, le transforme en pdf, puis en png. La valeur de la couleur RGB est ensuite recupérée a des coordonnées données dans cette image, puis une nouvelle ligne est ajoutée a la liste en fonction du colorID courant et de la couleur RGB. 
+
+\newpage
+
+\hrule
+\begin{center}
+\begin{verbatim}
+red!30!green!30 => 51657 59624 46003
+red!30!green!31 => 51400 59367 45232
+red!30!green!32 => 50886 59367 44461
+red!30!green!33 => 50372 59110 43947
+red!30!green!34 => 49858 58853 43176
+red!30!green!35 => 49601 58596 42662
+\end{verbatim}}
+\end{center}
+\hrule
+\begin{flushright}
+\textit{6 premiéres lignes de \textbf{list\_IDC}}
+\end{flushright}
+
 
 \end{document}
 
