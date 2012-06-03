@@ -34,12 +34,12 @@
   Notre encadrant, qui est lui-même un utilisateur de TikZ, a souhaité faciliter l'utilisation de TikZ afin de permettre à un plus grand nombre d'utilisateurs de profiter de ses avantages sans forcément passer par son apprentissage. Pour ce faire, il nous propose donc de mettre en place une interface graphique permettant la construction  visuelle (et non textuelle) des figures.
   \newline
   Pour ce projet que nous devions réaliser dans le cadre de notre master, nous avions souhaité, avant même de 
-connaître les sujets proposés, de choisir un projet qui nous permettrait de nous rapprocher le plus des projets qu'on pourrait rencontrer dans le monde professionnel. Par la suite après avoir étudié tous les sujets proposés, ce projet a retenu notre attention parce qu'il nous permettait d'approfondir nos connaissances tout en réalisant un projet qui diffère de nos projets habituels.
+connaître les sujets proposés, de choisir un projet qui nous permettrait de nous rapprocher le plus de ceux qu'on pourrait rencontrer dans le monde professionnel. Par la suite après avoir étudié tous les sujets proposés, ce projet a retenu notre attention parce qu'il nous permettait d'approfondir nos connaissances tout en réalisant un projet qui diffère de nos projets habituels.
   \section{Objectifs}
-  Notre objectif est de pouvoir présenter au terme de ce projet une interface graphique qui permettrait à l'utilisateur de pouvoir créer des graphes non plus textuellement mais visuellement. L'interface graphique devra aussi permettre à l'utilisateur de rédiger du code TikZ et visionner le graphe correspondant ou encore modifier le graphe en bougeant les noeuds sélectionnés ou en modifiant leurs propriétés grâce à un menu.
+  Notre objectif est de pouvoir présenter au terme de ce projet une interface graphique qui permettrait à l'utilisateur de pouvoir créer des graphes non plus textuellement mais visuellement. L'interface graphique devra aussi permettre à l'utilisateur de rédiger du code TikZ et visualiser le graphe correspondant ou encore modifier le graphe en bougeant les noeuds sélectionnés ou en modifiant leurs propriétés grâce à un menu.
 Toute modification apportée au graphe devra mettre à jour le code source correspondant et vice-versa. 
   \chapter {Gestion du projet}
-\includepdf{camembtex.pdf}
+
   \section{Choix technologiques}
   Pour la réalisation de notre projet, notre encadrant nous a recommandé l'utilisation d'un langage de script tel que Python ou Ruby, permettant l'interfaçage avec des outils externes (notamment pdflatex avec le paquet "preview") et les manipulations textuelles simples (expressions rationnelles etc.), et proposant de plus des bibliothèques portables pour les interfaces utilisateurs (Gtk, Qt, WxWindows, etc.). Même si notre encadrant nous a vivement conseillé l'utilisation de Python nous avons quand même choisi de faire notre projet avec Perl. 
 
@@ -47,13 +47,13 @@ Perl nous a semblé être un bon choix de langage car il est adapté au traiteme
 Pour l'interface utilisateur nous avons choisi la bibliothèque Qt comme nous le conseillait notre encadrant. Au final nous avons donc utiliser PerlQt qui allie la souplesse, la puissance et le design élégant de Qt au langage Perl. Pour l'installater, nous avons dû choisir entre deux versions de PerlQt4:
 \begin{itemize}
  \item Une version avec une vue sur Qt-sys.org publié par l'utilisateur "vadiml" et qui n'a pas été mise à jour depuis Février 2008
- \item Une autre avec une vue sur code.google.com publié par "chrisburel@gmail" qui semblait plus complète et surtout activement maintenue puisque la dernière version datait de quelques jours seulement.
+ \item Une autre avec une vue sur code.google.com publié par "chrisburel@gmail" qui semblait plus complète et surtout activement maintenue puisque la dernière version datait de quelques jours seulement(février 2012).
 \end{itemize}
   Notre choix c'est donc naturellement porté sur la version proposée par "chrisburel@gmail".
   \newline 
   Pour notre interface graphique, nous avions besoin d'un éditeur qui nous permettrait d'écrire du code Tikz. Pour cela nous avons choisi Scintilla qui est un composant d'édition de code open source. En effet Scintilla a beaucoup de fonctionnalités qui rendent l'édition de code plus facile telles que la coloration syntaxique, la gestion des numéros de ligne dans la marge, les points d'arrêts pour le débogueur, etc.
   \newline
-  Au début de notre projet nous n'avions pas utiliser de gestionnaire de version car nous travaillions le plus souvent ensemble ; mais pendant les vacances scolaires du mois d'avril où la distance ne nous permettait pas de continuer à travailler ensemble, nous avons installé git qui est un logiciel de gestion de versions décentralisé libre. 
+  Au début de notre projet nous n'avions pas utiliser de gestionnaire de version car nous travaillions le plus souvent ensemble. D'ailleurs à la première semaine de notre projet nous avions réaliser le mokup de notre interface avec Michael MENU, un étudiant de notre promotion qui avait le même sujet que nous mais développé en Python. Pendant les vacances scolaires du mois d'avril où la distance ne nous permettait pas de continuer à travailler ensemble, nous avons installé git qui est un logiciel de gestion de versions décentralisé libre. 
 
 \section{Difficultés}
 \subsection{Installation de perlqt4}
@@ -114,8 +114,9 @@ On peut avoir une plus grande variété de couleurs que celles prédefinies en u
 Nous avons décidé de générer 
 \section{Architecture}
   DIAGRAMME DES CLASSES EN MOINS DETAILLE   
-\section{Gestion du temps}
-  DIAGRAMME REPRESENTANT LE TPS PASSE POUR: APPRENDRE TIKZ ET LATEX, INSTALLER LES LOGICIELS, CREER L'INTERFACE GRAPHIQUE BASIQUE, ECRIRE LE PARSER, IDENTIFIER ET DEPLACER UN OBJET, AFFICHER ET MODIFIER LES PROPRIETES DE L'OBJET SELECTIONNE, REDIGER LE RAPPORT, REDIGER LA PRESENTATION, PARSER LES MESSAGES D'ERREUR.
+\section{Gestion du temps} 
+  Le graphe ci dessous illustre le temps réparti à chacune de nos principales tâches. Sachant que 100\% représente le temps total passé sur le projet. 
+\includepdf{camembtex.pdf}
 \section{Résultats}
   Nous allons à présent vous présenter en images les résultats de notre projet .
 \newline
@@ -163,9 +164,9 @@ figures 5: création graphique d'un n{\oe}ud
 figure 6: modification textuelle des propriétés d'un n{\oe}ud
 \\
 \\
-Un clic droit sur l'interface graphique permet de créer un n{\oe}ud à cet endroit. L'utilisateur pourra par la suite modifier textuellement ou graphiquement les propriétés de ce n{\oe}ud. Le code correspondant au noeud ainsi créé est automatique ajouter au code du graphe. 
+Un clic droit sur l'interface graphique permet de créer un n{\oe}ud à cet endroit. L'utilisateur pourra par la suite modifier textuellement ou visuellement les propriétés de ce n{\oe}ud. Le code correspondant au noeud ainsi créé est automatique ajouter au code du graphe. 
 
-Par exemple sur la figure 5, le n{\oe}ud contenant le texte "new" a été créé par un clic droit de la souris, et les  lignes 12 et 13 qui correspondent au code Tikz de la création de ce n{\oe}ud ont été rajouté à l'éditeur de texte. Après une modification sur le code du texte de ce n{\oe}ud(new qui devient nouveau), on observe sans surprise que le texte a aussi changé sur le graphe.
+Par exemple sur la figure 5, le n{\oe}ud contenant le texte "new" a été créé par un clic droit de la souris, et les  lignes 12 et 13 qui correspondent au code Tikz de la création de ce n{\oe}ud ont été ajouté à l'éditeur de texte. Après une modification sur le code du texte de ce n{\oe}ud(new qui devient nouveau), on observe sans surprise que le texte a aussi changé sur le graphe.
 \newline
   \includegraphics[width=15cm, height=10cm]{img/r_8.png} 
 \\
@@ -192,24 +193,46 @@ figure 11: modification d'un n{\oe}ud du graphe
 \\ 
 figure 12: après modification d'un n{\oe}ud du graphe
 \\ \\
-Les figures 10, 11 et 12 illustrent bien nos propos ci-dessus. On peut observer que sur la figure 10 la case draw des propriétés qui correspond au dessin du n{\oe}ud est cochée après l'avoir décocher à la figure 11 on voit effectivement que, sur la figure  12, le noeud n'est plus dessiné et la propriété "draw" a disparu à la ligne 7 du code Tikz.
+Les figures 10, 11 et 12 illustrent bien nos propos ci-dessus. On peut observer que sur la figure 10 dans la fenêtre Propriétés, la case draw qui correspond au dessin du n{\oe}ud est cochée après l'avoir décoché à la figure 11 on voit effectivement que, sur la figure  12, le noeud n'est plus dessiné et la propriété "draw" a disparu à la ligne 7 du code Tikz.
 \\ \\ \\ \\ \\
   \includegraphics[width=15cm, height=9cm]{img/r7.png}
 \\ 
 figures 12: à propos
 \chapter{Conclusion}
-Nous avons créer une interface graphique permettant d'éditer du code Tikz, de visualiser l'image généré et de modifier graphiquement les propriétés des n{\oe}uds dans le cadre de notre projet Science et Technologie de Logiciel. En effet, avec notre interface graphique l'utilisateur pourra désormais créer graphiquement des noeuds, modifier les propriétés des objets du graphe sélectionnés tout en récupérant le code Tikz correspondant à la création de ce graphe. Il pourra aussi charger directement un fichier Tikz dans l'éditeur afin de visualiser et/ou modifier le graphe. Le code Tikz édité pourra ainsi être sauvegardé de même que le fichier pdf généré par le code Latex englobant le code Tikz. 
+Nous avons créer une interface graphique permettant d'éditer du code Tikz, de visualiser l'image généré et de modifier visuellement les propriétés des n{\oe}uds dans le cadre de notre projet Science et Technologie de Logiciel. En effet, avec notre interface graphique l'utilisateur pourra désormais créer graphiquement des noeuds, modifier les propriétés des objets du graphe sélectionnés tout en récupérant le code Tikz correspondant à la création de ce graphe. Il pourra aussi charger directement un fichier Tikz dans l'éditeur afin de visualiser et/ou modifier le graphe. Le code Tikz édité pourra ainsi être sauvegardé de même que le fichier pdf généré par le code Latex englobant le code Tikz. 
 
 Ce projet nous a permis d’appliquer les connaissances qui nous ont été inculquées au cours
-de nos années de Licence et de Maîtrise Informatique à l’Université Pierre et Marie Curie. Nous avons été confrontés à de nombreux problèmes et dans la plupart des cas nous avons pu trouver une solution alternative afin de les résoudre partiellement.
+de nos années de Licence et de Maîtrise Informatique à l’Université Pierre et Marie Curie. Nous avons été confrontés à de nombreux problèmes et dans la plupart des cas nous avons pu trouver une solution alternative afin de les résoudre.
+
 Enfin ce projet aura été l’occasion de découvrir et d’utiliser des outils dont nous n’avions pas la
 moindre idée de leurs existences.
 
 
 
 \chapter{Perspectives}
-Au vu des fonctionnalités de notre interface, nous pouvons conclure que les principaux objectifs du projet sont atteints. Toutefois, afin de faciliter la distribution de notre logiciel, nous aurions pu créer un paquet Debian et un exécutable Windows. De même pour une amélioration future de l'application, la gestion de la modification graphique de la position d'un noeud pourra en réaliser. Cependant, le temps et la
-complexité de cette tâche ont été les principaux facteurs qui nous ont rebuté. 
+Au vu des fonctionnalités de notre interface, nous pouvons conclure que les principaux objectifs du projet sont atteints. Toutefois, afin de faciliter la distribution de notre logiciel, nous aurions pu créer un paquet Debian et un exécutable Windows. De même pour une amélioration future de l'application, la gestion de la modification visuelle de la position d'un noeud pourra être réaliser. Cependant, le temps et la
+complexité de ces tâches ont été les principaux facteurs qui nous ont rebuté. 
+
+\chapter{Bibliographie}
+
+Introduction à Perl \\
+    \indent{Auteur(s) : Randal L. Schwartz , Tom Phoenix}\\
+    \indent{Editeur : O'Reilly} \\ \\ \\
+
+De l'art de programmer en Perl \\
+    \indent{Auteur(s) : Damian Conway}\\
+    \indent{Editeur : O'Reilly} \\ \\ \\
+
+Perl Cookbook: \\
+    \indent{Auteur(s) : Christiansen}\\ \\ \\
+
+Tikz pour l'impatient (livre en français):\\
+    \indent{http://math.et.info.free.fr/TikZ/bdd/TikZ-Impatient.pdf}\\ \\ \\
+
+Introduction à Latex:\\
+    \indent{http://mirrors.ctan.org/info/lshort/french/lshort-fr.pdf }
+
+
 
 \chapter{Annexe}
 \includepdf[pages = {1-9}]{manuel.pdf}
