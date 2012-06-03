@@ -1,0 +1,158 @@
+\documentclass[a4paper]{report}
+\usepackage[14pt]{extsizes}
+\usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage{listingsutf8}
+\usepackage{verbatim}
+\usepackage{tikz}
+\usepackage{titlesec} 
+\title{RAPPORT DU PROJET STL \\ TIKZ}
+\author{ANCELIN Maxime & DIAKHATE Aminata}
+
+\lstset{language=Perl}
+\lstset{commentstyle=\textit}
+\lstset{frame=shadowbox, rulesepcolor=\color{gray}}
+
+\begin{document} 
+
+\tableofcontents
+\newpage
+
+\titleformat{\chapter}[hang]{\bf\huge}{\thechapter}{2pc}{} 
+
+\chapter {Gestion du projet}
+\section{Difficultés}
+\subsection{Installation de perlqt4}
+L' installation de perlqt4 nous a pris un peu plus d' une semaine,
+car il nous manquait des dépendances.
+
+Au fur et a mesure que nous découvrions ce qu' il fallait ajouter,
+nous avons enrichi un script d' installation afin de rendre la reinstallation
+plus facile pour les utilisateurs finaux de notre application. Ce
+script a été conçu pour fonctionner sous \textit{Ubuntu 12.04} et devrait marcher
+sans encombre sous \textit{Debian}.
+
+Sous ces \textit{linux}, il suffit de lancer \textbf{script\_intall\_all.sh}
+afin d' installer \textit{perlqt4}, \textit{Scintilla} et tout les packages et modules
+\textit{Perl} requis au fonctionnement de l' application.
+
+\subsection{Identification des objets Tikz}
+Afin d' identifier précisément chaque objet Tikz, nous attribuons à chaque n{\oe}ud et à chaque arête du graphe une couleur unique, que nous nomerons le \textit{ColorID}.
+
+Cette couleur sera ensuite ajoutée au propriétés de chaque objet, puis on générera une image ou chaque objet sera intégralement colorié de cette couleur. 
+Nous nomerons cette image \textit{tmp\_tikz\_IDC.png}
+
+Rappelons que dans le cadre de notre projet nous ne nous intéressons qu'aux n{\oe}uds et arêtes (notés \textbf{node} et \textbf{draw}). L'attribution d'un code couleur a chaque objet identifié nous permet de générer une image temporaire où chaque éléments est intégralement coloré en sa couleur.
+
+\vspace{5mm}
+\begin{center}
+\begin{tabular}{ccc}
+\begin{tikzpicture}
+[node distance=40pt]
+\node[rectangle,draw] (n1) {a};
+\node[circle,double,draw,right of=n1] (n2) {$\sqrt{x}$};
+\draw[->] (n1) -- (n2);
+\node[below of=n1,right of = n1,node distance=50pt] (n3) {c};
+\draw[<->,dashed] (n1) -- (n3);
+\end{tikzpicture} &
+$\rightarrow$ &
+\begin{tikzpicture}[node distance=40pt]
+\node[rectangle,draw,red!30!green!30,fill=red!30!green!30] (n1) {a};
+\node[circle,double,draw,right of=n1,red!30!green!31,fill=red!30!green!31] (n2) {$\sqrt{x}$};
+\draw[line width=5pt,red!30!green!32,fill=red!30!green!32] (n1) -- (n2);
+\node[below of=n1,right of = n1,node distance=50pt,red!30!green!33,fill=red!30!green!33] (n3) {c};
+\draw[line width=5pt,red!30!green!34,fill=red!30!green!34] (n1) -- (n3);
+\end{tikzpicture}
+\\ 
+tmp\_tikz.png &  & tmp\_tikz\_IDC.png \\ 
+\end{tabular} 
+\end{center}
+
+Chacuns des objets de tmp\_tikz\_IDC.png a une couleur différente, la variation est juste trés légére.
+\\
+
+Tout d'abord, on expliquera comment on peut modifier un code Tikz afin d'attribuer une couleur a un n{\oe}ud ou une arête.
+
+Ensuite, nous introduirons la méthode de génération de couleur unique pour chaque objet et son utilisation pour creer notre image temporaire.
+
+Finalement, nous montrerons comment exploiter l'image colorID dans le cadre de notre projet.
+
+\subsubsection{Comment colorer un objet Tikz intégralement d'une couleur}
+Chaque objet Tikz posséde un champ de propriétés. Dans le cas de la couleur et de la couleur de  remplissage (\textit{fill}), la derniére valeur attribuée est la valeur finale.
+On peut integralement colorer un objet d'une seule couleur, par exemple en bleu, en ajoutant a la fin des propriétés \textit{blue,fill=blue}.
+\begin{center}
+\begin{tabular}{ccc}
+\begin{tikzpicture}
+\node[draw] (n1) {a};
+\end{tikzpicture} &
+$\rightarrow$ &
+\begin{tikzpicture}
+\node[draw,blue,fill=blue] (n1) {a};
+\end{tikzpicture}
+\\ 
+\small{\verb?\node[draw] (n1) {a};?}
+ &  & \small{\verb?\node[draw,?\textcolor{red}{blue,fill=blue}] (n1) {a};}\\ 
+\end{tabular} 
+\end{center}
+
+Pour avoir une plus grande variétés de couleurs que celles prédefinies, nous utiliserons le package \textit{xcolor}, qui permet de donnner un pourcentage a une couleur et même de les mélanger. Par exemple : blue!50!red!33
+\begin{center}
+\begin{tabular}{ccc}
+\begin{tikzpicture}
+\node[draw] (n1) {a};
+\end{tikzpicture} &
+$\rightarrow$ &
+\begin{tikzpicture}
+\node[draw,blue!50!red!33,fill=blue!50!red!33] (n1) {a};
+\end{tikzpicture}
+\\ 
+\small{\verb?\node[draw] (n1) {a};?}
+ &  & \small{\verb?\node[draw,?\textcolor{red}{blue!50!red!33,fill=blue!50!red!33}] (n1) {a};}\\ 
+\end{tabular} 
+\end{center}
+
+
+\subsubsection{Ajout du colorId aux objets Tikz}
+Afin de générer des couleur uniques selon une logique concise, on a mis en place le module perl ColorId.pm. Ce module agit comme une sorte de "compteur" de couleurs et a chaque appel de la fonction \textbf{gen\_next\_ColorId} une chaine du type "\textit{red!y!green!x,fill=red!y!green!x}" est retournée (avec \textit{x} et \textit{y} compris entre 30 et 100).
+Cette fonction nous permet de générer jusqu'a 5041 couleurs différentes en incréméntant/reinitialisant deux variables selon ce code :
+\vspace{0.8mm}
+{\small \lstinputlisting[inputencoding=utf8/latin1]{genNextColorID.pl}}
+
+Il nous reste ensuite a parser chaque élément Tikz et a ajouter aux propriétés de l' objet la chaine retournée par cette fonction.
+Nous traiterons le cas des arêtes a part, afin de pouvoir modifier la grosseur du trait pour permettre une meilleure interaction avec les utilisateur.
+Ci dessous, une transformation d' un code Tikz aprés l' ajout des ColorID :
+
+\newpage
+\begin{small}
+\begin{verbatim}
+[node distance=40pt]
+\node[rectangle,draw] (n1) {a};
+\node[circle,double,draw,right of=n1] (n2) {$\sqrt{x}$};
+\draw[->] (n1) -- (n2);
+\node[below of=n1,right of = n1,node distance=50pt] (n3) {c};
+\draw[<->,dashed] (n1) -- (n3);
+\end{verbatim}
+\begin{flushright}
+{\small \textit{code Tikz initial}}
+\end{flushright}
+
+\begin{center}
+{\normalsize $\downarrow$ \textit{ajout des ColorID}}\\
+\end{center}
+\verb?[node distance=40pt]?\\
+\verb?\node[rectangle,draw?\textcolor{red}{\textbf{,red!30!green!30,fill=red!30!green!30}}\verb?] (n1) {a};?\\
+\verb?\node[circle,double,draw,right of=n1?\textcolor{red}{\textbf{,red!30!green!31,fill=red!30!green!31}}\verb?] (n2) {$\sqrt{x}$};?\\
+\verb?\draw[?\textcolor{red}{\textbf{line width=5pt,red!30!green!32,fill=red!30!green!32}}\verb?] (n1) -- (n2);?\\
+\verb?\node[below of=n1,right of = n1,node distance=50pt?\textcolor{red}{\textbf{,red!30!green!33,fill=red!30!green!33}}\verb?] (n3) {c};?\\
+\verb?\draw[?\textcolor{red}{\textbf{line width=5pt,red!30!green!34,fill=red!30!green!34}}\verb?] (n1) -- (n3);?\\
+\begin{flushright}
+{\small \textit{code Tikz avec ColorID}}
+\end{flushright}
+\end{small}
+
+\end{document}
+
+
