@@ -37,7 +37,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%===Slide 1 - Titre
 \begin{frame}
   \titlepage
-\includegraphics[width=5cm, height=3cm]{img/logo256.png} \   \ \ \ \ \ \ 
+\ \ \ \begin{tikzpicture}[node distance=50pt]
+\node[draw,circle,black,fill=blue!50,line width=3] (first_node) {Tikz};
+\node[below of = first_node, node distance = 10] (first_node_y20) {};
+\node[draw,circle,right of = first_node_y20, node distance = 21,fill=green!50,line width=2] (first_node_y20_x21) {g};
+\node[below of = first_node, node distance = 40] (first_node_y) {};
+
+\end{tikzpicture}
+\   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
 \includegraphics[width=5cm, height=3cm]{img/LogoUPMC.jpg} 
 \end{frame}
 
@@ -297,6 +304,12 @@ Dans un graphe Tikz, tout n{\oe}ud peut être placé a une position précise en 
 
 \end{frame}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%===Slide 14 - Création noeud aux coordonnées d'un clic - 2éme étape
+\begin{frame}
+\frametitle{Création d'un n{\oe}ud aux coordonnées d'un clic} 
+%\includegraphics[scale=0.45]{r_6.png} 
+\includegraphics[scale=0.35]{img/r_6.png} 
+\end{frame}
 
 \end{document}
+
