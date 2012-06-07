@@ -2,7 +2,13 @@
 \usepackage[landscape]{geometry}
 \usepackage[dvips]{color}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{graphicx}
+\usepackage[french]{babel}
+\usepackage{listingsutf8}
+\usepackage{verbatim}
+\usepackage{calc}
+\usepackage{tikz}
 
 \newcommand{\spacer}{\rule[-3mm]{0mm}{8mm}}
 
@@ -23,6 +29,8 @@ Ancelin Maxime\\
 \date{8 juin 2012}
 
 \begin{document}
+\renewcommand{\labelitemi}{$\bullet$}
+
 %%%%%%%%%%%%%%%%%%%%%%%%===Slide 1 - Titre
 \maketitle
 
@@ -56,8 +64,20 @@ Plan
 
 %%%%%%%%%%%%%%%%%%%%%%%%===Slide 3 - OBJECTIFS DU PSTL
 \begin{slide}
+Objectifs du PSTL
 
+\begin{itemize}
+
+\item Création d'une interface graphique pour
+faciliter\\ l'utilisation de Tikz.
+
+\item Sous-ensemble de Tikz traité : nœuds,
+arêtes.
+
+\end{itemize}
 \end{slide}
+
+
 
 
 \end{document}
