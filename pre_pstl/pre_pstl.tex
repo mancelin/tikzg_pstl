@@ -5,6 +5,7 @@
 \usepackage[french]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{tikz}
+\usepackage{verbatim}
 
 % Theme for beamer presentation.
 \usepackage{beamerthemesplit} 
@@ -35,7 +36,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%===Slide 1 - Titre
 \begin{frame}
   \titlepage
-\includegraphics[width=5cm, height=3cm]{img/LogoUPMC.jpg} 
+\includegraphics[width=5cm, height=3cm]{img/LogoUPMC.jpg} \   \ \ \ \ \ \ 
 \includegraphics[width=5cm, height=3cm]{img/logo256.png} 
 \end{frame}
 
@@ -91,13 +92,13 @@ arêtes.
 
 \begin{itemize}
 
- \item Transformation du code Tikz en image
+\item Transformation du code Tikz en image
 
-\pause \item Création de l'interface graphique
+\item Création de l'interface graphique
 
-\pause \item Représentation mémoire des objets Tikz
+\item Représentation mémoire des objets Tikz
 
-\pause \item Intéraction avec le graphe
+\item Intéraction avec le graphe
 
 \end{itemize}
 
@@ -114,7 +115,7 @@ arêtes.
 \frametitle{Transformation d'un code Tikz en image}
 \includegraphics[width=10cm, height=4cm]{img/c1.png} \\
 \begin{center}
-$\overset{pdflatex -halt-on-error tmp_tikz.tex > /dev/null}{\downarrow}$
+$\overset{pdflatex\ -halt-on-error\ tmp\_tikz.tex\ >\ /dev/null }{\downarrow}$
 \includegraphics[width=5cm, height=0.5cm]{img/re1.png} \\
 $\overset{convert}{\downarrow}$ \\
 \includegraphics[width=5cm, height=0.5cm]{img/re2.png} \\
